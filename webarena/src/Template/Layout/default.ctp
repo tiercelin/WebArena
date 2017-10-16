@@ -97,7 +97,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
  </div>
 </div>
 
-    <div><?= $this->fetch('content') ?></div>
+    <div id="postuser"><?= $this->fetch('content') ?></div>
 
 
 </body>
