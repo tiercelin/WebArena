@@ -230,7 +230,7 @@ return [
              */
             //'port' => 'non_standard_port_number',
             'username' => 'root',
-            'password' => 'root',
+            'password' => '',
             'database' => 'webarena',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
