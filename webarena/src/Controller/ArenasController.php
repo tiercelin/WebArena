@@ -19,7 +19,6 @@ $this->set('MES', $this->Fighters->test());
 
 $this->set('hey', $this->Fighters->getBestFighter());
 
-
 }
 
 public function diary()

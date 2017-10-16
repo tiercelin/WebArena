@@ -14,11 +14,9 @@ dd
 .navbar-default {
     background-color: #F8F8F8;
     border-color: #E7E7E7;
+    
 }
 
-.trumpimagepost{
-    padding-left: 30px;
-}
 
 /* The side navigation menu */
 .sidenav {
@@ -81,7 +79,7 @@ bottom: 20px;
 left: 15%;
 }
 
-
+/* Css du contenu des pages. Permet de recentrer et mettre en avant par rapport au fond*/
 #postuser {
     font-size: 20px;
     width: 90%;
