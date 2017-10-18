@@ -11,11 +11,7 @@ class FightersTable extends Table {
     }
 
     function getBestFighter() {
-        //$sql ="SELECT * FROM fighters WHERE level=(SELECT MAX(level) FROM fighters)";
-        //$result = $this->query($sql);
-        //return $result;
-
-        $bestfighter = $this->find("all")->max("level");
+       $bestfighter = $this->find("all")->max("level");
 
         return $bestfighter;
     }
