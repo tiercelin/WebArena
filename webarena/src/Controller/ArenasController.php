@@ -19,7 +19,6 @@ public function index()
     
     //$this->set('hey', $this->Fighters->getBestFighter());
 
-
 }
 
 public function diary()

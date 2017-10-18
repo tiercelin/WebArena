@@ -3,11 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/Fighterstable.php</file>
             <file>file:/C:/wamp64/www/webarena/webarena/config/app.php</file>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/Playerstable.php</file>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Arenas/index.ctp</file>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/ArenasController.php</file>
+=======
+            <file>file:/C:/wamp/www/WebArena/webarena/config/app.default.php</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/src/Template/Arenas/index.ctp</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/src/Template/Layout/default.ctp</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/webroot/index.php</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/src/Template/Arenas/login.ctp</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/index.php</file>
+            <file>file:/C:/wamp/www/WebArena/webarena/config/.env.default</file>
+>>>>>>> d3d2688bf767432811bad9c98154d45a03eb3142
         </group>
     </open-files>
 </project-private>

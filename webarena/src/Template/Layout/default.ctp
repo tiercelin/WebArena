@@ -31,26 +31,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?php echo $this->Html->script(array('bootstrap','bootstrap.min'));?>
+    <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default'));?>
     
     
 </head>
-
-<script>
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = "250px";
-}
-
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-}
-
-</script>
-
-
 
 <body>
 
@@ -70,28 +54,22 @@ function closeNav() {
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-	  
 
-		
 		<li><a>Welcome to the arena </a></li>
                 <li class="name">
                     <a href=""><?= $this->fetch('title') ?></a>
                 </li>
+      </ul>
 		
-		</ul>
-		
-		<ul class="nav navbar-nav navbar-right">
-		
-		
-		<li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
+      <ul class="nav navbar-nav navbar-right">
+                <li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
+                <li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
 		<li><?php echo $this->Html->link('Fighter', array('controller' => 'Arenas', 'action' => 'fighter')); ?></li>
-		<li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
-                <li role="separator" class="divider"></li>
-		<li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
+                <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
 
-		
-        </ul>
+                
+      </ul>
 
       
     </div><!-- /.navbar-collapse -->
@@ -100,12 +78,12 @@ function closeNav() {
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
+  <li>          <li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
+                <li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
 		<li><?php echo $this->Html->link('Fighter', array('controller' => 'Arenas', 'action' => 'fighter')); ?></li>
-		<li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
-                <li role="separator" class="divider"></li>
-		<li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
+                <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
+
 
  <div id="footer">
   <br>
@@ -120,7 +98,7 @@ function closeNav() {
  </div>
 </div>
 
-    <div><?= $this->fetch('content') ?></div>
+    <div id="postuser"><?= $this->fetch('content') ?></div>
 
 
 </body>
