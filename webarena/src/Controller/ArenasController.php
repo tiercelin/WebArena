@@ -14,8 +14,10 @@ public function index()
 
     $this->set('myname', "Julien Falconnet");
     $this->loadModel('Players');
-
-    $this->set('MES', $this->Players->test());
+    $this->loadModel('Fighters');
+    
+    $id = $this->Players->getPlayerId('test');
+    $this->set('MES', $this->Fighters->newFighter($id, 'Lapinou'));
     
     //$this->set('hey', $this->Fighters->getBestFighter());
 

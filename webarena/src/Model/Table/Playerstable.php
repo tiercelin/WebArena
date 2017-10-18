@@ -38,9 +38,35 @@ class PlayersTable extends Table {
             mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
         );
     }
+    
+   /**
+    * 
+    * @param type $email
+    * @return player id or false if wrong parameter
+    */
+    function getPlayerId($email){
+        if(is_string($email)){
+            $query = $this->find()->select(['id'])->where(['email =' => $email])->first();
+            return $query;
+        }
+        return false;
+    }
+    
+    /**
+    * 
+    * @param type $email
+    * @return player id or false if wrong parameter
+    */
+    function getPlayerPassword($email){
+        if(is_string($email)){
+            $query = $this->find()->select(['password'])->where(['email =' => $email])->first();
+            return $query;
+        }
+        return false;
+    }
 
     /**
-     * 
+     * Créer nouveau joueur
      * @param type $email
      * @param type $pwd
      * @return boolean true = success, false = echec (email existe déjà)
