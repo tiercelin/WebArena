@@ -11,13 +11,13 @@ class ArenasController  extends AppController
     
 public function index()
 {
+
+    $this->set('myname', "Julien Falconnet");
+    $this->loadModel('Players');
+
+    $this->set('MES', $this->Players->test());
     
-$this->set('myname', "Julien Falconnet");
-$this->loadModel('Fighters');
-
-$this->set('MES', $this->Fighters->test());
-
-$this->set('hey', $this->Fighters->getBestFighter());
+    //$this->set('hey', $this->Fighters->getBestFighter());
 
 
 }
