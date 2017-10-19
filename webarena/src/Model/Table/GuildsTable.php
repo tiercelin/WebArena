@@ -5,19 +5,22 @@ namespace App\Model\Table;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-class EventsTable extends Table{
+class GuildsTable extends Table{
     
     /**
-     * Initialization of the events table
-     * @param array $config : contains configuration data for the events table
+     * Initialization of the guilds table
+     * @param array $config : contains configuration data for the guilds table
      */
     public function initialize(array $config)
     {
-        $this->setTable('events');
+        $this->setTable('guilds');
         $this->setPrimaryKey('id');
-        $this->setEntityClass('App\Model\Entity\Events');
+        $this->setEntityClass('App\Model\Entity\Guilds');
         
-        // No foreign key constraints here         
+        // A guild can welcome many fighters
+        $this->hasMany('Fighters')
+                ->setForeignKey('guild_id');
+                //->setJoinType('INNER'); uncomment this line if we implement the guild functionnality         
     }
     
      /**
@@ -33,25 +36,10 @@ class EventsTable extends Table{
             ->notEmpty('id');  // true by default because of key auto increment
 
         $validator
-            ->maxLength('name', 255)
+            ->maxLength('name', 45)
             ->requirePresence('name', 'create')
             ->notEmpty('name');
         
-        $validator
-            ->dateTime('date')
-            ->requirePresence('date', 'create')
-            ->notEmpty('date');
-
-        $validator
-            ->integer('coordinate_x')
-            ->requirePresence('coordinate_x', 'create')
-            ->notEmpty('coordinate_x');
-
-        $validator
-            ->integer('coordinate_y')
-            ->requirePresence('coordinate_y', 'create')
-            ->notEmpty('coordinate_y');
-
         return $validator;
     }
 }

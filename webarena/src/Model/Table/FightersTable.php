@@ -26,19 +26,19 @@ class FightersTable extends Table {
                 ->setJoinType('INNER');
         
         // A fighter belongs to one and only one guild
-        $this->belongsTo('guilds')
+        $this->belongsTo('Guilds')
                 ->setForeignKey ('guild_id');
                // ->setJoinType('INNER'); uncomment this line if we implement the guild functionnality
         
         // A fighter can have many tools
-        $this->hasMany('tools')
+        $this->hasMany('Tools')
                 ->setForeignKey('fighter_id');
-                //->setJoinType('INNER'); uncomment this line if we implemente the tools functionnality   
+                //->setJoinType('INNER'); uncomment this line if we implement the tools functionnality   
                 //  
          // A fighter can send many messages
-        $this->hasMany('messages')
+        $this->hasMany('Messages')
                 ->setForeignKey('fighter_id');
-                //->setJoinType('INNER'); uncomment this line if we implemente the communication functionnality    
+                //->setJoinType('INNER'); uncomment this line if we implement the communication functionnality    
     }
     
     
