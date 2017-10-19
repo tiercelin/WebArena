@@ -36,7 +36,7 @@ class Fighters extends Entity{
     }    
     
     /**
-     * Prevent id to be assigned by the user (auto incrementation has to be respected
+     * Prevent id to be mass-assigned or assigned by the user (auto incrementation has to be respected)
      */
      protected $_accessible = [
         '*' => true,
