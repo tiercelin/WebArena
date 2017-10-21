@@ -54,4 +54,16 @@ class EventsTable extends Table{
 
         return $validator;
     }
+    
+    /**
+     * 
+     * @return boolean null si aucun résultat, ou liste d'entity si il y a des events dans la base de données
+     */
+    public function getEvents(){
+        $entity = $this->find();
+        if($entity->isEmpty()){
+            return null;
+        }
+        return $entity;
+    }
 }

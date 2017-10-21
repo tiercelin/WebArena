@@ -51,13 +51,31 @@ class SurroundingsTable extends Table{
     
     /**
      * 
-     * @return boolean false si aucun résultat, ou liste d'entity si il y a des surroundings dans la base de données
+     * @return null si aucun résultat, ou liste d'entity si il y a des surroundings dans la base de données
      */
-    function getSurroundings(){
+    public function getSurroundings(){
         $entity = $this->find();
         if($entity->isEmpty()){
-            return false;
+            return null;
         }
         return $entity;
+    }
+    
+    /**
+     * 
+     * @param type $x
+     * @param type $y
+     * @return type
+     */
+    public function getSurrounding($x, $y){
+        $entity = $this->find()->where([
+            'coordinate_x =' => $x,
+            'coordinate_y =' => $y
+            ])->first();
+        return $entity;
+    }
+    
+     public function deleteAllSurroundings(){
+        $this->deleteAll();
     }
 }
