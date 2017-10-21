@@ -24,18 +24,18 @@ class ArenasController  extends AppController
         $this->loadModel('Events');
 
         $entity = $this->Surroundings->getSurroundings();
-        $test = $this->Players->getPlayer('b');
+        $test = $this->Players->getPlayer('admin@test.com');
         $this->set('MES', $test->id);
         
+         //$this->set('hey', $this->Fighters->getBestFighter());
+    }
         
-
-        //$this->set('hey', $this->Fighters->getBestFighter());
-
-<<<<<<< HEAD
+       
 public function fighter()
 {
     $this->set('myname', "Julien Falconnet");
 
+    
     $this->loadModel('Fighters');
 
     $entity = $this->Fighters->getFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e');
@@ -51,22 +51,42 @@ public function fighter()
     $this->set('health_f', $entity->skill_health);
     
 }
-=======
-    }
+
+    
 
     public function diary()
     {
->>>>>>> d565bcd7d80bea020a1a0a86131cee9bce158aad
+
 
     }
 
-    public function fighter()
-    {
 
-    }
 
     public function login()
     {
+        //echo "helllllo";
+      //$this->request->data= 'julien';
+    //echo $this->set($this->request->data, 'julien');
+    //$data = new \App\Model\Entity\Players();
+      //$data = $this->request->data;
+      //pr($data);
+        // $this->set('l', $data);
+        //Array($data);
+    $login = $this->Players;
+    // Save logic goes here
+    $this->set('login', $login);
+    
+    if ($this->request->is('post')) {
+        echo "bonojur";
+        //$username = $this->request->getData("username");
+        //$this->set('l', $data);
+       /// echo $data;
+        }
+    //echo "h";
+    $user="coucou";
+    $pwd = "0";
+    $this->set('username', $user);
+    $this->set('password', $pwd);
 
     }
 
