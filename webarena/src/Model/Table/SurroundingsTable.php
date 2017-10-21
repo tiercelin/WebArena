@@ -51,12 +51,12 @@ class SurroundingsTable extends Table{
     
     /**
      * 
-     * @return boolean false si aucun résultat, ou liste d'entity si il y a des surroundings dans la base de données
+     * @return null si aucun résultat, ou liste d'entity si il y a des surroundings dans la base de données
      */
     public function getSurroundings(){
         $entity = $this->find();
         if($entity->isEmpty()){
-            return false;
+            return null;
         }
         return $entity;
     }
@@ -65,7 +65,7 @@ class SurroundingsTable extends Table{
      * 
      * @param type $x
      * @param type $y
-     * @return boolean
+     * @return type
      */
     public function getSurrounding($x, $y){
         $entity = $this->find()->where([

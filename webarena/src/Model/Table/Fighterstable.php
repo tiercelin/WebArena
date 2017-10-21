@@ -116,14 +116,14 @@ class FightersTable extends Table {
     /**
      * 
      * @param type $playerid
-     * @return boolean player entity or false if wrong parameter
+     * @return boolean player entity or null if wrong parameter
      */
     public function getFighter($playerid){
         if(is_string($playerid)){
             $entity = $this->find()->where(['player_id =' => $playerid]);
             return $entity;
         }
-        return false;
+        return null;
     }
     
     public function getBestFighter() {

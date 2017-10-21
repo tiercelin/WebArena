@@ -89,14 +89,14 @@ class PlayersTable extends Table {
     /**
     * 
     * @param type $email
-    * @return player entity or false if wrong parameter
+    * @return player entity or null if wrong parameter
     */
     public function getPlayer($email){
         if(is_string($email)){
             $entity = $this->find()->where(['email =' => $email])->first();
             return $entity;
         }
-        return false;
+        return null;
     }
 
     /**
