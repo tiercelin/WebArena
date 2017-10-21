@@ -89,9 +89,21 @@ public function fighter()
     $this->set('password', $pwd);
 
     }
-
+    
+    
+    
     public function sight()
     {
+        $this->loadModel('Surroundings');
+    
+    $myrow = $this->Surroundings->getSurroundings();
+    
+     if(is_null($myrow)){
+         $this->set('hey', "0");
+     }
+     else {
+         $this->set('hey', "P");
+     }
 
     }
     
