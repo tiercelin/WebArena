@@ -113,6 +113,19 @@ class FightersTable extends Table {
     
     // Do we have the verify that an entity of fighters clearly refers to an entity of player and an entity of guilds ? (no foreign key violations)
 
+    /**
+     * 
+     * @param type $playerid
+     * @return boolean player entity or false if wrong parameter
+     */
+    function getFighter($playerid){
+        if(is_string($playerid)){
+            $entity = $this->find()->where(['player_id =' => $playerid]);
+            return $entity;
+        }
+        return false;
+    }
+    
     function getBestFighter() {
        $bestfighter = $this->find("all")->max("level");
 

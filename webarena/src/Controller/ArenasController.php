@@ -16,8 +16,8 @@ public function index()
     $this->loadModel('Players');
     $this->loadModel('Fighters');
     
-    $id = $this->Players->getPlayerId('test');
-    $this->set('MES', $this->Fighters->newFighter($id, 'Lapinou'));
+    $entity = $this->Fighters->getFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e');
+    $this->set('MES', $entity);
     
     //$this->set('hey', $this->Fighters->getBestFighter());
 

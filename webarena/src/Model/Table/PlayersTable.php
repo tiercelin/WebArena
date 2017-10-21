@@ -86,28 +86,15 @@ class PlayersTable extends Table {
         );
     }
     
-   /**
-    * 
-    * @param type $email
-    * @return player id or false if wrong parameter
-    */
-    function getPlayerId($email){
-        if(is_string($email)){
-            $query = $this->find()->select(['id'])->where(['email =' => $email])->first();
-            return $query;
-        }
-        return false;
-    }
-    
     /**
     * 
     * @param type $email
-    * @return player id or false if wrong parameter
+    * @return player entity or false if wrong parameter
     */
-    function getPlayerPassword($email){
+    function getPlayer($email){
         if(is_string($email)){
-            $query = $this->find()->select(['password'])->where(['email =' => $email])->first();
-            return $query;
+            $entity = $this->find()->where(['email =' => $email])->first();
+            return $entity;
         }
         return false;
     }
