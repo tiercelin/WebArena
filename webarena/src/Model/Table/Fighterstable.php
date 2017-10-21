@@ -118,7 +118,7 @@ class FightersTable extends Table {
      * @param type $playerid
      * @return boolean player entity or false if wrong parameter
      */
-    function getFighter($playerid){
+    public function getFighter($playerid){
         if(is_string($playerid)){
             $entity = $this->find()->where(['player_id =' => $playerid]);
             return $entity;
@@ -126,7 +126,7 @@ class FightersTable extends Table {
         return false;
     }
     
-    function getBestFighter() {
+    public function getBestFighter() {
        $bestfighter = $this->find("all")->max("level");
 
         return $bestfighter;
