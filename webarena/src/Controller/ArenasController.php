@@ -15,8 +15,9 @@ public function index()
     $this->set('myname', "Julien Falconnet");
     $this->loadModel('Players');
     $this->loadModel('Fighters');
+    $this->loadModel('Surroundings');
     
-    $entity = $this->Fighters->getFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e');
+    $entity = $this->Surroundings->getSurroundings();
     $this->set('MES', $entity);
     
     //$this->set('hey', $this->Fighters->getBestFighter());

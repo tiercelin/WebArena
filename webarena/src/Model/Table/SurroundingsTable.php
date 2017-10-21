@@ -48,4 +48,16 @@ class SurroundingsTable extends Table{
         
         return $validator;
     }
+    
+    /**
+     * 
+     * @return boolean false si aucun résultat, ou liste d'entity si il y a des surroundings dans la base de données
+     */
+    function getSurroundings(){
+        $entity = $this->find();
+        if($entity->isEmpty()){
+            return false;
+        }
+        return $entity;
+    }
 }
