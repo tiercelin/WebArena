@@ -17,7 +17,6 @@ dd
     
 }
 
-
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
@@ -83,7 +82,7 @@ left: 15%;
 #postuser {
     font-size: 20px;
     width: 90%;
-    height: 200px;
+    height: 90%;
     box-sizing: border-box;
     border: 2px solid #ccc;
     border-radius: 4px;
