@@ -51,6 +51,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
        <a class="navbar-brand"> <?= $this->Html->image("trump_4.png", ['height' => '30', 'width'=>'30','class'=>'trumpimage', 'onclick'=>'openNav()' ]); ?> </a>
     </div>
 
+    
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
@@ -98,7 +99,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
  </div>
 </div>
 
-    <div id="postuser"><?= $this->fetch('content') ?></div>
+    <div id="postuser"> <?= $this->fetch('content') ?> </div>
 
 
 </body>
