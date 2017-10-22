@@ -3,6 +3,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 
+
 /**
 * Personal Controller
 * User personal interface
@@ -14,8 +15,15 @@ class ArenasController  extends AppController
     const LARGEUR = 15;
     const LONGUEUR = 10;
     
+ 
+    
+      
     public function index()
     {
+        // Retrieve the ID of the current player thanks to session
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        $this->set('test4', $idPlayer);
 
         $this->set('myname', "Julien Falconnet");
         $this->loadModel('Players');

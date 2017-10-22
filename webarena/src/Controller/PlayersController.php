@@ -2,19 +2,21 @@
 
 namespace App\Controller;
 use App\Controller\AppController;
-use App\Model\Entity\Players;
 use Cake\ORM\TableRegistry;
 
 class PlayersController extends AppController {
     
     // Initialization : cookies and session variables 
+    public function initialize()
+    {
+        $this->loadComponent('Flash');
+    }
     
     /**
      * Add a new player in database -> sign up function !
      */
     public function newPlayer ()
     {
-       
         // Declare a new player entity
         $playersTable = TableRegistry::get('Players');
         $newPlayer = $playersTable->newEntity();
@@ -37,12 +39,53 @@ class PlayersController extends AppController {
                  // If it works, redirect the user to the login page. If not, display an error message.
                  if ($playersTable->save($newPlayer))
                  {                    
-                     return $this->redirect (['controller' => 'arenas', 'action' => 'login']);
+                     return $this->redirect (['controller' => 'players', 'action' => 'loginPlayer']);
                  }
-               
-                 // Display error message -> use the Flash component ??
+                 $this->Flash->error(__('Account creation failure !'));
              }
+         }   
+         else
+         {
+             $this->Flash->error(__('This account already exists !'));
          }
-        
     }
+    
+    /**
+     * This function verify email + password of the user in order to log in him if the data are correct
+     * If so, set up session variable. If not, display an error message.
+     */
+    public function loginPlayer ()
+    {
+        if($this->request->is('post'))
+        {
+            // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
+            $players = $this->Players->find()->where(['email = ' => $this->request->getData('email'), 'password = ' => $this->request->getData('password')]);
+            
+            // If the player has been found in the database
+            if ($players->count() == 1)
+            {
+                // Secondary check
+                $currentPlayer = $players->first();
+                
+                // Set session variable with the ID of the current player
+                $session = $this->request->session();
+                $session->write('playerId', $currentPlayer->id);
+                
+                // Redirect the user to the index page
+                return $this->redirect (['controller' => 'arenas', 'action' => 'index']);      
+            }
+            
+            else
+            {
+                $this->Flash->error(__('Authentification failed, please try again'));
+            }
+        }
+    }
+          
+
+    
+    
+    
+    
+    
 }
