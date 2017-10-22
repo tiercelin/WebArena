@@ -1,15 +1,18 @@
 <?php $this->assign('title', 'Fighter');?>
 
-  Bienvenue <?php echo $myname;?> dans WebArena <br>
+  Welcome <?php echo $myname;?> in Webarena ! <br>
   
-  //Test: <?php echo $MES;?> <br>
+  <?php // echo $MES;?> <br>
   
-    Test: <?php echo $id_f;?> <br>
-      Test: <?php echo $name_f;?> <br>
-        Test: <?php echo $lvl_f;?> <br>
-          Test: <?php echo $exp_f;?> <br>
-            Test: <?php echo $sight_f;?> <br>
-              Test: <?php echo $str_f;?> <br>
-                Test: <?php echo $health_f;?> <br>
+  <h3>Fighter ID card </h3>
+    ID (not to display) : <?php echo $id_f;?> <br>
+    Name : <?php echo $name_f;?> <br>
+    Level : <?php echo $lvl_f;?> <br>
+    Experience points : <?php echo $exp_f;?> <br>
+    
+    <br><h3>Fighter abilities </h3>
+    Sight : <?php echo $sight_f;?> <br>
+    Strength : <?php echo $str_f;?> <br>
+    Health : <?php echo $health_f;?> <br>
 
-  The strongest character is: <br>
+ 
