@@ -24,3 +24,7 @@ echo "<table>";
 echo "</table>";
 ?>
 
+<button type="button" onclick="">Top</button>
+<button type="button" onclick="">Left</button>
+<button type="button" onclick="">Right</button>
+<button type="button" onclick="">Bottom</button>

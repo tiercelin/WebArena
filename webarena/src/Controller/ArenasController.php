@@ -192,5 +192,22 @@ public function fighter()
         $this->Surroundings->save($entity);
     
     }
+    
+  /**
+   * 
+   * @param type $decor entité de surroundings
+   * @param type $fighter entité de fighters
+   * @return type false si le joueur ne peut pas le voir
+   *              true si il peut le voir
+   */
+    public function canISeeIt($decor, $fighter){
+        
+        if(abs($decor->coordinate_x-$fighter->coordinate_x) + abs($decor->coordinate_y-$fighter->coordinate_y) <= $fighter->skill_sight){
+            return true; 
+        }
+        else{
+            return false;
+        }
+    }
 }
 
