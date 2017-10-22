@@ -50,6 +50,13 @@ public function fighter()
     $this->set('str_f', $entity->skill_strength);
     $this->set('health_f', $entity->skill_health);
     
+    function UPS()
+    {
+        $this->set('sight_f', $entity->skill_sight+1);
+        $this->set('str_f', $entity->skill_strength+1);
+        $this->set('health_f', $entity->skill_health+1);
+    }
+    
 }
 
     
@@ -77,7 +84,7 @@ public function fighter()
     $this->set('login', $login);
     
     if ($this->request->is('post')) {
-        echo "bonojur";
+        echo "bonjour";
         //$username = $this->request->getData("username");
         //$this->set('l', $data);
        /// echo $data;

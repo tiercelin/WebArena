@@ -48,7 +48,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-       <a class="navbar-brand"> <?= $this->Html->image("trump_4.png", ['height' => '30', 'width'=>'30','class'=>'trumpimage', 'onclick'=>'openNav()' ]); ?> </a>
+       <a class="navbar-brand"> <?= $this->Html->image("trump_4.png", ['height' => '25', 'width'=>'25' ]); ?> </a>
     </div>
 
     
@@ -77,31 +77,26 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
   </div><!-- /.container-fluid -->
 </nav>
 
-<div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <li>          <li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
-                <li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
-                <li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
-		<li><?php echo $this->Html->link('Fighter', array('controller' => 'Arenas', 'action' => 'fighter')); ?></li>
-                <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
 
 
- <div id="footer">
-  <br>
-  SI1 <br>
-  Options DF<br>
+    <div id="postuser"> 
+        
+        <?= $this->fetch('content') ?> 
+    
+        <div id="footer">
+        <br>
+        SI1 <br>
+        Options DF<br>
+
+        Imbert Pierre-Louis<br>
+        Tiercelin Julie<br>
+        Champalier Mariane<br>
+        Olive Thomas<br>
+        </div>
+    
+    </div>
+
   
-  Imbert Pierre-Louis<br>
-  Tiercelin Julie<br>
-  Champalier Mariane<br>
-  Olive Thomas<br>
-  
- </div>
-</div>
-
-    <div id="postuser"> <?= $this->fetch('content') ?> </div>
-
-
 </body>
 </html>
 
