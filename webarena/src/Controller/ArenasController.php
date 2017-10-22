@@ -95,15 +95,8 @@ public function fighter()
     public function sight()
     {
         $this->loadModel('Surroundings');
-    
-    $myrow = $this->Surroundings->getSurroundings();
-    
-     if(is_null($myrow)){
-         $this->set('hey', "0");
-     }
-     else {
-         $this->set('hey', "P");
-     }
+        $myrowController = $this->Surroundings;
+        $this->set('myrow', $myrowController);
 
     }
     

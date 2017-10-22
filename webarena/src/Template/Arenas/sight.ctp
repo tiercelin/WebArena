@@ -8,12 +8,17 @@ $WIDTH = 15;
 ?>
 <?php
 echo "<table>";
-    
       for ($i=0;$i<$LENGTH;$i++) {
            echo "<tr> </tr>";
            for ($j=0;$j<$WIDTH;$j++) {
-               echo "<td> " .$hey." </td>";
-           
+               if(is_null($myrow->getSurroundings($i,$j))){
+                   echo "<td>  0 </td>";
+               }
+               else {
+                   //echo "<td> " .$myrow->getSurroundings($i,$j)->type." </td>";
+                   echo "<td>  1 </td>";
+               }
+               //echo "<td> " .$hey." </td>";
            }
 }   
 echo "</table>";
