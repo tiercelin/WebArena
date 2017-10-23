@@ -17,6 +17,6 @@ class Players extends Entity {
     /**
      * Do not show hash passowrds to any one !!
      */
-   protected $_hidden = ['password'];
+  // protected $_hidden = ['password'];
    
 }

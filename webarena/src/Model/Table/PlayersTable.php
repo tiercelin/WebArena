@@ -34,7 +34,7 @@ class PlayersTable extends Table {
         $validator       
             ->uuid('id')
             ->requirePresence('id')  // true by default because id is primary key
-            ->notEmpty('id');  // because id is the primary key (carreful : no auto increment here, id is char type)
+            ->allowEmpty('id');  // because id is the primary key (carreful : no auto increment here, id is char type)
         
         $validator
             ->email('email')

@@ -3,6 +3,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 
+
 /**
 * Personal Controller
 * User personal interface
@@ -14,15 +15,21 @@ class ArenasController  extends AppController
     const LARGEUR = 15;
     const LONGUEUR = 10;
     
+ 
+    
+      
     public function index()
     {
+        // Retrieve the ID of the current player thanks to session
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        $this->set('test4', $idPlayer);
 
         $this->set('myname', "Julien Falconnet");
         $this->loadModel('Players');
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
-
         $entity = $this->Surroundings->getSurroundings();
         $test = $this->Players->getPlayer('admin@test.com');
         $this->set('MES', $test->id);
@@ -101,10 +108,25 @@ public function fighter()
     
     public function sight()
     {
+       //$this->generationColonnes();
+        //$this->generationPieges();
+        //$this->generationMonstre();
+        $length = self::LARGEUR;
+        $width = self::LONGUEUR;
+        $this->set('length', $length);
+        $this->set('width', $width);
+        //To generate the arena
         $this->loadModel('Surroundings');
-        $myrowController = $this->Surroundings;
-        $this->set('myrow', $myrowController);
-
+        
+      
+      $myrow = $this->Surroundings->getSurrounding('i','j');
+      $this->set('entity', $myrow->type);
+//$myrow = $this->Surroundings->getSurrounding($i,$j);
+               //echo "<tr> <td>";
+               //$this->set('$before', "<tr> <td>");
+               
+           // $myrow = $this->Surroundings->getSurrounding($i, $j);
+            //$this->set('entity', $myrow->type);
     }
     
     /**
