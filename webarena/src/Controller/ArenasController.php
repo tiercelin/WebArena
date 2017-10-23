@@ -255,6 +255,34 @@ if ($this->request->is('post'))
     
     }
     
+    /**
+     * Génère aléatoirement les positions du joueur
+     */
+    public function generationPlayer(){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        
+        $this->loadModel('Surroundings');
+        $this->loadModel('Fighters');
+        
+        $isFree = false;
+        while($isFree == false){
+            $x = rand(0, self::LONGUEUR);
+            $y = rand(0, self::LARGEUR);
+            $content = $this->Surroundings->getSurrounding($x,$y);
+            //si la case est libre, la condition devient true
+            if(is_null($content)){
+                $isFree = true;
+            }
+        }
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        $fighter->coordinate_x = $x;
+        $fighter->coordinate_y = $y;
+        
+        $this->Fighters->save($fighter);
+        
+    }
+    
   /**
    * 
    * @param type $decor entité de surroundings
