@@ -107,6 +107,11 @@ if ($this->request->is('post'))
     
     public function sight()
     {
+        $mov = $this->request->getData('movement');
+        
+        if(!is_null($mov)){
+            $this->move($mov);
+        }
         $length = self::LARGEUR;
         $width = self::LONGUEUR;
         $this->set('length', $length);
@@ -117,6 +122,16 @@ if ($this->request->is('post'))
         $this->set('fighter', $fighter);
         
         $this->loadModel('Surroundings');
+       // $this->Surroundings->deleteAllSurroundings();
+      
+      $myrow = $this->Surroundings->getSurrounding('i','j');
+      $this->set('entity', $myrow->type);
+//$myrow = $this->Surroundings->getSurrounding($i,$j);
+               //echo "<tr> <td>";
+               //$this->set('$before', "<tr> <td>");
+               
+           // $myrow = $this->Surroundings->getSurrounding($i, $j);
+            //$this->set('entity', $myrow->type);
         
         //$this->Surroundings->deleteAllSurroundings();
         //$this->generationColonnes();
@@ -126,6 +141,35 @@ if ($this->request->is('post'))
         $mytable = $this->Surroundings->getSurroundings();
         $this->set('entities', $mytable);
         $this->set('controller', $this);
+    }
+    
+    /**
+     * Change les coordonnées du fighter dans la base de données
+     * @param type $mov
+     */
+    public function move($mov){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        
+        $this->loadModel('Fighters');
+        $fighter = $this->Fighters->getFighter($idPlayer);
+
+        if($mov == 'top'&& $fighter->coordinate_x > 0){
+            $fighter->coordinate_x--;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'left' && $fighter->coordinate_y > 0){
+            $fighter->coordinate_y--;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'right' && $fighter->coordinate_y < self::LARGEUR-1){
+            $fighter->coordinate_y++;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'bottom'&& $fighter->coordinate_x < self::LONGUEUR-1){
+            $fighter->coordinate_x++;
+            $this->Fighters->save($fighter);
+        }
     }
     
     /**

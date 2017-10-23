@@ -31,7 +31,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default', 'interaction'));?>
+    <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default'));?>
     
     
 </head>
