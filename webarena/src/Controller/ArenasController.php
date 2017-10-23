@@ -108,6 +108,11 @@ public function fighter()
     
     public function sight()
     {
+        $mov = $this->request->getData('movement');
+        
+        if(!is_null($mov)){
+            $this->move($mov);
+        }
        //$this->generationColonnes();
         //$this->generationPieges();
         //$this->generationMonstre();
@@ -117,7 +122,7 @@ public function fighter()
         $this->set('width', $width);
         //To generate the arena
         $this->loadModel('Surroundings');
-        
+       // $this->Surroundings->deleteAllSurroundings();
       
       $myrow = $this->Surroundings->getSurrounding('i','j');
       $this->set('entity', $myrow->type);
@@ -127,6 +132,35 @@ public function fighter()
                
            // $myrow = $this->Surroundings->getSurrounding($i, $j);
             //$this->set('entity', $myrow->type);
+    }
+    
+    /**
+     * Change les coordonnées du fighter dans la base de données
+     * @param type $mov
+     */
+    public function move($mov){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        
+        $this->loadModel('Fighters');
+        $fighter = $this->Fighters->getFighter($idPlayer);
+
+        if($mov == 'top'&& $fighter->coordinate_x > 0){
+            $fighter->coordinate_x--;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'left' && $fighter->coordinate_y > 0){
+            $fighter->coordinate_y--;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'right' && $fighter->coordinate_y < self::LARGEUR-1){
+            $fighter->coordinate_y++;
+            $this->Fighters->save($fighter);
+        }
+        if($mov == 'bottom'&& $fighter->coordinate_x < self::LONGUEUR-1){
+            $fighter->coordinate_x++;
+            $this->Fighters->save($fighter);
+        }
     }
     
     /**
