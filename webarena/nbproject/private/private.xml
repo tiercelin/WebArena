@@ -3,29 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/PlayersTable.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Arenas/sight.ctp</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/config/app.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/FightersTable.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/webroot/js/interaction.js</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/SurroundingsTable.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/ArenasController.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Layout/default.ctp</file>
-=======
-<<<<<<< HEAD
+            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Players/login_player.ctp</file>
+            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Players/new_player.ctp</file>
+            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/PlayersController.php</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Arenas/sight.ctp</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/ArenasController.php</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Model/Entity/Surroundings.php</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Model/Table/SurroundingsTable.php</file>
-=======
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/index.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Layout/default.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/webroot/css/Webarena.css</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/fighter.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Controller/ArenasController.php</file>
->>>>>>> df93f787a90665e890aaf1226640040ae675b471
->>>>>>> 4a82a2866d67fd78a0d00c0de0e9d8291e765276
         </group>
     </open-files>
 </project-private>

@@ -12,8 +12,8 @@ use App\Model\Entity\Surroundings;
 class ArenasController  extends AppController
 {
     
-    const LARGEUR = 15;
-    const LONGUEUR = 10;
+    const LARGEUR = 10;
+    const LONGUEUR = 15;
     
  
     
@@ -40,30 +40,41 @@ class ArenasController  extends AppController
        
 public function fighter()
 {
-    $this->set('myname', "Julien Falconnet");
+    $session = $this->request->session();
+    $idPlayer = $session->read('playerId');
 
     
     $this->loadModel('Fighters');
 
-    $entity = $this->Fighters->getFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e');
+    $entity = $this->Fighters->getFighter($idPlayer);
     $this->set('MES', $entity);
     
     $this->set('id_f', $entity->id);
     $this->set('name_f', $entity->name);
     $this->set('lvl_f', $entity->level);
-    $this->set('exp_f', $entity->exp);
+    $this->set('exp_f', $entity->xp);
     
     $this->set('sight_f', $entity->skill_sight);
     $this->set('str_f', $entity->skill_strength);
     $this->set('health_f', $entity->skill_health);
     
-    function UPS()
-    {
-        $this->set('sight_f', $entity->skill_sight+1);
-        $this->set('str_f', $entity->skill_strength+1);
-        $this->set('health_f', $entity->skill_health+1);
-    }
-    
+if ($this->request->is('post'))
+             {
+              $content = $this->request->getData('upgrade');
+              if ($content == 'sight')
+                      {
+
+                      }
+              if ($content == 'str')
+                      {
+
+                      }
+              if ($content == 'health')
+                      {
+
+                      }
+             }
+
 }
 
     
@@ -78,33 +89,21 @@ public function fighter()
 
     public function login()
     {
-        //echo "helllllo";
-      //$this->request->data= 'julien';
-    //echo $this->set($this->request->data, 'julien');
-    //$data = new \App\Model\Entity\Players();
-      //$data = $this->request->data;
-      //pr($data);
-        // $this->set('l', $data);
-        //Array($data);
+        
     $login = $this->Players;
     // Save logic goes here
     $this->set('login', $login);
     
     if ($this->request->is('post')) {
         echo "bonjour";
-        //$username = $this->request->getData("username");
-        //$this->set('l', $data);
-       /// echo $data;
+        
         }
-    //echo "h";
     $user="coucou";
     $pwd = "0";
     $this->set('username', $user);
     $this->set('password', $pwd);
 
     }
-    
-    
     
     public function sight()
     {
@@ -113,14 +112,10 @@ public function fighter()
         if(!is_null($mov)){
             $this->move($mov);
         }
-       //$this->generationColonnes();
-        //$this->generationPieges();
-        //$this->generationMonstre();
         $length = self::LARGEUR;
         $width = self::LONGUEUR;
         $this->set('length', $length);
         $this->set('width', $width);
-        //To generate the arena
         $this->loadModel('Surroundings');
        // $this->Surroundings->deleteAllSurroundings();
       
@@ -132,6 +127,14 @@ public function fighter()
                
            // $myrow = $this->Surroundings->getSurrounding($i, $j);
             //$this->set('entity', $myrow->type);
+        
+        $this->Surroundings->deleteAllSurroundings();
+        $this->generationColonnes();
+        $this->generationPieges();
+        $this->generationMonstre();
+        
+        $mytable = $this->Surroundings->getSurroundings();
+        $this->set('entities', $mytable);
     }
     
     /**
