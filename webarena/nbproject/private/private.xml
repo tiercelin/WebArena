@@ -3,9 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Players/login_player.ctp</file>
-            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Players/new_player.ctp</file>
-            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/PlayersController.php</file>
+            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Arenas/index.ctp</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Arenas/sight.ctp</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/ArenasController.php</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Model/Entity/Surroundings.php</file>
