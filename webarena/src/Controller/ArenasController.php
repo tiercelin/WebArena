@@ -22,7 +22,6 @@ class ArenasController  extends AppController
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
-
         $entity = $this->Surroundings->getSurroundings();
         $test = $this->Players->getPlayer('admin@test.com');
         $this->set('MES', $test->id);
@@ -94,10 +93,25 @@ public function fighter()
     
     public function sight()
     {
+       //$this->generationColonnes();
+        //$this->generationPieges();
+        //$this->generationMonstre();
+        $length = self::LARGEUR;
+        $width = self::LONGUEUR;
+        $this->set('length', $length);
+        $this->set('width', $width);
+        //To generate the arena
         $this->loadModel('Surroundings');
-        $myrowController = $this->Surroundings;
-        $this->set('myrow', $myrowController);
-
+        
+      
+      $myrow = $this->Surroundings->getSurrounding('i','j');
+      $this->set('entity', $myrow->type);
+//$myrow = $this->Surroundings->getSurrounding($i,$j);
+               //echo "<tr> <td>";
+               //$this->set('$before', "<tr> <td>");
+               
+           // $myrow = $this->Surroundings->getSurrounding($i, $j);
+            //$this->set('entity', $myrow->type);
     }
     
     /**

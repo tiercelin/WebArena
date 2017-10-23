@@ -72,6 +72,9 @@ class SurroundingsTable extends Table{
             'coordinate_x =' => $x,
             'coordinate_y =' => $y
             ])->first();
+        if(is_null($entity)){
+            return null;
+        }
         return $entity;
     }
     
