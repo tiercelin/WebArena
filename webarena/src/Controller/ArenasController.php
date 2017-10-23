@@ -89,25 +89,15 @@ if ($this->request->is('post'))
 
     public function login()
     {
-        //echo "helllllo";
-      //$this->request->data= 'julien';
-    //echo $this->set($this->request->data, 'julien');
-    //$data = new \App\Model\Entity\Players();
-      //$data = $this->request->data;
-      //pr($data);
-        // $this->set('l', $data);
-        //Array($data);
+        
     $login = $this->Players;
     // Save logic goes here
     $this->set('login', $login);
     
     if ($this->request->is('post')) {
         echo "bonjour";
-        //$username = $this->request->getData("username");
-        //$this->set('l', $data);
-       /// echo $data;
+        
         }
-    //echo "h";
     $user="coucou";
     $pwd = "0";
     $this->set('username', $user);
@@ -119,25 +109,19 @@ if ($this->request->is('post'))
     
     public function sight()
     {
-       //$this->generationColonnes();
-        //$this->generationPieges();
-        //$this->generationMonstre();
         $length = self::LARGEUR;
         $width = self::LONGUEUR;
         $this->set('length', $length);
         $this->set('width', $width);
-        //To generate the arena
         $this->loadModel('Surroundings');
         
-      
-      $myrow = $this->Surroundings->getSurrounding('i','j');
-      $this->set('entity', $myrow->type);
-//$myrow = $this->Surroundings->getSurrounding($i,$j);
-               //echo "<tr> <td>";
-               //$this->set('$before', "<tr> <td>");
-               
-           // $myrow = $this->Surroundings->getSurrounding($i, $j);
-            //$this->set('entity', $myrow->type);
+        //$this->Surroundings->deleteAllSurroundings();
+        //$this->generationColonnes();
+        //$this->generationPieges();
+        //$this->generationMonstre();
+        
+        $mytable = $this->Surroundings->getSurroundings();
+        $this->set('entities', $mytable);
     }
     
     /**

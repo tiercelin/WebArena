@@ -79,6 +79,7 @@ class SurroundingsTable extends Table{
     }
     
      public function deleteAllSurroundings(){
-        $this->deleteAll();
+        //$this->deleteAll();
+         $this->query('TRUNCATE table;');
     }
 }
