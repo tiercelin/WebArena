@@ -6,9 +6,8 @@ $indextable = array();
 foreach ($entities as $myrow) {
     $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow;
 }
-//pr($fighter);
+$indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 
-//$fighter;
 echo "<table>";
 for ($i = 0; $i < $width; $i++) {
     echo "<tr>";
@@ -16,9 +15,13 @@ for ($i = 0; $i < $width; $i++) {
         $check = false;
         if (isset($indextable[$i][$j]))
         {
-            if($controller->canISeeIt($indextable[$i][$j], $fighter))
+            if($indextable[$i][$j]!=$fighter){
+                if($controller->canISeeIt($indextable[$i][$j], $fighter))
             echo "<td>" .$indextable[$i][$j]->type. "</td>";
             else echo "<td> - </td>";
+            }
+            else echo "<td> F </td>";
+            
         }
             
         else
