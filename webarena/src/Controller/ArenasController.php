@@ -12,8 +12,8 @@ use App\Model\Entity\Surroundings;
 class ArenasController  extends AppController
 {
     
-    const LARGEUR = 15;
-    const LONGUEUR = 10;
+    const LARGEUR = 10;
+    const LONGUEUR = 15;
     
  
     
@@ -94,8 +94,6 @@ public function fighter()
 
     }
     
-    
-    
     public function sight()
     {
         $length = self::LARGEUR;
@@ -104,10 +102,10 @@ public function fighter()
         $this->set('width', $width);
         $this->loadModel('Surroundings');
         
-        //$this->Surroundings->deleteAllSurroundings();
-        //$this->generationColonnes();
-        //$this->generationPieges();
-        //$this->generationMonstre();
+        $this->Surroundings->deleteAllSurroundings();
+        $this->generationColonnes();
+        $this->generationPieges();
+        $this->generationMonstre();
         
         $mytable = $this->Surroundings->getSurroundings();
         $this->set('entities', $mytable);

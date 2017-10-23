@@ -10,9 +10,9 @@ foreach ($entities as $myrow) {
 
 
 echo "<table>";
-for ($i = 0; $i < $length; $i++) {
+for ($i = 0; $i < $width; $i++) {
     echo "<tr>";
-    for ($j = 0; $j < $width; $j++) {
+    for ($j = 0; $j < $length; $j++) {
         $check = false;
         if (isset($indextable[$i][$j]))
             echo "<td>" .$indextable[$i][$j]. "</td>";
