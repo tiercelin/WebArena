@@ -4,10 +4,9 @@
 //pr($entities->toArray());
 $indextable = array();
 foreach ($entities as $myrow) {
-    $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow->type;
+    $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow;
 }
-//pr($indextable);
-
+$indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 
 echo "<table>";
 for ($i = 0; $i < $width; $i++) {
@@ -15,7 +14,16 @@ for ($i = 0; $i < $width; $i++) {
     for ($j = 0; $j < $length; $j++) {
         $check = false;
         if (isset($indextable[$i][$j]))
-            echo "<td>" .$indextable[$i][$j]. "</td>";
+        {
+            if($indextable[$i][$j]!=$fighter){
+                if($controller->canISeeIt($indextable[$i][$j], $fighter))
+            echo "<td>" .$indextable[$i][$j]->type. "</td>";
+            else echo "<td> - </td>";
+            }
+            else echo "<td> F </td>";
+            
+        }
+            
         else
             echo "<td>_</td>";
     }
