@@ -4,18 +4,23 @@
 //pr($entities->toArray());
 $indextable = array();
 foreach ($entities as $myrow) {
-    $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow->type;
+    $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow;
 }
-//pr($indextable);
+//pr($fighter);
 
-
+//$fighter;
 echo "<table>";
 for ($i = 0; $i < $width; $i++) {
     echo "<tr>";
     for ($j = 0; $j < $length; $j++) {
         $check = false;
         if (isset($indextable[$i][$j]))
-            echo "<td>" .$indextable[$i][$j]. "</td>";
+        {
+            if($controller->canISeeIt($indextable[$i][$j], $fighter))
+            echo "<td>" .$indextable[$i][$j]->type. "</td>";
+            else echo "<td> - </td>";
+        }
+            
         else
             echo "<td>_</td>";
     }

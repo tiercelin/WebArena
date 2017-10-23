@@ -111,15 +111,21 @@ if ($this->request->is('post'))
         $width = self::LONGUEUR;
         $this->set('length', $length);
         $this->set('width', $width);
+        $this->loadModel('Fighters');
+        $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+        
+        $this->set('fighter', $fighter);
+        
         $this->loadModel('Surroundings');
         
-        $this->Surroundings->deleteAllSurroundings();
-        $this->generationColonnes();
-        $this->generationPieges();
-        $this->generationMonstre();
+        //$this->Surroundings->deleteAllSurroundings();
+        //$this->generationColonnes();
+        //$this->generationPieges();
+        //$this->generationMonstre();
         
         $mytable = $this->Surroundings->getSurroundings();
         $this->set('entities', $mytable);
+        $this->set('controller', $this);
     }
     
     /**
