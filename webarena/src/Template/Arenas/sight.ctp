@@ -1,7 +1,5 @@
 <?php $this->assign('title', 'Sight');
-?>
-<?php
-//pr($entities->toArray());
+
 $indextable = array();
 foreach ($entities as $myrow) {
     $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow;

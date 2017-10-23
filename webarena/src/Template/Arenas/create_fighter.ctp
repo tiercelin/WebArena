@@ -2,8 +2,6 @@
 
 <h2>Create your fighter : </h2><br>
 
-<?php echo $test4; ?>
-
 <?php
   echo $this->Form->create();
   echo $this->Form->input('name',array('type' => 'text','label' => 'Name :'));

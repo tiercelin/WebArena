@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 use App\Controller\AppController;
-use App\Model\Entity\Surroundings;
+//use App\Model\Entity\Surroundings;
 
 
 /**
@@ -12,136 +12,184 @@ use App\Model\Entity\Surroundings;
 class ArenasController  extends AppController
 {
     
-    const LARGEUR = 10;
-    const LONGUEUR = 15;
+    const WIDTH = 15;
+    const LENGTH = 10;
     
- 
-    
-      
-    public function index()
+    /**
+     * Initialize function : load all models
+     */
+    public function initialize()
     {
-        // Retrieve the ID of the current player thanks to session
-        $session = $this->request->session();
-        $idPlayer = $session->read('playerId');
-        $this->set('test4', $idPlayer);
-
-        $this->set('myname', "Julien Falconnet");
         $this->loadModel('Players');
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
-        $entity = $this->Surroundings->getSurroundings();
-        $test = $this->Players->getPlayer('admin@test.com');
-        $this->set('MES', $test->id);
-        
-         //$this->set('hey', $this->Fighters->getBestFighter());
-    }
-        
-       
-public function fighter()
-{
-    $session = $this->request->session();
-    $idPlayer = $session->read('playerId');
-
-    
-    $this->loadModel('Fighters');
-
-    $entity = $this->Fighters->getFighter($idPlayer);
-    $this->set('MES', $entity);
-    
-    $this->set('id_f', $entity->id);
-    $this->set('name_f', $entity->name);
-    $this->set('lvl_f', $entity->level);
-    $this->set('exp_f', $entity->xp);
-    
-    $this->set('sight_f', $entity->skill_sight);
-    $this->set('str_f', $entity->skill_strength);
-    $this->set('health_f', $entity->skill_health);
-    
-if ($this->request->is('post'))
-             {
-              $content = $this->request->getData('upgrade');
-              if ($content == 'sight')
-                      {
-
-                      }
-              if ($content == 'str')
-                      {
-
-                      }
-              if ($content == 'health')
-                      {
-
-                      }
-             }
-
-}
-
-    
-
-    public function diary()
-    {
-
-
-    }
-
-
-
-    public function login()
-    {
-        
-    $login = $this->Players;
-    // Save logic goes here
-    $this->set('login', $login);
-    
-    if ($this->request->is('post')) {
-        echo "bonjour";
-        
-        }
-    $user="coucou";
-    $pwd = "0";
-    $this->set('username', $user);
-    $this->set('password', $pwd);
-
-    }
-    
-    public function sight()
-    {
-        $mov = $this->request->getData('movement');
-        
-        if(!is_null($mov)){
-            $this->move($mov);
-        }
-        $length = self::LARGEUR;
-        $width = self::LONGUEUR;
-        $this->set('length', $length);
-        $this->set('width', $width);
-        $this->loadModel('Fighters');
-        $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-        
-        $this->set('fighter', $fighter);
-        
-        $this->loadModel('Surroundings');
-        
-        //$this->Surroundings->deleteAllSurroundings();
-        //$this->generationColonnes();
-        //$this->generationPieges();
-        //$this->generationMonstre();
-        
-        $mytable = $this->Surroundings->getSurroundings();
-        $this->set('entities', $mytable);
-        $this->set('controller', $this);
     }
     
     /**
-     * Change les coordonnées du fighter dans la base de données
-     * @param type $mov
+     * Check if a user is currently connected
+     * @return boolean : true if user is connected, else redirect to login page
+     */
+    public function isUserConnected()
+    {
+        if($this->request->session()->check('playerId'))
+        {
+            return true;
+        }
+        
+        else
+        {
+            return $this->redirect (['controller' => 'players', 'action' => 'loginPlayer']);
+        }    
+    }
+    
+    
+    
+    ////////// ********** INDEX PART **********\\\\\\\\\\
+    
+    
+    /**
+     * Index page of the player -> display rules of game and other info
+     */
+    public function index()
+    {
+        if ($this->isUserConnected())
+        {
+              // Put code here
+        }
+    }
+    
+    
+    
+    ////////// ********** FIGHTER PART **********\\\\\\\\\\
+    
+    
+    /**
+     * This function proposes to the user to create a fighter. Display this page if the user is connected and if he has no fighter
+     */
+    public function createFighter ()
+    {
+        $session = $this->request->session();
+                     
+        // Verify that the user is connected
+        if ($this->isUserConnected())
+        {
+            // Retrieve the ID of the current player
+            $idPlayer = $session->read('playerId');
+            
+            // Find if this user has fighter(s)          
+            $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
+            
+            // If the user has no fighter created 
+            if ($fighters->count() == 0)
+            {
+                if ($this->request->is('post'))
+                {
+                    // Create a new fighter
+                    $fightersTable = TableRegistry::get('Fighters');
+                    $newFighter = $fightersTable->newEntity();
+                    
+                    // Initialize its default parameters
+                    $newFighter->initFighterParameters();
+                                        
+                    // Initialize other parameters with the form data
+                    $newFighter->setName($this->request->getData('name'));
+                    $newFighter->setPlayerId($idPlayer);
+                    
+                    // Save the new fighter into the database and redirect user to fighter stats page
+                    $fightersTable->save($newFighter);
+                    return $this->redirect (['controller' => 'arenas', 'action' => 'fighter']);   
+                }
+            }
+            
+            else
+            {
+                return $this->redirect (['controller' => 'arenas', 'action' => 'fighter']);
+            }    
+        }
+        
+        else
+        {
+            return $this->redirect (['controller' => 'players', 'action' => 'loginPlayer']);
+        }    
+    }
+        
+/**
+ * This function shows the fighter page : fighter ID card, actual stats, (potential) possibility to upgrade stats, ...
+ */      
+public function fighter()
+{
+    if ($this->isUserConnected())
+    {
+        // Get ID of current player
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        // Get his fighter
+        $entity = $this->Fighters->getFighter($idPlayer);
+  
+        // Display fighter data
+        $this->set('id_f', $entity->id);
+        $this->set('name_f', $entity->name);
+        $this->set('lvl_f', $entity->level);
+        $this->set('exp_f', $entity->xp);
+    
+        $this->set('sight_f', $entity->skill_sight);
+        $this->set('str_f', $entity->skill_strength);
+        $this->set('health_f', $entity->skill_health);
+    
+        if ($this->request->is('post'))
+        {
+            $content = $this->request->getData('upgrade');
+        }  
+    }
+}
+    
+
+    
+
+    ////////// ********** SIGHT PART **********\\\\\\\\\\
+
+    /**
+     * Display the matrix game with all elements
+     */
+    public function sight()
+    {
+        if($this->isUserConnected())
+        {
+            $mov = $this->request->getData('movement');
+        
+            if(!is_null($mov)){
+                 $this->move($mov);
+            }
+            $length = self::WIDTH;
+            $width = self::LENGTH;
+            $this->set('length', $length);
+            $this->set('width', $width);
+        
+            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+            $this->set('fighter', $fighter);
+        
+            
+            //$this->Surroundings->deleteAllSurroundings();
+            //$this->generationPillars();
+            //$this->generationTraps();
+             //$this->generationMonster();
+        
+            $mytable = $this->Surroundings->getSurroundings();
+            $this->set('entities', $mytable);
+            $this->set('controller', $this); 
+        }  
+    }
+    
+    /**
+     * Updates fighter coordinates on the database
+     * @param type $mov : string giving the direction of the movement
      */
     public function move($mov){
         $session = $this->request->session();
         $idPlayer = $session->read('playerId');
         
-        $this->loadModel('Fighters');
         $fighter = $this->Fighters->getFighter($idPlayer);
 
         if($mov == 'top'&& $fighter->coordinate_x > 0){
@@ -152,40 +200,50 @@ if ($this->request->is('post'))
             $fighter->coordinate_y--;
             $this->Fighters->save($fighter);
         }
-        if($mov == 'right' && $fighter->coordinate_y < self::LARGEUR-1){
+        if($mov == 'right' && $fighter->coordinate_y < self::WIDTH-1){
             $fighter->coordinate_y++;
             $this->Fighters->save($fighter);
         }
-        if($mov == 'bottom'&& $fighter->coordinate_x < self::LONGUEUR-1){
+        if($mov == 'bottom'&& $fighter->coordinate_x < self::LENGTH-1){
             $fighter->coordinate_x++;
             $this->Fighters->save($fighter);
         }
     }
     
+    
     /**
-     * Génère les colonnes
-     * @global type $largeur
-     * @global type $longueur
+     * Find a free square inside the matrix game
      */
-    public function generationColonnes()
+    public function findFreeSquare()
     {
-        $this->loadModel('Surroundings');
-        $nb_cases = self::LARGEUR * self::LONGUEUR;
-        $nb = $nb_cases%10;
-        //Génération des colonnes
-        for($i=0; $i<($nb_cases-$nb)/10; $i++){
-            $isFree = false;
-            //tant qu'on ne trouve pas une case libre
-            while($isFree == false){
-                $x = rand(0, self::LONGUEUR);
-                $y = rand(0, self::LARGEUR);
-                $content = $this->Surroundings->getSurrounding($x,$y);
-                //si la case est libre, la condition devient true
-                if(is_null($content)){
-                    $isFree = true;
-                }
+        $isFree = false;
+        
+        // While we don't find a free square
+        while($isFree == false){
+            $x = rand(0, self::LENGTH);
+            $y = rand(0, self::WIDTH);
+            $content = $this->Surroundings->getSurrounding($x,$y);
+            
+            // If the square is free, the condition becomes true
+            if(is_null($content)){
+                $isFree = true;
             }
-
+        } 
+    }   
+    
+    /**
+     * Generate pillars
+     * @global type $WIDTH
+     * @global type $LENGTH
+     */
+    public function generationPillars()
+    {
+        $nb_cases = self::WIDTH * self::LENGTH;
+        $nb = $nb_cases%10;        
+        // Pillars generation
+        for($i=0; $i<($nb_cases-$nb)/10; $i++){
+            $this->findFreeSquare();
+          
             $entity = new Surroundings([
                 'type' => 'P',
                 'coordinate_x' => $x,
@@ -195,28 +253,17 @@ if ($this->request->is('post'))
     }
     
     /**
-     * Génère les pièges
-     * @global type $largeur
-     * @global type $longueur
+     * Traps generation
+     * @global type $WIDTH
+     * @global type $LENGTH
      */
-    public function generationPieges()
+    public function generationTraps()
     {
-        $this->loadModel('Surroundings');
-        $nb_cases = self::LARGEUR * self::LONGUEUR;
-        $nb = $nb_cases%10;
-        //Génération des colonnes
+        $nb_cases = self::WIDTH * self::LENGTH;
+        $nb = $nb_cases%10;        
+        // Traps generation
         for($i=0; $i<($nb_cases-$nb)/10; $i++){
-            $isFree = false;
-            //tant qu'on ne trouve pas une case libre
-            while($isFree == false){
-                $x = rand(0, self::LONGUEUR);
-                $y = rand(0, self::LARGEUR);
-                $content = $this->Surroundings->getSurrounding($x,$y);
-                //si la case est libre, la condition devient true
-                if(is_null($content)){
-                    $isFree = true;
-                }
-            }
+            $this->findFreeSquare();
 
             $entity = new Surroundings([
                 'type' => 'T',
@@ -227,71 +274,47 @@ if ($this->request->is('post'))
     }
     
     /**
-     * Génère le monstre
-     * @global type $largeur
-     * @global type $longueur
+     * Monster (wumpus) generation
+     * @global type $WIDTH
+     * @global type $LENGTH
      */
-    public function generationMonstre()
+    public function generationMonster()
     {
-        $this->loadModel('Surroundings');
-        //Génération des colonnes
-        $isFree = false;
-        //tant qu'on ne trouve pas une case libre
-        while($isFree == false){
-            $x = rand(0, self::LONGUEUR);
-            $y = rand(0, self::LARGEUR);
-            $content = $this->Surroundings->getSurrounding($x,$y);
-            //si la case est libre, la condition devient true
-            if(is_null($content)){
-                $isFree = true;
-            }
-        }
+        $this->findFreeSquare();       
 
         $entity = new Surroundings([
             'type' => 'W',
             'coordinate_x' => $x,
             'coordinate_y' => $y]);
         $this->Surroundings->save($entity);
-    
     }
     
     /**
-     * Génère aléatoirement les positions du joueur
+     * Random generation for player coordinates
      */
     public function generationPlayer(){
-        $session = $this->request->session();
-        $idPlayer = $session->read('playerId');
+        if($this->isUserConnected())
+        {
+            $session = $this->request->session();
+            $idPlayer = $session->read('playerId');
         
-        $this->loadModel('Surroundings');
-        $this->loadModel('Fighters');
+            $this->findFreeSquare();
         
-        $isFree = false;
-        while($isFree == false){
-            $x = rand(0, self::LONGUEUR);
-            $y = rand(0, self::LARGEUR);
-            $content = $this->Surroundings->getSurrounding($x,$y);
-            //si la case est libre, la condition devient true
-            if(is_null($content)){
-                $isFree = true;
-            }
+            $fighter = $this->Fighters->getFighter($idPlayer);
+            $fighter->coordinate_x = $x;
+            $fighter->coordinate_y = $y;
+        
+            $this->Fighters->save($fighter);   
         }
-        $fighter = $this->Fighters->getFighter($idPlayer);
-        $fighter->coordinate_x = $x;
-        $fighter->coordinate_y = $y;
-        
-        $this->Fighters->save($fighter);
-        
     }
     
   /**
    * 
-   * @param type $decor entité de surroundings
-   * @param type $fighter entité de fighters
-   * @return type false si le joueur ne peut pas le voir
-   *              true si il peut le voir
+   * @param type $decor : surroundings entity
+   * @param type $fighter : fighters entity
+   * @return type false if the fighter cannot see the surrounding, else true
    */
-    public function canISeeIt($decor, $fighter){
-        
+    public function canISeeIt($decor, $fighter){        
         if(abs($decor->coordinate_x-$fighter->coordinate_x) + abs($decor->coordinate_y-$fighter->coordinate_y) <= $fighter->skill_sight){
             return true; 
         }
@@ -299,5 +322,25 @@ if ($this->request->is('post'))
             return false;
         }
     }
+    
+    
+    
+    
+    
+    ////////// ********** DIARY PART **********\\\\\\\\\\
+    
+    /**
+     * This function display the event messages (diary)
+     */
+    public function diary()
+    {
+        if($this->isUserConnected())
+        {
+            // Put code here            
+        }
+        
+    }
+
+    
 }
 

@@ -6,7 +6,7 @@ use Cake\ORM\TableRegistry;
 
 class PlayersController extends AppController {
     
-    // Initialization : cookies and session variables 
+    // Initialization 
     public function initialize()
     {
         $this->loadComponent('Flash');
@@ -81,63 +81,6 @@ class PlayersController extends AppController {
             }
         }
     }
-    
-    /**
-     * This function proposes to the user to create a fighter. Display this page if the user is connected and if he has no fighter
-     */
-    public function createFighter ()
-    {
-        // Attention mettre cette fonction dans ArenasController et faire les modifs associées
-        
-        $session = $this->request->session();
-        $this->loadModel('Fighters');
-        
-        // Verify that the user is connected
-        if ($session->check('playerId'))
-        {
-            // Retrieve the ID of the current player
-            $idPlayer = $session->read('playerId');
-            
-            // Find if this user has fighter(s)          
-            $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
-            
-            // If the user has no fighter created 
-            if ($fighters->count() == 0)
-            {
-                if ($this->request->is('post'))
-                {
-                    // Create a new fighter
-                    $fightersTable = TableRegistry::get('Fighters');
-                    $newFighter = $fightersTable->newEntity();
-                    
-                    // Initialize its default parameters
-                    $newFighter->initFighterParameters();
-                    
-                    $this->set('test4', $this->request->getData('name'));
-                    
-                    // Initialize other parameters with the form data
-                    $newFighter->setName($this->request->getData('name'));
-                    $newFighter->setPlayerId($idPlayer);
-                    
-                    // Save the new fighter into the database
-                    $fightersTable->save($newFighter);
-                    return $this->redirect (['controller' => 'arenas', 'action' => 'fighter']);   
-                }
-            }
-            
-            else
-            {
-                return $this->redirect (['controller' => 'arenas', 'action' => 'fighter']);
-            }    
-        }
-        
-        else
-        {
-            return $this->redirect (['controller' => 'players', 'action' => 'loginPlayer']);
-        }    
-    }
-  
-    
-      
-}
 
+    
+}
