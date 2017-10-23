@@ -40,30 +40,41 @@ class ArenasController  extends AppController
        
 public function fighter()
 {
-    $this->set('myname', "Julien Falconnet");
+    $session = $this->request->session();
+    $idPlayer = $session->read('playerId');
 
     
     $this->loadModel('Fighters');
 
-    $entity = $this->Fighters->getFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e');
+    $entity = $this->Fighters->getFighter($idPlayer);
     $this->set('MES', $entity);
     
     $this->set('id_f', $entity->id);
     $this->set('name_f', $entity->name);
     $this->set('lvl_f', $entity->level);
-    $this->set('exp_f', $entity->exp);
+    $this->set('exp_f', $entity->xp);
     
     $this->set('sight_f', $entity->skill_sight);
     $this->set('str_f', $entity->skill_strength);
     $this->set('health_f', $entity->skill_health);
     
-    function UPS()
-    {
-        $this->set('sight_f', $entity->skill_sight+1);
-        $this->set('str_f', $entity->skill_strength+1);
-        $this->set('health_f', $entity->skill_health+1);
-    }
-    
+if ($this->request->is('post'))
+             {
+              $content = $this->request->getData('upgrade');
+              if ($content == 'sight')
+                      {
+
+                      }
+              if ($content == 'str')
+                      {
+
+                      }
+              if ($content == 'health')
+                      {
+
+                      }
+             }
+
 }
 
     

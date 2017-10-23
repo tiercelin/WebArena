@@ -64,11 +64,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 		
       <ul class="nav navbar-nav navbar-right">
                 <li><?php echo $this->Html->link('Index', array('controller' => 'Arenas', 'action' => 'index')); ?></li>
-                <li><?php echo $this->Html->link('Login', array('controller' => 'Arenas', 'action' => 'login')); ?></li>
+                <li><?php echo $this->Html->link('Login', array('controller' => 'players', 'action' => 'login-player')); ?></li>
                 <li><?php echo $this->Html->link('Sight', array('controller' => 'Arenas', 'action' => 'sight')); ?></li>
 		<li><?php echo $this->Html->link('Fighter', array('controller' => 'Arenas', 'action' => 'fighter')); ?></li>
                 <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
-
+                <li><?php echo $this->Html->link('Logout', array('controller' => 'Arenas', 'action' => '')); ?></li>
                 
       </ul>
 
