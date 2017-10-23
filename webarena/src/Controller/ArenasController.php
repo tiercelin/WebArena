@@ -3,6 +3,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 
+
 /**
 * Personal Controller
 * User personal interface
@@ -14,8 +15,15 @@ class ArenasController  extends AppController
     const LARGEUR = 15;
     const LONGUEUR = 10;
     
+ 
+    
+      
     public function index()
     {
+        // Retrieve the ID of the current player thanks to session
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+        $this->set('test4', $idPlayer);
 
         $this->set('myname', "Julien Falconnet");
         $this->loadModel('Players');
@@ -49,6 +57,13 @@ public function fighter()
     $this->set('str_f', $entity->skill_strength);
     $this->set('health_f', $entity->skill_health);
     
+    function UPS()
+    {
+        $this->set('sight_f', $entity->skill_sight+1);
+        $this->set('str_f', $entity->skill_strength+1);
+        $this->set('health_f', $entity->skill_health+1);
+    }
+    
 }
 
     
@@ -76,7 +91,7 @@ public function fighter()
     $this->set('login', $login);
     
     if ($this->request->is('post')) {
-        echo "bonojur";
+        echo "bonjour";
         //$username = $this->request->getData("username");
         //$this->set('l', $data);
        /// echo $data;
@@ -205,6 +220,23 @@ public function fighter()
             'coordinate_y' => $y]);
         $this->Surroundings->save($entity);
     
+    }
+    
+  /**
+   * 
+   * @param type $decor entité de surroundings
+   * @param type $fighter entité de fighters
+   * @return type false si le joueur ne peut pas le voir
+   *              true si il peut le voir
+   */
+    public function canISeeIt($decor, $fighter){
+        
+        if(abs($decor->coordinate_x-$fighter->coordinate_x) + abs($decor->coordinate_y-$fighter->coordinate_y) <= $fighter->skill_sight){
+            return true; 
+        }
+        else{
+            return false;
+        }
     }
 }
 
