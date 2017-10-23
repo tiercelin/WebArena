@@ -122,16 +122,6 @@ if ($this->request->is('post'))
         $this->set('fighter', $fighter);
         
         $this->loadModel('Surroundings');
-       // $this->Surroundings->deleteAllSurroundings();
-      
-      $myrow = $this->Surroundings->getSurrounding('i','j');
-      $this->set('entity', $myrow->type);
-//$myrow = $this->Surroundings->getSurrounding($i,$j);
-               //echo "<tr> <td>";
-               //$this->set('$before', "<tr> <td>");
-               
-           // $myrow = $this->Surroundings->getSurrounding($i, $j);
-            //$this->set('entity', $myrow->type);
         
         //$this->Surroundings->deleteAllSurroundings();
         //$this->generationColonnes();
