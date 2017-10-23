@@ -93,9 +93,29 @@ class ArenasController extends AppController {
             } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
             }
-        } else {
-            return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
-        }
+        } 
+    }
+    
+    /**
+     * This function delete a fighter with this one is dead, and redirect the user to the fighter creation page
+     */
+    public function deleteFighter()
+    {
+        $session = $this->request->session();
+        // Verify that the user is connected
+        if ($this->isUserConnected()) {
+            // Retrieve the ID of the current player
+            $idPlayer = $session->read('playerId');
+            
+            // Retrieve the fighter entity to be deleted
+            $fighterToDelete = $this->Fighters->getFighter($idPlayer);
+            
+            // Delete this fighter          
+            $this->Fighters->delete($fighterToDelete);
+            
+            // Redirect the user to the fighter creation page
+            return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+            }
     }
 
     /**
@@ -301,7 +321,11 @@ class ArenasController extends AppController {
      */
     public function diary() {
         if ($this->isUserConnected()) {
-            // Put code here            
+            // Put code here
+               if($this->request->session()->read('playerId') == 'df92817e-59c4-4098-8123-487fac1d8299')
+               {
+                   $this->deleteFighter();
+               }
         }
     }
     
