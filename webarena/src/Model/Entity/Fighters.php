@@ -23,12 +23,12 @@ class Fighters extends Entity{
     
     
     // Define setters to complete the creation of the entity (other setter -> simple set() function / getters : SELECT get () function)
-    public function _setName($name){
+    public function setName($name){
       $this->__set('name',$name);
     }
     
     public function setPlayerId($player_id){
-      $this->__set('guild_id',$player_id);
+      $this->__set('player_id',$player_id);
     }
 
     public function setGuildId($guild_id){
