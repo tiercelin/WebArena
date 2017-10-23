@@ -104,10 +104,10 @@ public function fighter()
         $this->set('width', $width);
         $this->loadModel('Surroundings');
         
-        $this->Surroundings->deleteAllSurroundings();
-        $this->generationColonnes();
-        $this->generationPieges();
-        $this->generationMonstre();
+        //$this->Surroundings->deleteAllSurroundings();
+        //$this->generationColonnes();
+        //$this->generationPieges();
+        //$this->generationMonstre();
         
         $mytable = $this->Surroundings->getSurroundings();
         $this->set('entities', $mytable);
