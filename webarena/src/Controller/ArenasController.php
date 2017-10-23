@@ -37,6 +37,13 @@ class ArenasController extends AppController {
             return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
         }
     }
+    
+    
+    public function logout()
+    {
+        $this->request->session()->destroy();
+        return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+    }
 
     ////////// ********** INDEX PART **********\\\\\\\\\\
 
@@ -297,5 +304,9 @@ class ArenasController extends AppController {
             // Put code here            
         }
     }
+    
+    
+    
+  
 
 }
