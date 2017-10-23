@@ -322,10 +322,6 @@ class ArenasController extends AppController {
     public function diary() {
         if ($this->isUserConnected()) {
             // Put code here
-               if($this->request->session()->read('playerId') == 'df92817e-59c4-4098-8123-487fac1d8299')
-               {
-                   $this->deleteFighter();
-               }
         }
     }
     
