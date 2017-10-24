@@ -384,6 +384,13 @@ class ArenasController extends AppController {
             return false;
         }
     }
+    public function doIdisplayMessage($decor, $fighter) {
+        if (((abs($decor->coordinate_x - $fighter->coordinate_x)==1) &&(abs($decor->coordinate_y - $fighter->coordinate_y)==0))|| ((abs($decor->coordinate_y - $fighter->coordinate_y) ==1)&&(abs($decor->coordinate_x - $fighter->coordinate_x)==0))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     ////////// ********** DIARY PART **********\\\\\\\\\\
 
