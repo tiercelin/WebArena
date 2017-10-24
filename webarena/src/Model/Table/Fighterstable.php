@@ -125,7 +125,11 @@ class FightersTable extends Table {
         }
         return null;
     }
-    
+    public function getFighterByCoord($x, $y){
+        $entity = $this->find()->where(['coordinate_x =' => $x], ['coordinate_y =' => $y])->first();
+        return $entity;
+        
+    }
     public function getBestFighter() {
        $bestfighter = $this->find("all")->max("level");
 
