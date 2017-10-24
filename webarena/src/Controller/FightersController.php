@@ -35,8 +35,8 @@ class FightersController extends AppController {
 
     /**
      * Deal with fighters attacks matters
-     * @param type $idFighter1 : integer value, represents the ID of the player which attacks
-     * @param type $idFighter2 : integer value, represents the ID of the player which is attacked
+     * @param type $idPlayer1 : integer value, the ID of the player which attacks
+     * @param type $idPlayer2 : integer value, the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
         // Retrieve the two fighters entities thanks to the players IDs
@@ -51,9 +51,18 @@ class FightersController extends AppController {
         if($doAttackSucceed == true)
         {
             $fighter2->current_health -= $fighter1->skill_strength;
+            $this->Fighters->save($fighter2);
+            
+            // If the attacked fighter current health is at 0, delete it and create new fighter
+            if($fighter2->current_health == 0)
+            {
+                $this->deleteFighter($idPlayer2);
+            }
+             
+             
         }
         
-        $this->Fighters->save($fighter2);
+       
         return $doAttackSucceed;
     }
     
