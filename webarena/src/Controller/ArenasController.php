@@ -64,13 +64,8 @@ class ArenasController extends AppController {
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
-            $idPlayer = $session->read('playerId');
+            $idPlayer = $session->read('playerId');            
 
-            // Find if this user has fighter(s)          
-            $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
-
-            // If the user has no fighter created 
-            if ($fighters->count() == 0) {
                 if ($this->request->is('post')) {
                     // Create a new fighter
                     $fightersTable = TableRegistry::get('Fighters');
@@ -86,10 +81,7 @@ class ArenasController extends AppController {
                     // Save the new fighter into the database and redirect user to fighter stats page
                     $fightersTable->save($newFighter);
                     return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
-                }
-            } else {
-                return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
-            }
+                }     
         }
     }
 
@@ -118,21 +110,28 @@ class ArenasController extends AppController {
      */
     public function fighter() {
         if ($this->isUserConnected()) {
-            $this->initialize();
+            
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
             
-            // This part is used to upgrade the fighter stats. If the value $upgrade is not 0,
-            //the function upgrade is called
+            // Find if this user has fighter(s)          
+            $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
+            
+            // If the player has no fighter, redirect him to the fighter creation page. Else, display fighter's stats.
+            if ($fighters->count() == 0)
+            {
+                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);   
+            }
+            
+            else
+            {
+                // This part is used to upgrade the fighter stats. If the value $upgrade is not 0, the function upgrade is called
               $upgrade = 0;
               $upgrade = $this->request->getData('upgrade');
               if($upgrade != 0){
               $this->Upgrade($upgrade);
               } 
-
-          
-              
 
             // Get his fighter
             $entity = $this->Fighters->getFighter($idPlayer);
@@ -149,9 +148,8 @@ class ArenasController extends AppController {
                 
                 //Display the levels available for the fighter, rounded down
               $this->set('levelsavailable', floor($entity->xp/4));
-
-                
-            }
+              }  
+            }   
         }
     }
     
