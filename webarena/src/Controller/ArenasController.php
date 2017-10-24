@@ -123,6 +123,17 @@ class ArenasController extends AppController {
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
+            
+            // This part is used to upgrade the fighter stats. If the value $upgrade is not 0,
+            //the function upgrade is called
+              $upgrade = 0;
+              $upgrade = $this->request->getData('upgrade');
+              if($upgrade != 0){
+              $this->Upgrade($upgrade);
+              } 
+
+          
+              
 
             // Get his fighter
             $entity = $this->Fighters->getFighter($idPlayer);
@@ -136,12 +147,63 @@ class ArenasController extends AppController {
                 $this->set('sight_f', $entity->skill_sight);
                 $this->set('str_f', $entity->skill_strength);
                 $this->set('health_f', $entity->skill_health);
+                
+                //Display the levels available for the fighter, rounded down
+              $this->set('levelsavailable', floor($entity->xp/4));
 
-                if ($this->request->is('post')) {
-                    $content = $this->request->getData('upgrade');
-                }
+                
             }
         }
+    }
+    
+    /**
+     * This function upgrades the fighters stats
+     * @param type $upgrade: The value of $upgrade corresponds to the stat the user wants to upgrade
+     * There is no need for a return
+     */
+    public function Upgrade($upgrade)
+    { 
+        //Get the session and id of player.
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        //Get the fighter of the player
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        //Upgrade = 1 corresponds to sight
+        if ($upgrade == 1)
+                {
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his sight by 1, and send the whole to the database to save the changes.
+                $fighter->skill_sight++;
+                $this->Fighters->save($fighter);
+                }
+        //Upgrade = 2 corresponds to strength
+        if ($upgrade == 2)
+                { 
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his strength by 1, and send the whole to the database to save the changes.
+                $fighter->skill_strength++;
+                $this->Fighters->save($fighter);
+                }
+        //Upgrade = 3 corresponds to health
+        if ($upgrade == 3)
+                { 
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his health by 3
+                $fighter->skill_health+=3;
+                //Then we heal the fighter up to his new maximum health
+                $fighter->current_health = $fighter->skill_health;
+                //Then we send the whole to the database to save the changes.
+                $this->Fighters->save($fighter);
+                }
+        
     }
 
     /**
@@ -194,9 +256,14 @@ class ArenasController extends AppController {
     public function sight() {
         if ($this->isUserConnected()) {
             $mov = $this->request->getData('movement');
+<<<<<<< HEAD
             $attack = $this->request->getData('attack');
             
             $regenerate = false;
+=======
+
+              $regenerate = false;
+>>>>>>> f102d764c6db89e10cb550d1d7fb988b31067ef4
               $regenerate = $this->request->getData('regenerate');
               if($regenerate==true){
               $this->regenerateMap();
