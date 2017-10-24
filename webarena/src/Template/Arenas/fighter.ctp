@@ -26,15 +26,7 @@
  </table>
     
   <br> <br>
-  
-    <table style="width:90%">
-  <tr>
-    <th> <h5>Level available:</h5></th>
-    <th> <?php echo $levelsavailable;?></th> 
-    <th> </th> 
-  </tr>
-  
-  <br> <br>
+ 
   
   <table style="width:90%">
   <tr>
@@ -43,11 +35,17 @@
     <th> </th>
   </tr>
   <tr>
+    <td> <h5>Level available:</h5></td>
+    <td> <h5><?php echo $levelsavailable;?></h5></td> 
+    <td> </td> 
+  </tr>
+  
+  <tr>
     <td><h5>Sight :</h5></td> 
     <td><h5><?php echo $sight_f;?> </h5></td>
     <td>
 
-        <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1]]) ?>
+        <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1]], ['class' => 'btn btn-outline-primary']) ?>
  
     </td>
   </tr>
