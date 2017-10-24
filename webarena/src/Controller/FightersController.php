@@ -35,8 +35,8 @@ class FightersController extends AppController {
 
     /**
      * Deal with fighters attacks matters
-     * @param type $idFighter1 : integer value, the ID of the player which attacks
-     * @param type $idFighter2 : integer value, the ID of the player which is attacked
+     * @param type $idPlayer1 : integer value, the ID of the player which attacks
+     * @param type $idPlayer2 : integer value, the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
         // Retrieve the two fighters entities thanks to the players IDs

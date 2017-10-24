@@ -234,8 +234,8 @@ class ArenasController extends AppController {
 
     /**
      * Deal with fighters attacks matters
-     * @param type $idFighter1 : the ID of the player which attacks
-     * @param type $idFighter2 : the ID of the player which is attacked
+     * @param type $idPlayer1 : the ID of the player which attacks
+     * @param type $idPlayer2 : the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
         // Retrieve the two fighters entities thanks to the players IDs
@@ -256,12 +256,87 @@ class ArenasController extends AppController {
             {
                 $this->deleteFighter($idPlayer2);
             }
-             
-             
+        }
+    }
+    
+    /**
+     * Handle attack between one fighter and another entity, the monster or a second fighter
+     * @param type $attack : attack direction
+     */
+    public function handleAttack($attack){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        if($attack == 'attacktop' && $fighter->coordinate_x > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x-1, $fighter->coordinate_y);
+            
+            // Find the player which is potentially attacked
+            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+            
+            // If we find a monster
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                // Fighter1 attacks Fighter2
+                $this->attackFighter($idPlayer, $player2->id);
+            }
         }
         
-       
-        return $doAttackSucceed;
+        if($attack == 'attackleft' && $fighter->coordinate_y > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y-1);
+            
+            // Find the player which is potentially attacked
+            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+
+            // If we find a monster
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                // Fighter1 attacks Fighter2
+                $this->attackFighter($idPlayer, $player2->id);
+            }
+            
+        }
+        
+        if($attack == 'attackright' && $fighter->coordinate_y < self::WIDTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y+1);
+            
+            // Find the player which is potentially attacked
+            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+
+            // If we find a monster
+            if(!is_null($content) && !is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                // Fighter1 attacks Fighter2
+                $this->attackFighter($idPlayer, $player2->id);
+            }
+        }
+        
+        if($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x+1, $fighter->coordinate_y);
+            
+            // Find the player which is potentially attacked
+            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+            
+            // If we find a monster
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                // Fighter1 attacks Fighter2
+                $this->attackFighter($idPlayer, $player2->id);
+            }
+        }
     }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
@@ -361,66 +436,6 @@ class ArenasController extends AppController {
         }
     }
     
-    /**
-     * Handle attack between one fighter and another entity, the monster or a second fighter
-     * @param type $attack : attack direction
-     */
-    public function handleAttack($attack){
-        $session = $this->request->session();
-        $idPlayer = $session->read('playerId');
-
-        $fighter = $this->Fighters->getFighter($idPlayer);
-        
-        if($attack == 'attacktop' && $fighter->coordinate_x > 0){
-            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x-1, $fighter->coordinate_y);
-            
-            // If we find a monster
-            if(!is_null($content) && $content->type == 'W'){
-                $this->Surroundings->delete($content);
-            }
-            else if(!is_null($fighter2)){
-                //THOMAS
-            }
-        }
-        if($attack == 'attackleft' && $fighter->coordinate_y > 0){
-            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y-1);
-
-            // If we find a monster
-            if(!is_null($content) && $content->type == 'W'){
-                $this->Surroundings->delete($content);
-            }
-            else if(!is_null($fighter2)){
-                //THOMAS
-            }
-            
-        }
-        if($attack == 'attackright' && $fighter->coordinate_y < self::WIDTH - 1){
-            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y+1);
-
-            // If we find a monster
-            if(!is_null($content) && !is_null($content) && $content->type == 'W'){
-                $this->Surroundings->delete($content);
-            }
-            else if(!is_null($fighter2)){
-                //THOMAS
-            }
-        }
-        if($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1){
-            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x+1, $fighter->coordinate_y);
-            
-            // If we find a monster
-            if(!is_null($content) && $content->type == 'W'){
-                $this->Surroundings->delete($content);
-            }
-            else if(!is_null($fighter2)){
-                //THOMAS
-            }
-        }
-    }
 
     /**
      * Find a free square inside the matrix game
