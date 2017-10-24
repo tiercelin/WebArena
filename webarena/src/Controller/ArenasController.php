@@ -95,13 +95,12 @@ class ArenasController extends AppController {
 
     /**
      * This function delete a fighter with this one is dead, and redirect the user to the fighter creation page
+     * @param type $idPlayer : ID of the player whose fighter has to be deleted
      */
-    public function deleteFighter() {
-        $session = $this->request->session();
+    public function deleteFighter($idPlayer) {
+        
         // Verify that the user is connected
         if ($this->isUserConnected()) {
-            // Retrieve the ID of the current player
-            $idPlayer = $session->read('playerId');
 
             // Retrieve the fighter entity to be deleted
             $fighterToDelete = $this->Fighters->getFighter($idPlayer);
@@ -235,8 +234,8 @@ class ArenasController extends AppController {
 
     /**
      * Deal with fighters attacks matters
-     * @param type $idFighter1 : integer value, represents the ID of the player which attacks
-     * @param type $idFighter2 : integer value, represents the ID of the player which is attacked
+     * @param type $idFighter1 : the ID of the player which attacks
+     * @param type $idFighter2 : the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
         // Retrieve the two fighters entities thanks to the players IDs
@@ -244,8 +243,25 @@ class ArenasController extends AppController {
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
 
         // Determine if the attack succeed, according to the given formula
-        $doAttackSucceed = doAttackSucceed($fighter1->level, $fighter2->level);
-        $this->set('test4', $doAttackSucceed);
+        $doAttackSucceed = $this->doAttackSucceed($fighter1->level, $fighter2->level);
+        
+        // If the attack succeeds, decrement health of fighter injured
+        if($doAttackSucceed == true)
+        {
+            $fighter2->current_health -= $fighter1->skill_strength;
+            $this->Fighters->save($fighter2);
+            
+            // If the attacked fighter current health is at 0, delete it and create new fighter
+            if($fighter2->current_health == 0)
+            {
+                $this->deleteFighter($idPlayer2);
+            }
+             
+             
+        }
+        
+       
+        return $doAttackSucceed;
     }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
@@ -304,7 +320,7 @@ class ArenasController extends AppController {
                 $this->Fighters->save($fighter);
             }
             else if(($content->type == 'T') || ($content->type == 'W')){
-                $this->deleteFighter();
+                $this->deleteFighter($idPlayer);
             }
         }
         //si le joueur descend
@@ -316,7 +332,7 @@ class ArenasController extends AppController {
                 $this->Fighters->save($fighter);
             }
             else if(($content->type == 'T') || ($content->type == 'W')){
-                $this->deleteFighter();
+                $this->deleteFighter($idPlayer);
             }
         }
         //si le joueur va à droite
@@ -328,7 +344,7 @@ class ArenasController extends AppController {
                 $this->Fighters->save($fighter);
             }
             else if(($content->type == 'T') || ($content->type == 'W')){
-                $this->deleteFighter();
+                $this->deleteFighter($idPlayer);
             }
         }
         //si le joueur va a gauche
@@ -340,11 +356,15 @@ class ArenasController extends AppController {
                 $this->Fighters->save($fighter);
             }
             else if(($content->type == 'T') || ($content->type == 'W')){
-                $this->deleteFighter();
+                $this->deleteFighter($idPlayer);
             }
         }
     }
     
+    /**
+     * Handle attack between one fighter and another entity, the monster or a second fighter
+     * @param type $attack : attack direction
+     */
     public function handleAttack($attack){
         $session = $this->request->session();
         $idPlayer = $session->read('playerId');
@@ -355,7 +375,7 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x-1, $fighter->coordinate_y);
             
-            //si on trouve un monstre
+            // If we find a monster
             if(!is_null($content) && $content->type == 'W'){
                 $this->Surroundings->delete($content);
             }
@@ -367,7 +387,7 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y-1);
 
-            //si on trouve un monstre
+            // If we find a monster
             if(!is_null($content) && $content->type == 'W'){
                 $this->Surroundings->delete($content);
             }
@@ -380,7 +400,7 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y+1);
 
-            //si on trouve un monstre
+            // If we find a monster
             if(!is_null($content) && !is_null($content) && $content->type == 'W'){
                 $this->Surroundings->delete($content);
             }
@@ -391,7 +411,8 @@ class ArenasController extends AppController {
         if($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1){
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x+1, $fighter->coordinate_y);
-            //si on trouve un monstre
+            
+            // If we find a monster
             if(!is_null($content) && $content->type == 'W'){
                 $this->Surroundings->delete($content);
             }
