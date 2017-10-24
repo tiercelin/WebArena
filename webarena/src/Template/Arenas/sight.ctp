@@ -6,7 +6,7 @@ foreach ($entities as $myrow) {
 }
 $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 
-echo "<table>";
+echo "<table class = \"table table-bordered \">";
 for ($i = 0; $i < $width; $i++) {
     echo "<tr>";
     for ($j = 0; $j < $length; $j++) {
@@ -35,3 +35,6 @@ echo "</table>";
 <?= $this->Form->postButton('Left', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'left']]) ?>
 <?= $this->Form->postButton('Right', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'right']]) ?>
 <?= $this->Form->postButton('Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'bottom']]) ?>
+
+
+<?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas','action' => 'sight'], ['data' => ['regenerate' => 'true']]) ?>

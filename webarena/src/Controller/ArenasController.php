@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
-//use App\Model\Entity\Surroundings;
+use App\Model\Entity\Surroundings;
 
 /**
  * Personal Controller
@@ -37,10 +36,8 @@ class ArenasController extends AppController {
             return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
         }
     }
-    
-    
-    public function logout()
-    {
+
+    public function logout() {
         $this->request->session()->destroy();
         return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
     }
@@ -93,29 +90,28 @@ class ArenasController extends AppController {
             } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
             }
-        } 
+        }
     }
-    
+
     /**
      * This function delete a fighter with this one is dead, and redirect the user to the fighter creation page
      */
-    public function deleteFighter()
-    {
+    public function deleteFighter() {
         $session = $this->request->session();
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
             $idPlayer = $session->read('playerId');
-            
+
             // Retrieve the fighter entity to be deleted
             $fighterToDelete = $this->Fighters->getFighter($idPlayer);
-            
+
             // Delete this fighter          
             $this->Fighters->delete($fighterToDelete);
-            
+
             // Redirect the user to the fighter creation page
             return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
-            }
+        }
     }
 
     /**
@@ -147,63 +143,48 @@ class ArenasController extends AppController {
             }
         }
     }
-    
-    
+
     /**
      * This function computes if an attempted attack succeeds, or fails
      * @param type $fighter1Level : level of the fighter which attacks
      * @param type $fighter2Level : level of the fighter which is attacked
      * @return boolean : true if the attack succeeded, else false
      */
-    public function doAttackSucceed ($fighter1Level, $fighter2Level)
-    {
+    public function doAttackSucceed($fighter1Level, $fighter2Level) {
         $doAttackSucceed = null;
-        
-        if (is_int($fighter1Level) && is_int($fighter2Level))
-        {
+
+        if (is_int($fighter1Level) && is_int($fighter2Level)) {
             // Pick a random number between 1 and 20
             $randomValue = rand(1, 20);
-            
+
             // Use the formula to find the computed value
             $computedValue = 10 + $fighter2Level - $fighter1Level;
-            
+
             // If the random value is more than the computed value, the attack succeeds. Else, it fails.
-            if ($randomValue > $computedValue)
-            {
+            if ($randomValue > $computedValue) {
                 $doAttackSucceed = true;
-            }
-            
-            else
-            {
+            } else {
                 $doAttackSucceed = false;
-            }   
+            }
         }
- 
+
         return $doAttackSucceed;
     }
-    
-    
+
     /**
      * Deal with fighters attacks matters
      * @param type $idFighter1 : integer value, represents the ID of the player which attacks
      * @param type $idFighter2 : integer value, represents the ID of the player which is attacked
      */
-    public function attackFighter ($idPlayer1, $idPlayer2)
-    {
+    public function attackFighter($idPlayer1, $idPlayer2) {
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
-        
+
         // Determine if the attack succeed, according to the given formula
-        $doAttackSucceed = doAttackSucceed ($fighter1->level, $fighter2->level);
+        $doAttackSucceed = doAttackSucceed($fighter1->level, $fighter2->level);
         $this->set('test4', $doAttackSucceed);
     }
-    
-    
-    
-    
-    
-    
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
 
@@ -213,6 +194,13 @@ class ArenasController extends AppController {
     public function sight() {
         if ($this->isUserConnected()) {
             $mov = $this->request->getData('movement');
+
+            $regenerate = false;
+              $regenerate = $this->request->getData('regenerate');
+              if($regenerate==true){
+              $this->regenerateMap();
+              } 
+            
 
             if (!is_null($mov)) {
                 $this->move($mov);
@@ -224,12 +212,6 @@ class ArenasController extends AppController {
 
             $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
             $this->set('fighter', $fighter);
-
-
-            //$this->Surroundings->deleteAllSurroundings();
-            //$this->generationPillars();
-            //$this->generationTraps();
-            //$this->generationMonster();
 
             $mytable = $this->Surroundings->getSurroundings();
             $this->set('entities', $mytable);
@@ -268,20 +250,25 @@ class ArenasController extends AppController {
     /**
      * Find a free square inside the matrix game
      */
-    public function findFreeSquare() {
-        $isFree = false;
+    public function findFreeSquare($x, $y) {
 
-        // While we don't find a free square
-        while ($isFree == false) {
-            $x = rand(0, self::LENGTH);
-            $y = rand(0, self::WIDTH);
-            $content = $this->Surroundings->getSurrounding($x, $y);
+        $content = $this->Surroundings->getSurrounding($x, $y);
 
-            // If the square is free, the condition becomes true
-            if (is_null($content)) {
-                $isFree = true;
-            }
+        // If the square is free, the condition becomes true
+        if (is_null($content)) {
+            $isFree = true;
+            return $isFree;
         }
+        return false;
+    }
+
+    public function regenerateMap() {
+
+        //$this->loadModel('Surroundings');
+        $this->Surroundings->deleteAllSurroundings();
+        $this->generationPillars();
+        $this->generationTraps();
+        $this->generationMonster();
     }
 
     /**
@@ -294,7 +281,14 @@ class ArenasController extends AppController {
         $nb = $nb_cases % 10;
         // Pillars generation
         for ($i = 0; $i < ($nb_cases - $nb) / 10; $i++) {
-            $this->findFreeSquare();
+            $isFree = false;
+
+            // While we don't find a free square
+            while ($isFree == false) {
+                $x = rand(0, self::LENGTH);
+                $y = rand(0, self::WIDTH);
+                $isFree= $this->findFreeSquare($x, $y);
+            }
 
             $entity = new Surroundings([
                 'type' => 'P',
@@ -314,7 +308,14 @@ class ArenasController extends AppController {
         $nb = $nb_cases % 10;
         // Traps generation
         for ($i = 0; $i < ($nb_cases - $nb) / 10; $i++) {
-            $this->findFreeSquare();
+            $isFree = false;
+
+            // While we don't find a free square
+            while ($isFree == false) {
+                $x = rand(0, self::LENGTH);
+                $y = rand(0, self::WIDTH);
+                $isFree= $this->findFreeSquare($x, $y);
+            }
 
             $entity = new Surroundings([
                 'type' => 'T',
@@ -330,7 +331,14 @@ class ArenasController extends AppController {
      * @global type $LENGTH
      */
     public function generationMonster() {
-        $this->findFreeSquare();
+        $isFree = false;
+        
+        // While we don't find a free square
+        while ($isFree == false) {
+            $x = rand(0, self::LENGTH);
+            $y = rand(0, self::WIDTH);
+            $isFree= $this->findFreeSquare($x, $y);
+        }
 
         $entity = new Surroundings([
             'type' => 'W',
@@ -346,8 +354,14 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
+            $isFree = false;
 
-            $this->findFreeSquare();
+            // While we don't find a free square
+            while ($isFree == false) {
+                $x = rand(0, self::LENGTH);
+                $y = rand(0, self::WIDTH);
+                $isFree= $this->findFreeSquare($x, $y);
+            }
 
             $fighter = $this->Fighters->getFighter($idPlayer);
             $fighter->coordinate_x = $x;
@@ -381,9 +395,5 @@ class ArenasController extends AppController {
             // Put code here
         }
     }
-    
-    
-    
-  
 
 }
