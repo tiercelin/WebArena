@@ -256,14 +256,9 @@ class ArenasController extends AppController {
     public function sight() {
         if ($this->isUserConnected()) {
             $mov = $this->request->getData('movement');
-<<<<<<< HEAD
             $attack = $this->request->getData('attack');
             
-            $regenerate = false;
-=======
-
               $regenerate = false;
->>>>>>> f102d764c6db89e10cb550d1d7fb988b31067ef4
               $regenerate = $this->request->getData('regenerate');
               if($regenerate==true){
               $this->regenerateMap();
