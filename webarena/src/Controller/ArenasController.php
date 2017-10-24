@@ -123,6 +123,17 @@ class ArenasController extends AppController {
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
+            
+            // This part is used to upgrade the fighter stats. If the value $upgrade is not 0,
+            //the function upgrade is called
+              $upgrade = 0;
+              $upgrade = $this->request->getData('upgrade');
+              if($upgrade != 0){
+              $this->Upgrade($upgrade);
+              } 
+
+          
+              
 
             // Get his fighter
             $entity = $this->Fighters->getFighter($idPlayer);
@@ -136,12 +147,63 @@ class ArenasController extends AppController {
                 $this->set('sight_f', $entity->skill_sight);
                 $this->set('str_f', $entity->skill_strength);
                 $this->set('health_f', $entity->skill_health);
+                
+                //Display the levels available for the fighter, rounded down
+              $this->set('levelsavailable', floor($entity->xp/4));
 
-                if ($this->request->is('post')) {
-                    $content = $this->request->getData('upgrade');
-                }
+                
             }
         }
+    }
+    
+    /**
+     * This function upgrades the fighters stats
+     * @param type $upgrade: The value of $upgrade corresponds to the stat the user wants to upgrade
+     * There is no need for a return
+     */
+    public function Upgrade($upgrade)
+    { 
+        //Get the session and id of player.
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        //Get the fighter of the player
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        //Upgrade = 1 corresponds to sight
+        if ($upgrade == 1)
+                {
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his sight by 1, and send the whole to the database to save the changes.
+                $fighter->skill_sight++;
+                $this->Fighters->save($fighter);
+                }
+        //Upgrade = 2 corresponds to strength
+        if ($upgrade == 2)
+                { 
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his strength by 1, and send the whole to the database to save the changes.
+                $fighter->skill_strength++;
+                $this->Fighters->save($fighter);
+                }
+        //Upgrade = 3 corresponds to health
+        if ($upgrade == 3)
+                { 
+                //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
+                $fighter->level++;
+                $fighter->xp-=4;
+                //Then we upgrade his health by 3
+                $fighter->skill_health+=3;
+                //Then we heal the fighter up to his new maximum health
+                $fighter->current_health = $fighter->skill_health;
+                //Then we send the whole to the database to save the changes.
+                $this->Fighters->save($fighter);
+                }
+        
     }
 
     /**
@@ -194,16 +256,20 @@ class ArenasController extends AppController {
     public function sight() {
         if ($this->isUserConnected()) {
             $mov = $this->request->getData('movement');
-
-            $regenerate = false;
+            $attack = $this->request->getData('attack');
+            
+              $regenerate = false;
               $regenerate = $this->request->getData('regenerate');
               if($regenerate==true){
               $this->regenerateMap();
               } 
             
-
+              
             if (!is_null($mov)) {
                 $this->move($mov);
+            }
+            if(!is_null($attack)) {
+                $this->handleAttack($attack);
             }
             $length = self::WIDTH;
             $width = self::LENGTH;
@@ -229,21 +295,109 @@ class ArenasController extends AppController {
 
         $fighter = $this->Fighters->getFighter($idPlayer);
 
+        //si le joueur monte
         if ($mov == 'top' && $fighter->coordinate_x > 0) {
-            $fighter->coordinate_x--;
-            $this->Fighters->save($fighter);
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
+
+            if (is_null($content)) {
+                $fighter->coordinate_x--;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'left' && $fighter->coordinate_y > 0) {
-            $fighter->coordinate_y--;
-            $this->Fighters->save($fighter);
+        //si le joueur descend
+        else if ($mov == 'left' && $fighter->coordinate_y > 0) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
+
+            if (is_null($content)) {
+                $fighter->coordinate_y--;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
-            $fighter->coordinate_y++;
-            $this->Fighters->save($fighter);
+        //si le joueur va à droite
+        else if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
+
+            if (is_null($content)) {
+                $fighter->coordinate_y++;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
-            $fighter->coordinate_x++;
-            $this->Fighters->save($fighter);
+        //si le joueur va a gauche
+        else if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
+
+            if (is_null($content)) {
+                $fighter->coordinate_x++;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
+        }
+    }
+    
+    public function handleAttack($attack){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        if($attack == 'attacktop' && $fighter->coordinate_x > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x-1, $fighter->coordinate_y);
+            
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+        }
+        if($attack == 'attackleft' && $fighter->coordinate_y > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y-1);
+
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+            
+        }
+        if($attack == 'attackright' && $fighter->coordinate_y < self::WIDTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y+1);
+
+            //si on trouve un monstre
+            if(!is_null($content) && !is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+        }
+        if($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x+1, $fighter->coordinate_y);
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
         }
     }
 
@@ -285,8 +439,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 
@@ -312,8 +466,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 
@@ -335,8 +489,8 @@ class ArenasController extends AppController {
         
         // While we don't find a free square
         while ($isFree == false) {
-            $x = rand(0, self::LENGTH);
-            $y = rand(0, self::WIDTH);
+            $x = rand(0, self::LENGTH-1);
+            $y = rand(0, self::WIDTH-1);
             $isFree= $this->findFreeSquare($x, $y);
         }
 
@@ -358,8 +512,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 
