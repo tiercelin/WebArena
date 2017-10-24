@@ -229,21 +229,50 @@ class ArenasController extends AppController {
 
         $fighter = $this->Fighters->getFighter($idPlayer);
 
+        //si le joueur monte
         if ($mov == 'top' && $fighter->coordinate_x > 0) {
-            $fighter->coordinate_x--;
-            $this->Fighters->save($fighter);
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
+
+            if (is_null($content)) {
+                $fighter->coordinate_x--;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'left' && $fighter->coordinate_y > 0) {
-            $fighter->coordinate_y--;
-            $this->Fighters->save($fighter);
+        else if ($mov == 'left' && $fighter->coordinate_y > 0) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
+
+            if (is_null($content)) {
+                $fighter->coordinate_y--;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
-            $fighter->coordinate_y++;
-            $this->Fighters->save($fighter);
+        else if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
+
+            if (is_null($content)) {
+                $fighter->coordinate_y++;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
-        if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
-            $fighter->coordinate_x++;
-            $this->Fighters->save($fighter);
+        else if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
+
+            if (is_null($content)) {
+                $fighter->coordinate_x++;
+                $this->Fighters->save($fighter);
+            }
+            else if(($content->type == 'T') || ($content->type == 'W')){
+                $this->deleteFighter();
+            }
         }
     }
 
