@@ -5,6 +5,8 @@ use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 
 class PlayersController extends AppController {
+    //Constant to define the lenght of the reseted password
+    const PASSLENGTH = 15;
     
     // Initialization 
     public function initialize()
@@ -56,6 +58,16 @@ class PlayersController extends AppController {
      */
     public function loginPlayer ()
     {
+        //$reset=false;
+        //$password="";
+        /*$password = $this->resetPassword();
+        $reset = $this->request->getData('resetpsw');
+        if($this->request->getData('resetpsw')){///does not display -> not going in if ?
+            $password = $this->resetPassword();
+        }*/
+        //$this->set('reset', $reset);
+        //$this->set('newPassword', $password);
+        
         if($this->request->is('post'))
         {
             // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
@@ -81,6 +93,11 @@ class PlayersController extends AppController {
             }
         }
     }
+    //Code from stackoverflow to generate a random password, with a variable lentgh(here we use a constant)
+    /*public function resetPassword(){
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+       $password = substr( str_shuffle( $chars ), 0, self::PASSLENGTH );
+       return $password;
+    } */
 
-    
 }
