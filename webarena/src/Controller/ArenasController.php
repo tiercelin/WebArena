@@ -194,16 +194,20 @@ class ArenasController extends AppController {
     public function sight() {
         if ($this->isUserConnected()) {
             $mov = $this->request->getData('movement');
-
+            $attack = $this->request->getData('attack');
+            
             $regenerate = false;
               $regenerate = $this->request->getData('regenerate');
               if($regenerate==true){
               $this->regenerateMap();
               } 
             
-
+              
             if (!is_null($mov)) {
                 $this->move($mov);
+            }
+            if(!is_null($attack)) {
+                $this->handleAttack($attack);
             }
             $length = self::WIDTH;
             $width = self::LENGTH;
@@ -241,6 +245,7 @@ class ArenasController extends AppController {
                 $this->deleteFighter();
             }
         }
+        //si le joueur descend
         else if ($mov == 'left' && $fighter->coordinate_y > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
 
@@ -252,6 +257,7 @@ class ArenasController extends AppController {
                 $this->deleteFighter();
             }
         }
+        //si le joueur va à droite
         else if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
 
@@ -263,6 +269,7 @@ class ArenasController extends AppController {
                 $this->deleteFighter();
             }
         }
+        //si le joueur va a gauche
         else if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
 
@@ -272,6 +279,62 @@ class ArenasController extends AppController {
             }
             else if(($content->type == 'T') || ($content->type == 'W')){
                 $this->deleteFighter();
+            }
+        }
+    }
+    
+    public function handleAttack($attack){
+        $session = $this->request->session();
+        $idPlayer = $session->read('playerId');
+
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        if($attack == 'attacktop' && $fighter->coordinate_x > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x-1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x-1, $fighter->coordinate_y);
+            
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+        }
+        if($attack == 'attackleft' && $fighter->coordinate_y > 0){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y-1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y-1);
+
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+            
+        }
+        if($attack == 'attackright' && $fighter->coordinate_y < self::WIDTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y+1);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y+1);
+
+            //si on trouve un monstre
+            if(!is_null($content) && !is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
+            }
+        }
+        if($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1){
+            $content = $this->Surroundings->getSurrounding($fighter->coordinate_x+1, $fighter->coordinate_y);
+            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x+1, $fighter->coordinate_y);
+            //si on trouve un monstre
+            if(!is_null($content) && $content->type == 'W'){
+                $this->Surroundings->delete($content);
+            }
+            else if(!is_null($fighter2)){
+                //THOMAS
             }
         }
     }
@@ -314,8 +377,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 
@@ -341,8 +404,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 
@@ -364,8 +427,8 @@ class ArenasController extends AppController {
         
         // While we don't find a free square
         while ($isFree == false) {
-            $x = rand(0, self::LENGTH);
-            $y = rand(0, self::WIDTH);
+            $x = rand(0, self::LENGTH-1);
+            $y = rand(0, self::WIDTH-1);
             $isFree= $this->findFreeSquare($x, $y);
         }
 
@@ -387,8 +450,8 @@ class ArenasController extends AppController {
 
             // While we don't find a free square
             while ($isFree == false) {
-                $x = rand(0, self::LENGTH);
-                $y = rand(0, self::WIDTH);
+                $x = rand(0, self::LENGTH-1);
+                $y = rand(0, self::WIDTH-1);
                 $isFree= $this->findFreeSquare($x, $y);
             }
 

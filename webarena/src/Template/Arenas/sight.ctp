@@ -36,5 +36,10 @@ echo "</table>";
 <?= $this->Form->postButton('Right', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'right']]) ?>
 <?= $this->Form->postButton('Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'bottom']]) ?>
 
+<?= $this->Form->postButton('Attack Top', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attacktop']]) ?>
+<?= $this->Form->postButton('Attack Left', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackleft']]) ?>
+<?= $this->Form->postButton('Attack Right', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackright']]) ?>
+<?= $this->Form->postButton('Attack Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackbottom']]) ?>
+
 
 <?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas','action' => 'sight'], ['data' => ['regenerate' => 'true']]) ?>
