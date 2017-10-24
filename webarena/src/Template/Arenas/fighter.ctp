@@ -27,6 +27,15 @@
     
   <br> <br>
   
+    <table style="width:90%">
+  <tr>
+    <th> <h5>Level available:</h5></th>
+    <th> <?php echo $levelsavailable;?></th> 
+    <th> </th> 
+  </tr>
+  
+  <br> <br>
+  
   <table style="width:90%">
   <tr>
     <th><h3>Fighter abilities</h3></th>
@@ -37,33 +46,27 @@
     <td><h5>Sight :</h5></td> 
     <td><h5><?php echo $sight_f;?> </h5></td>
     <td>
-       <?php $this->Form->create();
-        $this->Form->text('upgrade', ['default' => 'sight']);
-        echo $this->Form->submit('Upgrade Sight',array('class' => 'btn btn-success'));
-        $this->Form->end(); 
-       ?> 
+
+        <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1]]) ?>
+ 
     </td>
   </tr>
   <tr>
     <td><h5>Strength :</h5></td> 
     <td><h5><?php echo $str_f;?> </h5></td>
     <td>
-       <?php $this->Form->create();
-        $this->Form->text('upgrade', ['default' => 'strength']);
-        echo $this->Form->submit('Upgrade Strength',array('class' => 'btn btn-success'));
-        $this->Form->end(); 
-       ?> 
+
+        <?=$this->Form->postButton('Upgrade Strength', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 2]])?> 
+
     </td>
   </tr>
    <tr>
     <td><h5>Health :</h5></td> 
     <td><h5><?php echo $health_f;?> </h5></td>
     <td>
-       <?php $this->Form->create();
-        $this->Form->text('upgrade', ['default' => 'health']);
-        echo $this->Form->submit('Upgrade Health',array('class' => 'btn btn-success'));
-        $this->Form->end(); 
-       ?> 
+
+        <?=$this->Form->postButton('Upgrade Health', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 3]]) ?>
+
     </td>
   </tr>
 
