@@ -52,28 +52,37 @@ class PlayersController extends AppController {
      * If so, set up session variable. If not, display an error message.
      */
     public function loginPlayer() {
-        //$password = $this->resetPassword();
-        //$this->set('email', $email);
-        //$this->Players->save($myresetPwd);
-
-        $password = '';
-        $display = false;
-        $email2='';
         
-        if (!is_null($this->request->getData('reset'))) {
-            $email2='admin@test.com';
-            $email2 = $this->request->getData('resetemail');
-            $this->loadModel('Players');
-            $myresetPwd = $this->Players->getPlayer($email2);
+        $password = '';
+        $displayRetrieve = false;
+        $displayReset = false;
+        $email2='';
+        $this->loadModel('Players');
+        if (!is_null($this->request->getData('retrieve'))) {
+            $email2 = $this->request->getData('retrieveemail');
             
-            $password = $myresetPwd->password;
-            $display = true;
+            $myretrievePwd = $this->Players->getPlayer($email2);
+            
+            $password = $myretrievePwd->password;
+            $displayRetrieve = true;
+            
+        }
+        if (!is_null($this->request->getData('reset'))) {
+            //$email2='admin@test.com';
+            $email2 = $this->request->getData('resetemail');
+            $myresetPwd = $this->Players->getPlayer($email2);
+            $password = $this->resetPassword();
+            $myresetPwd->password = $password;
+            $this->Players->save($myresetPwd);
+            
+            $displayReset = true;
             
         }
         $this->set('email2', $email2);
         $this->set('password', $password);
-        $this->set('display', $display);
-
+        $this->set('displayRetrieve', $displayRetrieve);
+        $this->set('displayReset', $displayReset);
+        
         if ($this->request->is('post')) {
             // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
             $players = $this->Players->find()->where(['email = ' => $this->request->getData('email'), 'password = ' => $this->request->getData('password')]);
