@@ -6,6 +6,7 @@ use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
 use Cake\I18n\Time;
+use Cake\ORM\TableRegistry;
 
 /**
  * Personal Controller
