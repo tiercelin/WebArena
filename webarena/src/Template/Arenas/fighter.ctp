@@ -45,7 +45,7 @@
     <td><h5><?php echo $sight_f;?> </h5></td>
     <td>
 
-        <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1]], ['class' => 'btn btn-outline-primary']) ?>
+        <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1],'class' => 'btn btn-info']) ?>
  
     </td>
   </tr>
@@ -54,7 +54,7 @@
     <td><h5><?php echo $str_f;?> </h5></td>
     <td>
 
-        <?=$this->Form->postButton('Upgrade Strength', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 2]])?> 
+        <?=$this->Form->postButton('Upgrade Strength', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 2], 'class' => 'btn btn-info'])?> 
 
     </td>
   </tr>
@@ -63,7 +63,7 @@
     <td><h5><?php echo $health_f;?> </h5></td>
     <td>
 
-        <?=$this->Form->postButton('Upgrade Health', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 3]]) ?>
+        <?=$this->Form->postButton('Upgrade Health', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 3], 'class' => 'btn btn-info']) ?> 
 
     </td>
   </tr>

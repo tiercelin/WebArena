@@ -276,7 +276,7 @@ class ArenasController extends AppController {
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                $this->addEventToDiary($fighter, ' Monster attacked and kiled by');
+                $this->addEventToDiary($fighter, ' Monster attacked and killed by');
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
                 $this->attackFighter($idPlayer, $player2->id);
