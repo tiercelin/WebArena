@@ -81,17 +81,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         
         <?= $this->fetch('content') ?> 
     
-        <div id="footer">
-        <br>
-        SI1 <br>
-        Options DF<br>
-
-        Imbert Pierre-Louis<br>
-        Tiercelin Julie<br>
-        Champalier Mariane<br>
-        Olive Thomas<br>
-        </div>
-    
     </div>
 
   
