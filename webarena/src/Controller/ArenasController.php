@@ -17,6 +17,7 @@ class ArenasController extends AppController {
 
     const WIDTH = 15;
     const LENGTH = 10;
+        
 
     /**
      * Initialize function : load all models
@@ -26,6 +27,7 @@ class ArenasController extends AppController {
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
+
     }
 
     /**
@@ -63,7 +65,7 @@ class ArenasController extends AppController {
      */
     public function createFighter() {
         $session = $this->request->session();
-
+                
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
@@ -150,6 +152,10 @@ class ArenasController extends AppController {
 
                     //Display the levels available for the fighter, rounded down
                     $this->set('levelsavailable', floor($entity->xp / 4));
+                    
+                    // Send the controller (for avatar display matter)
+                    $this->set('controller', $this);
+                 
                 }
             }
         }
@@ -341,6 +347,50 @@ class ArenasController extends AppController {
             }
         }
     }
+    
+    
+    /**
+     * Propose to the user to upload an image as an avatar
+     * @return string : name of the file to upload as an avatar
+     */
+    public function uploadAvatar()
+    {
+        if($this->isUserConnected())
+        {
+            // Retrieve the ID of the current player
+            $idPlayer = $this->request->session()->read('playerId');
+            
+                    
+        // If the request is not null -> if an image has been selected
+        if (!empty($this->request->data)) {
+            if (!empty($this->request->data['upload']['name'])) {  
+                
+                // Put the image into a variable
+                $file = $this->request->data['upload']; 
+                
+                // Get the image extension
+                $ext = substr(strtolower(strrchr($file['name'], '.')), 1); 
+                
+                // Set allowed extensions
+                $arr_ext = array('jpg', 'jpeg', 'gif', 'png'); 
+                
+                // Set name of image
+                $setNewFileName = $idPlayer;
+                
+                // If the extension is valid
+                if (in_array($ext, $arr_ext)) {
+                    // Upload the file from local repertory to webroot/upload/avatar repertory
+                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $setNewFileName . '.' . $ext);
+                    
+                    // Set new avatar image name
+                    $imageFileName = $setNewFileName . '.' . $ext;
+                    return $imageFileName;
+                }
+            }
+        }
+    }
+    
+}
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
 

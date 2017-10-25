@@ -1,4 +1,5 @@
-<?php $this->assign('title', 'Fighter');?>
+<?php $this->assign('title', 'Fighter');
+$controller?>
 
 
    
@@ -69,4 +70,23 @@
   </tr>
 
  </table>
+  
+  <div class="avatar">
+<?php 
+echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data']);
+echo $this->Form->input('upload', ['type' => 'file']);
+echo $this->Form->button('Save avatar');
+echo $this->Form->end();
+
+$imageFileName = $controller->uploadAvatar();
+if($imageFileName!=""){
+    echo $this->Html->image("avatar/".$imageFileName);    
+}
+
+    
+
+ ?>
+    
+    
+</div>
   
