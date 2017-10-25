@@ -150,9 +150,23 @@ class ArenasController extends AppController {
                     $this->set('str_f', $entity->skill_strength);
                     $this->set('health_f', $entity->skill_health);
 
-                    //Display the levels available for the fighter, rounded down
+                    // Display the levels available for the fighter, rounded down
                     $this->set('levelsavailable', floor($entity->xp / 4));
                     
+                    // Retrieve the rigth file name to display the avatar
+                    $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*')) ;
+     
+                    if($avatarFilenameTest != 0)
+                    {
+                        $avatarFilename = $idPlayer . '.jpg';  
+                    }
+                    else
+                    {
+                        $avatarFilename = 'kittenWarrior.jpg';
+                    }
+                    
+                    $this->set('imageFileName', $avatarFilename);
+                       
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
                  
@@ -349,7 +363,6 @@ class ArenasController extends AppController {
     
     /**
      * Propose to the user to upload an image as an avatar
-     * @return string : name of the file to upload as an avatar
      */
     public function uploadAvatar()
     {
@@ -357,8 +370,7 @@ class ArenasController extends AppController {
         {
             // Retrieve the ID of the current player
             $idPlayer = $this->request->session()->read('playerId');
-            
-                    
+    
         // If the request is not null -> if an image has been selected
         if (!empty($this->request->data)) {
             if (!empty($this->request->data['upload']['name'])) {  
@@ -372,22 +384,16 @@ class ArenasController extends AppController {
                 // Set allowed extensions
                 $arr_ext = array('jpg', 'jpeg', 'gif', 'png'); 
                 
-                // Set name of image
-                $setNewFileName = $idPlayer;
-                
                 // If the extension is valid
                 if (in_array($ext, $arr_ext)) {
                     // Upload the file from local repertory to webroot/upload/avatar repertory
-                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $setNewFileName . '.' . $ext);
-                    
-                    // Set new avatar image name
-                    $imageFileName = $setNewFileName . '.' . $ext;
-                    return $imageFileName;
+                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
+                    return true;
                 }
             }
         }
-    }
-    
+    }   
+   
 }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
@@ -665,5 +671,6 @@ class ArenasController extends AppController {
             'coordinate_y' => $fighter->coordinate_y]);
         $this->Events->save($myNewEvent);
     }
+    
 
 }

@@ -1,8 +1,6 @@
-<?php $this->assign('title', 'Fighter');
-$controller?>
+<?php $this->assign('title', 'Fighter');$controller?>
 
 
-   
   <table style="width:90%">
   <tr>
     <th> <h3>Fighter ID card</h3></th>
@@ -71,17 +69,22 @@ $controller?>
 
  </table>
   
-  <div class="avatar">
+  <div class="ChImg">
 <?php 
 echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data']);
 echo $this->Form->input('upload', ['type' => 'file']);
-echo $this->Form->button('Save avatar');
+echo $this->Form->submit('Save avatar');
 echo $this->Form->end();
 
-$imageFileName = $controller->uploadAvatar();
-if($imageFileName!=""){
+   // echo $this->Html->image("avatar/".$imageFileName);    
+
+
+
+if ($controller->uploadAvatar());
+{
     echo $this->Html->image("avatar/".$imageFileName);    
 }
+
 
     
 
