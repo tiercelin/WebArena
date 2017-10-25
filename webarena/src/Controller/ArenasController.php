@@ -245,10 +245,14 @@ class ArenasController extends AppController {
         // If the attack succeeds, decrement health of fighter injured
         if ($doAttackSucceed == true) {
             $fighter2->current_health -= $fighter1->skill_strength;
+            $fighter1->xp ++;
+            $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
 
-            // If the attacked fighter current health is at 0, delete it and create new fighter
+            // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
+                $fighter1->xp += $fighter2->level;
+                $this->Fighters->save($fighter1);
                 $this->deleteFighter($idPlayer2);
             }
         } else //Add the event to the table
