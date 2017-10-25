@@ -71,9 +71,50 @@ class FightersController extends AppController {
     
     public function test()
     {
-        $test = $this->attackFighter('545f827c-576c-4dc5-ab6d-27c33186dc3e', 'df92817e-59c4-4098-8123-487fac1d8299');
+        $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
         
-        $this->set('test4', $test);
+        // If the request is not null -> if an image has been selected
+        if (!empty($this->request->data)) {
+            if (!empty($this->request->data['upload']['name'])) {   
+                // Put the image into a variable
+                $file = $this->request->data['upload']; 
+                
+                // Get the image extension
+                $ext = substr(strtolower(strrchr($file['name'], '.')), 1); 
+                
+                // Set allowed extensions
+                $arr_ext = array('jpg', 'jpeg', 'gif', 'png'); 
+                
+                // Set name of image
+                $setNewFileName = $idPlayer;
+                
+                // If the extension is valid
+                if (in_array($ext, $arr_ext)) {
+                    // Upload the file from local repertory to webroot/upload/avatar repertory
+                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $setNewFileName . '.' . $ext);
+                    
+                    // Retrieve (common) name of the image
+                    $imageFileName = $setNewFileName . '.' . $ext;
+    }
+}
+/*
+$getFormvalue = $this->Users->patchEntity($particularRecord, $this->request->data);
+
+if (!empty($this->request->data['upload']['name'])) {
+            $getFormvalue->avatar = $imageFileName;
+}
+
+
+if ($this->Users->save($getFormvalue)) {
+   $this->Flash->success('Your profile has been sucessfully updated.');
+   return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
+   } else {
+   $this->Flash->error('Records not be saved. Please, try again.');
+   }
+   */
+   
+   
+}
     }
     
 }
