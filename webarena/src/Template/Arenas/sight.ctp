@@ -6,7 +6,7 @@ foreach ($entities as $myrow) {
 }
 $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 $message="";
-echo "<table class = \"table table-bordered \">";
+echo "<table id=\"map\" class = \"table table-bordered \">";
 for ($i = 0; $i < $width; $i++) {
     echo "<tr>";
     for ($j = 0; $j < $length; $j++) {
