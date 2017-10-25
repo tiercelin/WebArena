@@ -32,6 +32,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default', 'interaction'));?>
+    <?php echo $this->Html->script('https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');?>
     
 </head>
 
