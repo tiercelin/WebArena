@@ -235,6 +235,7 @@ class ArenasController extends AppController {
      * @param type $idPlayer2 : the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
+        echo 'ATTACK';
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
@@ -273,16 +274,15 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x - 1, $fighter->coordinate_y);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x - 1, $fighter->coordinate_y);
 
-            // Find the player which is potentially attacked
-            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
-
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                $this->addEventToDiary($fighter, ' Monster attacked and kiled by');
-            } else if (!is_null($fighter2)) {
+                $this->addEventToDiary($fighter, ' Monster attacked and killed by');
+            } else if (!is_null($fighter2)  && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
+                // Find the player which is potentially attacked
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -290,17 +290,16 @@ class ArenasController extends AppController {
         if ($attack == 'attackleft' && $fighter->coordinate_y > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y - 1);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y - 1);
-
-            // Find the player which is potentially attacked
-            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
-
+            
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                $this->addEventToDiary($fighter, 'Monster attacked and kiled by');
-            } else if (!is_null($fighter2)) {
+                $this->addEventToDiary($fighter, 'Monster attacked and killed by');
+            } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
+                // Find the player which is potentially attacked
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -309,16 +308,16 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y + 1);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y + 1);
 
-            // Find the player which is potentially attacked
-            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
-
+            
             // If we find a monster
             if (!is_null($content) && !is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                $this->addEventToDiary($fighter, 'Monster attacked and kiled by');
+                $this->addEventToDiary($fighter, 'Monster attacked and killed by');
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
+                // Find the player which is potentially attacked
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -326,17 +325,16 @@ class ArenasController extends AppController {
         if ($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x + 1, $fighter->coordinate_y);
             $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x + 1, $fighter->coordinate_y);
-
-            // Find the player which is potentially attacked
-            $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
-
+            
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                $this->addEventToDiary($fighter, 'Monster attacked and kiled by');
-            } else if (!is_null($fighter2)) {
+                $this->addEventToDiary($fighter, 'Monster attacked and killed by');
+            } else if (!is_null($fighter2)  && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
+                // Find the player which is potentially attacked
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -466,6 +464,7 @@ class ArenasController extends AppController {
         $this->generationPillars();
         $this->generationTraps();
         $this->generationMonster();
+        $this->generationPlayer();
     }
 
     /**
