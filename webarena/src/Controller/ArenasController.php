@@ -349,16 +349,11 @@ class ArenasController extends AppController {
         $this->set('width', $width);
         
         if ($this->isUserConnected()) {
-            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-            $this->set('fighter', $fighter);
-
-            $mytable = $this->Surroundings->getSurroundings();
-            $this->set('entities', $mytable);
-            $this->set('controller', $this);
             
             $mov = $this->request->getData('movement');
             $attack = $this->request->getData('attack');
-
+            
+            $regenerate=false;
             $regenerate = $this->request->getData('regenerate');
             if ($regenerate == true) {
                 $this->regenerateMap();
@@ -371,6 +366,12 @@ class ArenasController extends AppController {
                 $this->handleAttack($attack);
             }
 
+            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+            $this->set('fighter', $fighter);
+            
+            $mytable = $this->Surroundings->getSurroundings();
+            $this->set('entities', $mytable);
+            $this->set('controller', $this);
             
         }
     }
