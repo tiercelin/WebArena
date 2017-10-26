@@ -282,6 +282,11 @@ class ArenasController extends AppController {
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
     }
 
+    public function getFighterByCoord($x, $y){
+        $entity = $this->Fighters->find()->where(['coordinate_x =' => $x, 'coordinate_y =' => $y])->first();
+        return $entity;
+    }
+    
     /**
      * Handle attack between one fighter and another entity, the monster or a second fighter
      * @param type $attack : attack direction
@@ -294,7 +299,7 @@ class ArenasController extends AppController {
 
         if ($attack == 'attacktop' && $fighter->coordinate_x > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x - 1, $fighter->coordinate_y);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x - 1, $fighter->coordinate_y);
+            $fighter2 = $this->getFighterByCoord($fighter->coordinate_x - 1, $fighter->coordinate_y);
 
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
@@ -311,7 +316,7 @@ class ArenasController extends AppController {
 
         if ($attack == 'attackleft' && $fighter->coordinate_y > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y - 1);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y - 1);
+            $fighter2 = $this->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y - 1);
             
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
@@ -328,7 +333,7 @@ class ArenasController extends AppController {
 
         if ($attack == 'attackright' && $fighter->coordinate_y < self::WIDTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y + 1);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y + 1);
+            $fighter2 = $this->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y + 1);
 
             
             // If we find a monster
@@ -346,7 +351,7 @@ class ArenasController extends AppController {
 
         if ($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x + 1, $fighter->coordinate_y);
-            $fighter2 = $this->Fighters->getFighterByCoord($fighter->coordinate_x + 1, $fighter->coordinate_y);
+            $fighter2 = $this->getFighterByCoord($fighter->coordinate_x + 1, $fighter->coordinate_y);
             
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
