@@ -190,7 +190,7 @@ class ArenasController extends AppController {
         $fighter = $this->Fighters->getFighter($idPlayer);
 
         //Upgrade = 1 corresponds to sight
-        if ($upgrade == 1) {
+        if ($upgrade == 1 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -199,7 +199,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 2 corresponds to strength
-        if ($upgrade == 2) {
+        if ($upgrade == 2 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -208,7 +208,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 3 corresponds to health
-        if ($upgrade == 3) {
+        if ($upgrade == 3 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
