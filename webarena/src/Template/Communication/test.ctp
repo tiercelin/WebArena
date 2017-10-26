@@ -10,17 +10,15 @@
     ?>
 <br>
 
-<?php
-    
-    // Create an array which will contains all the name of the available guilds
-    $arrayNameGuild = array(); 
+<h2>Join a guild : </h2><br>
 
-foreach($guildsArray as $guild) {
-    array_push($arrayNameGuild, $guild->name);   
- }
- 
+<?php
+     
  // Display a drop-down list with the name of all guilds
-    echo $this->Form->select('guild', array('type' => 'select', 'options' => $arrayNameGuild)); 
+    echo $this->Form->create();
+    echo $this->Form->select('guild', array('type' => 'select', 'options' => $guildsArray)); 
+    echo $this->Form->submit('Join'); 
+    echo $this->Form->end();
      
 ?>
 

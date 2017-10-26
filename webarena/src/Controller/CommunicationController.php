@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
-use App\Model\Entity\Guilds;
 
 class CommunicationController extends AppController {
     
     public function initialize()
     {
         $this->loadModel('Guilds');
+        $this->loadModel('Fighters');
         
         $this->loadComponent('Flash');
     }
@@ -44,14 +44,45 @@ class CommunicationController extends AppController {
         }
     }
     
+    public function joinGuild () //$nameGuild
+    {
+        $nameGuild = 'mad max';
+        $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
+        
+        // Retrieve the current fighter
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        // Retrieve the ID of the guild thanks to its name
+        $guild = $this->Guilds->getGuild($nameGuild);
+        
+        // Set and save (new) guild ID
+        $fighter->guild_id = $guild->id;
+        
+        if ($this->Fighters->save($fighter))
+        {
+            $this->Flash->success (__('You have joined the guild \''.$nameGuild.'\''));
+        }
+        
+        else
+        {
+            $this->Flash->error(__('You fail to join the guild \''.$nameGuild.'\''));
+        }     
+    }
+    
     public function test()
     {
-        $this->createGuild();
+        //$this->createGuild();
         
         $guilds = $this->Guilds->find('all', array('fields' => array('Guilds.name')));
-        $this->set('guildsArray', $guilds);
+        // Create an array which will contains all the name of the available guilds, and send it to the view
+        $arrayNameGuild = array(); 
+        foreach($guilds as $guild) {
+            array_push($arrayNameGuild, $guild->name); 
+        }
+        $this->set('guildsArray', $arrayNameGuild);
         
-        
+        $this->joinGuild();
+    
     }
   
     

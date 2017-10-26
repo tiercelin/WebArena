@@ -5,8 +5,6 @@
         <group>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/PlayersController.php</file>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Communication/test.ctp</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Players/new_player.ctp</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Players/login_player.ctp</file>
             <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/CommunicationController.php</file>
         </group>
     </open-files>

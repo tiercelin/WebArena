@@ -42,4 +42,12 @@ class GuildsTable extends Table{
         
         return $validator;
     }
+    
+    public function getGuild($guildName){
+        if(is_string($guildName)){
+            $entity = $this->find()->where(['name =' => $guildName])->first();
+            return $entity;
+        }
+        return null;
+    }
 }
