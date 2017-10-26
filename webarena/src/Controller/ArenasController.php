@@ -27,7 +27,8 @@ class ArenasController extends AppController {
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
-
+        
+        $this->loadComponent('Flash');
     }
 
     /**

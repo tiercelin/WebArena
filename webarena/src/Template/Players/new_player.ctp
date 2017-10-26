@@ -14,4 +14,7 @@
 ?>
 
 
+ <?= $this->Flash->render() ?>
+
+
 

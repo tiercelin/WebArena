@@ -9,5 +9,9 @@
     echo $this->Form->end();
     
     ?>
+    
+    <?= $this->Flash->render() ?>
+    
+    
      
   

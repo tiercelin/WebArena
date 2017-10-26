@@ -11,6 +11,8 @@ class CommunicationController extends AppController {
     public function initialize()
     {
         $this->loadModel('Guilds');
+        
+        $this->loadComponent('Flash');
     }
     
     public function createGuild()
