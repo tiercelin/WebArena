@@ -6,6 +6,7 @@ use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
 use Cake\I18n\Time;
+use Cake\I18n\Date;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -17,6 +18,7 @@ class ArenasController extends AppController {
 
     const WIDTH = 15;
     const LENGTH = 10;
+        
 
     /**
      * Initialize function : load all models
@@ -26,6 +28,8 @@ class ArenasController extends AppController {
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
+        
+        $this->loadComponent('Flash');
     }
 
     /**
@@ -63,7 +67,7 @@ class ArenasController extends AppController {
      */
     public function createFighter() {
         $session = $this->request->session();
-
+                
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
@@ -148,8 +152,26 @@ class ArenasController extends AppController {
                     $this->set('str_f', $entity->skill_strength);
                     $this->set('health_f', $entity->skill_health);
 
-                    //Display the levels available for the fighter, rounded down
+                    // Display the levels available for the fighter, rounded down
                     $this->set('levelsavailable', floor($entity->xp / 4));
+                    
+                    // Retrieve the rigth file name to display the avatar
+                    $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*')) ;
+     
+                    if($avatarFilenameTest != 0)
+                    {
+                        $avatarFilename = $idPlayer . '.jpg';  
+                    }
+                    else
+                    {
+                        $avatarFilename = 'kittenWarrior.jpg';
+                    }
+                    
+                    $this->set('imageFileName', $avatarFilename);
+                       
+                    // Send the controller (for avatar display matter)
+                    $this->set('controller', $this);
+                 
                 }
             }
         }
@@ -169,7 +191,7 @@ class ArenasController extends AppController {
         $fighter = $this->Fighters->getFighter($idPlayer);
 
         //Upgrade = 1 corresponds to sight
-        if ($upgrade == 1) {
+        if ($upgrade == 1 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -178,7 +200,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 2 corresponds to strength
-        if ($upgrade == 2) {
+        if ($upgrade == 2 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -187,7 +209,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 3 corresponds to health
-        if ($upgrade == 3) {
+        if ($upgrade == 3 && $fighter->xp >=4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -339,6 +361,42 @@ class ArenasController extends AppController {
             }
         }
     }
+    
+    
+    /**
+     * Propose to the user to upload an image as an avatar
+     */
+    public function uploadAvatar()
+    {
+        if($this->isUserConnected())
+        {
+            // Retrieve the ID of the current player
+            $idPlayer = $this->request->session()->read('playerId');
+    
+        // If the request is not null -> if an image has been selected
+        if (!empty($this->request->data)) {
+            if (!empty($this->request->data['upload']['name'])) {  
+                
+                // Put the image into a variable
+                $file = $this->request->data['upload']; 
+                
+                // Get the image extension
+                $ext = substr(strtolower(strrchr($file['name'], '.')), 1); 
+                
+                // Set allowed extensions
+                $arr_ext = array('jpg', 'jpeg', 'gif', 'png'); 
+                
+                // If the extension is valid
+                if (in_array($ext, $arr_ext)) {
+                    // Upload the file from local repertory to webroot/upload/avatar repertory
+                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
+                    return true;
+                }
+            }
+        }
+    }   
+   
+}
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
 
@@ -603,6 +661,10 @@ class ArenasController extends AppController {
     public function diary() {
         if ($this->isUserConnected()) {
             // Put code here
+            $entities=$this->Events->getEventsLessThan24h();
+           $date = new Date(Time::now().' -24 hours');
+            $this->set('entities', $entities);
+            $this->set('date', $date);
         }
     }
 
@@ -615,5 +677,6 @@ class ArenasController extends AppController {
             'coordinate_y' => $fighter->coordinate_y]);
         $this->Events->save($myNewEvent);
     }
+    
 
 }

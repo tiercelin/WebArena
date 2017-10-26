@@ -20,3 +20,10 @@ echo $this->Form->postButton('Reset', ['controller' => 'Players','action' => 'lo
             echo "your new password is ".$password;
         }
 ?>
+
+<br><br>
+
+<a><?php echo $this->Html->link('Create an account', array('controller' => 'players', 'action' => 'newPlayer')); ?></a>
+
+
+ <?= $this->Flash->render() ?>

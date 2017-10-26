@@ -26,9 +26,12 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    
+    <!-- for option F -->
     <?php echo $this->Html->css(array('base','bootstrap','bootstrap.min','bootstrap-theme','bootstrap-theme.min','cake','home','Webarena'));?>
-
+    
+    <!-- for option E -->
+    <?php echo $this->Html->css('datatables.min.css');?>
+    
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?php echo $this->Html->script('https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');?>

@@ -19,8 +19,8 @@ class GuildsTable extends Table{
         
         // A guild can welcome many fighters
         $this->hasMany('Fighters')
-                ->setForeignKey('guild_id');
-                //->setJoinType('INNER'); uncomment this line if we implement the guild functionnality         
+                ->setForeignKey('guild_id')
+                ->setJoinType('INNER');      
     }
     
      /**
@@ -41,5 +41,13 @@ class GuildsTable extends Table{
             ->notEmpty('name');
         
         return $validator;
+    }
+    
+    public function getGuild($guildName){
+        if(is_string($guildName)){
+            $entity = $this->find()->where(['name =' => $guildName])->first();
+            return $entity;
+        }
+        return null;
     }
 }

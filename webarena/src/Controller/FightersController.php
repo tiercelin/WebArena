@@ -71,6 +71,27 @@ class FightersController extends AppController {
     
     public function test()
     {
+        /*
+        // Retrieve the rigth file name to display the avatar
+                    $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/df92817e-59c4-4098-8123-487fac1d8299' . '.*')) ;
+     
+                    if($avatarFilenameTest != 0)
+                    {
+                        $avatarFilename = 'df92817e-59c4-4098-8123-487fac1d8299.jpg';  
+                    }
+                    else
+                    {
+                        $avatarFilename = 'kittenWarrior.jpg';
+                    }
+                    
+                    $this->set('test4', $avatarFilename);
+        */
+        
+        
+        
+        
+        
+        
         $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
         
         // If the request is not null -> if an image has been selected
@@ -97,24 +118,11 @@ class FightersController extends AppController {
                     $imageFileName = $setNewFileName . '.' . $ext;
     }
 }
-/*
-$getFormvalue = $this->Users->patchEntity($particularRecord, $this->request->data);
-
-if (!empty($this->request->data['upload']['name'])) {
-            $getFormvalue->avatar = $imageFileName;
-}
-
-
-if ($this->Users->save($getFormvalue)) {
-   $this->Flash->success('Your profile has been sucessfully updated.');
-   return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
-   } else {
-   $this->Flash->error('Records not be saved. Please, try again.');
-   }
-   */
    
    
 }
+
+                
     }
     
 }
