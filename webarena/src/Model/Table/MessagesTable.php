@@ -54,7 +54,32 @@ class MessagesTable extends Table{
         return $validator;
     }
     
-    // Do we have the verify that an entity of messages clearly refers to two entities of fighters ? (no foreign key violations)
+    /**
+     * Returns messages sent by the current fighter
+     * @param type $fighterId : ID of current fighter
+     * @return type entities messages
+     */
+    public function getMessagesSent($fighterId){
+        if(is_int($fighterId)){
+            $entity = $this->find()->where(['fighter_id_from =' => $fighterId]);
+            return $entity;
+        }
+        return null;
+    }
+    
+    /**
+     * Returns messages received by the current fighter
+     * @param type $fighterId : ID of current fighter
+     * @return type entities messages
+     */
+    public function getMessagesReceived($fighterId){
+        if(is_int($fighterId)){
+            $entity = $this->find()->where(['fighter_id =' => $fighterId]);
+            return $entity;
+        }
+        return null;
+    }
+    
 
 }
 
