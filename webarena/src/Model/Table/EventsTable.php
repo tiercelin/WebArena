@@ -4,6 +4,7 @@ namespace App\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\I18n\Time;
 
 class EventsTable extends Table{
     
@@ -61,6 +62,20 @@ class EventsTable extends Table{
      */
     public function getEvents(){
         $entity = $this->find();
+        if($entity->isEmpty()){
+            return null;
+        }
+        return $entity;
+    }
+    public function getEventsLessThan24h(){
+            
+        $entity = $this->find('all',
+  array(
+    'conditions' => array(
+      'date >=' => date(Time::now(), strtotime('-24 hours'))
+    )
+  )
+);
         if($entity->isEmpty()){
             return null;
         }
