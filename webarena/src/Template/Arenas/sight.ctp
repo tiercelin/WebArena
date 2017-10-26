@@ -8,7 +8,7 @@ $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 $message="";
 echo "<table id=\"map\" class = \"table table-bordered \">";
 for ($i = 0; $i < $width; $i++) {
-    echo "<tr>";
+    echo "<tr style='width: 25px'>";
     for ($j = 0; $j < $length; $j++) {
         $check = false;
         if (isset($indextable[$i][$j]))
@@ -16,7 +16,7 @@ for ($i = 0; $i < $width; $i++) {
             if($indextable[$i][$j]!=$fighter){
                 if($controller->canISeeIt($indextable[$i][$j], $fighter)){
                     if($indextable[$i][$j]->type=='P'){
-                        echo "<td> P </td>";
+                        echo "<td style='height: 35px'> P </td>";
                     }
                     else {
                         if($controller->doIdisplayMessage($indextable[$i][$j], $fighter))
@@ -27,15 +27,15 @@ for ($i = 0; $i < $width; $i++) {
                             else {
                                 $message="Stink !";
                             }
-                            echo "<td></td>";
+                            echo "<td style='bgcolor:#f2f2f2'></td>";
                         }
-                        else echo "<td></td>";
+                        else echo "<td style='height: 35px'></td>";
                 }
-            }else echo "<td></td>";
+            }else echo "<td style='height: 35px'></td>";
             }
-            else echo "<td> F </td>";  
+            else echo "<td style='height: 35px'> F </td>";  
         }    
-        else echo "<td></td>";
+        else echo "<td style='height: 35px'></td>";
     }
     echo "</tr>";
 }

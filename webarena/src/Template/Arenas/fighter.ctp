@@ -4,8 +4,31 @@
   <table style="width:90%">
   <tr>
     <th> <h3>Fighter ID card</h3></th>
-    <th> </th> 
-    <th> </th> 
+    
+    <th> 
+        <div class="ChImg">
+    <?php 
+        if ($controller->uploadAvatar());
+    {
+    echo $this->Html->image("avatar/".$imageFileName, ['height' => '100', 'width'=>'100' ]);    
+    }
+
+    ?>
+    </div>
+    </th>
+    
+    <th>   
+    <div class="ChImg">
+    <?php 
+    echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data']);
+    echo $this->Form->input('upload', ['type' => 'file']);
+    echo $this->Form->submit('Save avatar');
+    echo $this->Form->end();
+    ?>
+    </div>
+    </th> 
+    
+    
   </tr>
   <tr>
       <td><h5>Name :</h5></td> 
@@ -68,28 +91,5 @@
   </tr>
 
  </table>
-  
-  <div class="ChImg">
-<?php 
-echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data']);
-echo $this->Form->input('upload', ['type' => 'file']);
-echo $this->Form->submit('Save avatar');
-echo $this->Form->end();
 
-   // echo $this->Html->image("avatar/".$imageFileName);    
-
-
-
-if ($controller->uploadAvatar());
-{
-    echo $this->Html->image("avatar/".$imageFileName);    
-}
-
-
-    
-
- ?>
-    
-    
-</div>
   
