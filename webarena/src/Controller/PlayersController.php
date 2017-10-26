@@ -38,6 +38,7 @@ class PlayersController extends AppController {
                 // Then we save the new player in the database
                 // If it works, redirect the user to the login page. If not, display an error message.
                 if ($playersTable->save($newPlayer)) {
+                    $this->Flash->success(__('Your account has been created !'));
                     return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
                 }
                 $this->Flash->error(__('Account creation failure !'));
@@ -65,9 +66,17 @@ class PlayersController extends AppController {
                 if (!is_null($myretrievePwd)) {
                     $password = $myretrievePwd->password;
                     $displayRetrieve = true;
-                }// else tell the user that the email does not exist and advise to create an account
+                }
+                else
+                {
+                    $this->Flash->error(__('This email does not exist, please create an account'));
+                }
             }
-            // else add flash message to ask to enter email
+            else
+            {
+                $this->Flash->error(__('Please enter a valid email'));
+            }
+            
         }
         if (!is_null($this->request->getData('reset'))) {
 
@@ -79,8 +88,16 @@ class PlayersController extends AppController {
                     $myresetPwd->password = $password;
                     $this->Players->save($myresetPwd);
                     $displayReset = true;
-                }// else tell the user that the email does not exist and advise to create an account
-            }// else add flash message to ask to enter email
+                }
+                else
+                {
+                    $this->Flash->error(__('This email does not exist, please create an account'));
+                }
+            }
+            else
+            {
+                $this->Flash->error(__('Please enter a valid email'));
+            }
         }
         $this->set('email2', $email2);
         $this->set('password', $password);

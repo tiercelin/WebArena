@@ -36,10 +36,13 @@ class CommunicationController extends AppController {
                 // Then we save the new guild in the database
                 // If it works, redirect the user to the index page. If not, display an error message.
                 if ($guildsTable->save($newGuild)) {
-                    $this->Flash->success(__('Guild '.$newGuild->name. ' has been created !'));
+                    $this->Flash->success(__('Guild "'.$newGuild->name. '" has been created !'));
                     return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
                 }
-                $this->Flash->error(__('Guild creation failure !'));
+                else
+                {
+                    $this->Flash->error(__('Guild creation failure !'));
+                }
             }
         } else {
             $this->Flash->error(__('This guild already exists !'));
@@ -62,12 +65,12 @@ class CommunicationController extends AppController {
         
         if ($this->Fighters->save($fighter))
         {
-            $this->Flash->success (__('You have joined the guild \''.$nameGuild.'\''));
+            $this->Flash->success (__('You have joined the guild "'.$nameGuild.'"'));
         }
         
         else
         {
-            $this->Flash->error(__('You fail to join the guild \''.$nameGuild.'\''));
+            $this->Flash->error(__('You fail to join the guild "'.$nameGuild.'"'));
         }     
     }
     
@@ -123,7 +126,7 @@ class CommunicationController extends AppController {
     
     public function test()
     {
-        //$this->createGuild();
+        $this->createGuild();
         
         $guilds = $this->Guilds->find('all', array('fields' => array('Guilds.name')));
         // Create an array which will contains all the name of the available guilds, and send it to the view
