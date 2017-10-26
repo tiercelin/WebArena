@@ -16,20 +16,23 @@ function action(key){
 }
 
 $(document).keydown(function(e){
-    console.log(e.which);
-    var key;
-    if(e.which == 38){
-        key = "top";
+    var namepage;
+    namepage = $(document).find("title").text();
+    if (namepage.indexOf("Sight") != -1){
+        var key;
+        if(e.which == 38){
+            key = "top";
+        }
+        if(e.which == 37){
+            key = "left";
+        }
+        if(e.which == 39){
+            key = "right";
+        }
+        if(e.which == 40){
+            key = "bottom";
+        }
+
+        action(key);
     }
-    if(e.which == 37){
-        key = "left";
-    }
-    if(e.which == 39){
-        key = "right";
-    }
-    if(e.which == 40){
-        key = "bottom";
-    }
-    
-    action(key);
 });
