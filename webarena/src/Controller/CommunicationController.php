@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+use Cake\I18n\Time;
 
 class CommunicationController extends AppController {
     
@@ -11,6 +12,7 @@ class CommunicationController extends AppController {
     {
         $this->loadModel('Guilds');
         $this->loadModel('Fighters');
+        $this->loadModel('Messages');
         
         $this->loadComponent('Flash');
     }
@@ -69,6 +71,48 @@ class CommunicationController extends AppController {
         }     
     }
     
+    
+    public function sendMessage()
+    {
+        // Create an empty entity of message
+        $messagesTable = TableRegistry::get('Messages');
+        $newMessage = $messagesTable->newEntity();
+        
+        // Define ID of the sender = current fighter
+        $idPlayer1 = 1;
+        
+        // Define ID of the receiver = define it with email of player ?
+        $idPlayer2 = 5;
+        
+        if ($this->request->is('post')) {
+                // Merge form data with the new (empty) entity
+                $newMessage->date = Time::now();
+                $newMessage->title = $this->request->getData('title');
+                $newMessage->message = $this->request->getData('message');
+                $newMessage->fighter_id_from = $idPlayer1;
+                $newMessage->fighter_id = $idPlayer2;
+
+                // Then we save the new message in the database
+                // If it works, empty fields and display a success message. If not, display an error message.
+                if ($messagesTable->save($newMessage)) {
+                    $this->Flash->success(__('Message '.$newMessage->title. ' has been sent !'));
+                    // empty fields;
+                }
+                else
+                {
+                    $this->Flash->error(__('Message creation failure !'));
+                }
+   
+            }
+    } 
+        
+        
+        
+        
+    
+    
+    
+    
     public function test()
     {
         //$this->createGuild();
@@ -81,7 +125,9 @@ class CommunicationController extends AppController {
         }
         $this->set('guildsArray', $arrayNameGuild);
         
-        $this->joinGuild();
+        //$this->joinGuild();
+        
+        $this->sendMessage();
     
     }
   

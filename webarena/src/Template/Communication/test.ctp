@@ -22,5 +22,19 @@
      
 ?>
 
+
+<h2>Send a new message : </h2><br>
+
+<?php
+    echo $this->Form->create();
+    echo $this->Form->input('title',array('type' => 'text','label' => 'Title : '));
+    echo $this->Form->textarea('message', ['rows' => '5', 'cols' => '5']);
+    echo $this->Form->submit('Send');
+    echo $this->Form->end();
+
+?>
+
+<br><br>
+
     <?= $this->Flash->render() ?>
   
