@@ -1,32 +1,34 @@
 
-$.document.ready(function(e){
-    document.write("pret");
+$(document).ready(function(){
+    console.log( "ready!" );
 });
+
 
 function action(key){
     $.ajax({
         type: "POST",
-        url:key,
+        url: "webarena/arenas/sight",
         data: key,
-        success: function(){
-            
+        success: function(result){
+            $("#map").html(result);
         }
     });
 }
 
-$.document.keydown(function(e){
+$(document).keydown(function(e){
+    console.log(e.which);
     var key;
     if(e.which == 38){
-        key = $("#top");
+        key = "top";
     }
     if(e.which == 37){
-        key = $("#left");
+        key = "left";
     }
     if(e.which == 39){
-        key = $("#right");
+        key = "right";
     }
     if(e.which == 40){
-        key = $("#bottom");
+        key = "bottom";
     }
     
     action(key);
