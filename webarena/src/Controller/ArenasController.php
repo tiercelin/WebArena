@@ -18,8 +18,7 @@ class ArenasController extends AppController {
 
     const WIDTH = 15;
     const LENGTH = 10;
-        
-
+    
     /**
      * Initialize function : load all models
      */
@@ -666,8 +665,11 @@ class ArenasController extends AppController {
     public function diary() {
         if ($this->isUserConnected()) {
             // Put code here
-            $entities=$this->Events->getEventsLessThan24h();
-           $date = new Date(Time::now().' -24 hours');
+            $entities=$this->Events->getEvents();
+            
+            $date= Time::now();
+            $date->modify('-24 hours');
+        
             $this->set('entities', $entities);
             $this->set('date', $date);
         }
