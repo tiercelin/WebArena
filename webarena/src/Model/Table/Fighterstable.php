@@ -131,9 +131,5 @@ class FightersTable extends Table {
 
         return $bestfighter;
     }
-    public function getFighterByCoord($x, $y){
-        $entity = $this->find()->where(['coordinate_x =' => $x], ['coordinate_y =' => $y])->first();
-        return $entity;  
-    }
 
 }

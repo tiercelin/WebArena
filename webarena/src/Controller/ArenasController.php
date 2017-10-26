@@ -6,6 +6,7 @@ use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
 use Cake\I18n\Time;
+use Cake\I18n\Date;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -660,6 +661,10 @@ class ArenasController extends AppController {
     public function diary() {
         if ($this->isUserConnected()) {
             // Put code here
+            $entities=$this->Events->getEventsLessThan24h();
+           $date = new Date(Time::now().' -24 hours');
+            $this->set('entities', $entities);
+            $this->set('date', $date);
         }
     }
 
