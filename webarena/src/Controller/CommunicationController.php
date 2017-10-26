@@ -34,6 +34,7 @@ class CommunicationController extends AppController {
                 // Then we save the new guild in the database
                 // If it works, redirect the user to the index page. If not, display an error message.
                 if ($guildsTable->save($newGuild)) {
+                    $this->Flash->success(__('Guild '.$newGuild->name. ' has been created !'));
                     return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
                 }
                 $this->Flash->error(__('Guild creation failure !'));
@@ -46,6 +47,11 @@ class CommunicationController extends AppController {
     public function test()
     {
         $this->createGuild();
+        
+        $guilds = $this->Guilds->find('all', array('fields' => array('Guilds.name')));
+        $this->set('guildsArray', $guilds);
+        
+        
     }
   
     
