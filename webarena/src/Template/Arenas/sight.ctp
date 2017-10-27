@@ -1,3 +1,6 @@
+
+<div id="BACKGRD">
+    <br><br><br>
 <?php $this->assign('title', 'Sight');
 
 $indextable = array();
@@ -6,7 +9,9 @@ foreach ($entities as $myrow) {
 }
 $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
 $message="";
-echo "<table id=\"map\" class = \"table table-bordered \">";
+
+
+echo "<table id=\"map\" class = \"table table-bordered\">";
 for ($i = 0; $i < $width; $i++) {
     echo "<tr style='width: 25px'>";
     for ($j = 0; $j < $length; $j++) {
@@ -27,19 +32,20 @@ for ($i = 0; $i < $width; $i++) {
                             else {
                                 $message="Stink !";
                             }
-                            echo "<td style='height: 35px'></td>";
+                            echo "<td style='height: 35px; length: 20px'> </td>";
                         }
-                        else echo "<td style='height: 35px'></td>";
+                        else echo "<td style='height: 35px; length: 20px'> </td>";
                 }
-            }else echo "<td style='height: 35px'></td>";
+            }else echo "<td style='height: 35px; length: 20px'>  </td>";
             }
-            else echo "<td style='height: 35px'> F </td>";  
+            else echo "<td style='height: 35px; length: 20px'> <img src='../img/hero.png' </td>";  
         }    
-        else echo "<td style='height: 35px'></td>";
+        else echo "<td style='height: 35px; length: 20px'>  </td>";
     }
     echo "</tr>";
 }
 echo "</table>";
+
 
 ?>
 <?= $message; ?>
@@ -55,9 +61,10 @@ echo "</table>";
 <?= $this->Form->postButton('Attack Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackbottom'],'class' => 'btn btn-primary']) ?>
 <?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas','action' => 'sight'], ['data' => ['regenerate' => 'true'],'class' => 'btn btn-primary']) ?>
 -->
+<br>
+</div>
 
-
-<table style="width:90%">
+<table id="but" >
 
   <tr>
     <td><h5> </h5></td> 
@@ -87,3 +94,4 @@ echo "</table>";
     <td><h5> </h5></td> 
   </tr>
  </table>
+
