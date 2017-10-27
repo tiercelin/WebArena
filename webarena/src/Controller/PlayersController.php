@@ -15,6 +15,11 @@ class PlayersController extends AppController {
         $this->loadComponent('Flash');
     }
 
+    public function passwordHash($pwd){
+        $pwdhash = password_hash($pwd, PASSWORD_DEFAULT);
+        return $pwdhash;
+    }
+    
     /**
      * Add a new player in database -> sign up function !
      */
@@ -33,7 +38,8 @@ class PlayersController extends AppController {
                 // Merge form data with the new (enmpty) entity
                 //$newPlayer = $this->Players->patchEntity($newPlayer, $this->request->getData());
                 $newPlayer->email = $this->request->getData('email');
-                $newPlayer->password = $this->request->getData('password');
+                 $pwdtemp = $this->request->getData('password');
+                 $newPlayer->password = $this->passwordHash($pwdtemp);
 
                 // Then we save the new player in the database
                 // If it works, redirect the user to the login page. If not, display an error message.
@@ -85,7 +91,7 @@ class PlayersController extends AppController {
                 $myresetPwd = $this->Players->getPlayer($email2);
                 if (!is_null($myresetPwd)) {
                     $password = $this->resetPassword();
-                    $myresetPwd->password = $password;
+                    $myresetPwd->password = $this->passwordHash($password);
                     $this->Players->save($myresetPwd);
                     $displayReset = true;
                 }
@@ -105,20 +111,28 @@ class PlayersController extends AppController {
         $this->set('displayReset', $displayReset);
 
         if ($this->request->is('post')) {
+
             // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
-            $players = $this->Players->find()->where(['email = ' => $this->request->getData('email'), 'password = ' => $this->request->getData('password')]);
-
+            $players = $this->Players->find()->where(['email = ' => $this->request->getData('email')]);
+            
             // If the player has been found in the database
-            if ($players->count() == 1) {
-                // Secondary check
-                $currentPlayer = $players->first();
+            if ($players->count() == 1){
+                      
+                //We check the password
+                if(password_verify($this->request->getData('password'), $players->first()->password)){
+                    // Secondary check
+                    $currentPlayer = $players->first();
 
-                // Set session variable with the ID of the current player
-                $session = $this->request->session();
-                $session->write('playerId', $currentPlayer->id);
+                    // Set session variable with the ID of the current player
+                    $session = $this->request->session();
+                    $session->write('playerId', $currentPlayer->id);
 
-                // Redirect the user to the index page
-                return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
+                    // Redirect the user to the index page
+                    return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
+                }
+                else{
+                    $this->Flash->error(__('Wrong password, please try again'));
+                }
             } else {
                 $this->Flash->error(__('Authentification failed, please try again'));
             }

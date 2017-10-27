@@ -432,29 +432,34 @@ class ArenasController extends AppController {
         
         if ($this->isUserConnected()) {
             
-            $mov = $this->request->getData('movement');
-            $attack = $this->request->getData('attack');
+            if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
             
-            $regenerate=false;
-            $regenerate = $this->request->getData('regenerate');
-            if ($regenerate == true) {
-                $this->regenerateMap();
-            }
+                $mov = $this->request->getData('movement');
+                $attack = $this->request->getData('attack');
 
-            if (!is_null($mov)) {
-                $this->move($mov);
-            }
-            if (!is_null($attack)) {
-                $this->handleAttack($attack);
-            }
+                $regenerate=false;
+                $regenerate = $this->request->getData('regenerate');
+                if ($regenerate == true) {
+                    $this->regenerateMap();
+                }
 
-            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-            $this->set('fighter', $fighter);
-            
-            $mytable = $this->Surroundings->getSurroundings();
-            $this->set('entities', $mytable);
-            $this->set('controller', $this);
-            
+                if (!is_null($mov)) {
+                    $this->move($mov);
+                }
+                if (!is_null($attack)) {
+                    $this->handleAttack($attack);
+                }
+
+                $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+                $this->set('fighter', $fighter);
+
+                $mytable = $this->Surroundings->getSurroundings();
+                $this->set('entities', $mytable);
+                $this->set('controller', $this);
+            }
+            else{
+                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+            }
         }
     }
 
