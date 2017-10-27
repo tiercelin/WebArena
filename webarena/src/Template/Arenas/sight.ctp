@@ -46,23 +46,13 @@ for ($i = 0; $i < $width; $i++) {
 }
 echo "</table>";
 
-
 ?>
-<?= $message; ?>
+    
 
-<!--
-<?= $this->Form->postButton('Top', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'top'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Left', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'left'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Right', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'right'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['movement' => 'bottom'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Attack Top', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attacktop'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Attack Left', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackleft'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Attack Right', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackright'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Attack Bottom', ['controller' => 'Arenas','action' => 'sight'],['data' => ['attack' => 'attackbottom'],'class' => 'btn btn-primary']) ?>
-<?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas','action' => 'sight'], ['data' => ['regenerate' => 'true'],'class' => 'btn btn-primary']) ?>
--->
 <br>
 </div>
+
+<?= $message; ?>
 
 <table id="but" >
 
