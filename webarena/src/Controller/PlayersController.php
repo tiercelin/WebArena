@@ -38,6 +38,7 @@ class PlayersController extends AppController {
                 // Then we save the new player in the database
                 // If it works, redirect the user to the login page. If not, display an error message.
                 if ($playersTable->save($newPlayer)) {
+                    $this->Flash->success(__('Your account has been created !'));
                     return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
                 }
                 $this->Flash->error(__('Account creation failure !'));
@@ -52,37 +53,57 @@ class PlayersController extends AppController {
      * If so, set up session variable. If not, display an error message.
      */
     public function loginPlayer() {
-        
+
         $password = '';
         $displayRetrieve = false;
         $displayReset = false;
-        $email2='';
+        $email2 = '';
         $this->loadModel('Players');
         if (!is_null($this->request->getData('retrieve'))) {
             $email2 = $this->request->getData('retrieveemail');
-            
-            $myretrievePwd = $this->Players->getPlayer($email2);
-            
-            $password = $myretrievePwd->password;
-            $displayRetrieve = true;
+            if ($email2 != "") {
+                $myretrievePwd = $this->Players->getPlayer($email2);
+                if (!is_null($myretrievePwd)) {
+                    $password = $myretrievePwd->password;
+                    $displayRetrieve = true;
+                }
+                else
+                {
+                    $this->Flash->error(__('This email does not exist, please create an account'));
+                }
+            }
+            else
+            {
+                $this->Flash->error(__('Please enter a valid email'));
+            }
             
         }
         if (!is_null($this->request->getData('reset'))) {
-            //$email2='admin@test.com';
+
             $email2 = $this->request->getData('resetemail');
-            $myresetPwd = $this->Players->getPlayer($email2);
-            $password = $this->resetPassword();
-            $myresetPwd->password = $password;
-            $this->Players->save($myresetPwd);
-            
-            $displayReset = true;
-            
+            if ($email2 != "") {
+                $myresetPwd = $this->Players->getPlayer($email2);
+                if (!is_null($myresetPwd)) {
+                    $password = $this->resetPassword();
+                    $myresetPwd->password = $password;
+                    $this->Players->save($myresetPwd);
+                    $displayReset = true;
+                }
+                else
+                {
+                    $this->Flash->error(__('This email does not exist, please create an account'));
+                }
+            }
+            else
+            {
+                $this->Flash->error(__('Please enter a valid email'));
+            }
         }
         $this->set('email2', $email2);
         $this->set('password', $password);
         $this->set('displayRetrieve', $displayRetrieve);
         $this->set('displayReset', $displayReset);
-        
+
         if ($this->request->is('post')) {
             // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
             $players = $this->Players->find()->where(['email = ' => $this->request->getData('email'), 'password = ' => $this->request->getData('password')]);
