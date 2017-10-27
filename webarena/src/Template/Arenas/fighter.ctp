@@ -1,3 +1,4 @@
+<?php //echo $this->Html->script('fighter.js');?>
 <?php $this->assign('title', 'Fighter');$controller?>
 
 
@@ -8,10 +9,9 @@
     <th> 
         <div class="ChImg">
     <?php 
-        if ($controller->uploadAvatar());
-    {
+        
     echo $this->Html->image("avatar/".$imageFileName, ['height' => '100', 'width'=>'100' ]);    
-    }
+    
 
     ?>
     </div>
@@ -20,14 +20,13 @@
     <th>   
     <div class="ChImg">
     <?php 
-    echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data']);
-    echo $this->Form->input('upload', ['type' => 'file']);
-    echo $this->Form->submit('Save avatar');
+    echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data', 'type' => 'file']);
+    echo $this->Form->file('upload');
+    echo $this->Form->submit('Save avatar', ['controller' => 'Arenas','action' => 'fighter']);
     echo $this->Form->end();
     ?>
     </div>
     </th> 
-    
     
   </tr>
   <tr>

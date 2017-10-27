@@ -18,7 +18,7 @@ class ArenasController extends AppController {
 
     const WIDTH = 15;
     const LENGTH = 10;
-    
+
     /**
      * Initialize function : load all models
      */
@@ -27,8 +27,11 @@ class ArenasController extends AppController {
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
-        
+
         $this->loadComponent('Flash');
+
+        //To regenerate the map each time we connect
+        //$this->regenerateMap();
     }
 
     /**
@@ -66,7 +69,7 @@ class ArenasController extends AppController {
      */
     public function createFighter() {
         $session = $this->request->session();
-                
+
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
@@ -118,12 +121,21 @@ class ArenasController extends AppController {
      * This function shows the fighter page : fighter ID card, actual stats, (potential) possibility to upgrade stats, ...
      */
     public function fighter() {
+
+        $avatarFilename = 'kittenWarrior.jpg';
         if ($this->isUserConnected()) {
 
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
 
+            if ($this->request->is('post')) {
+                $avatar = $this->request->getData('upload');
+            
+                if (!empty($avatar)) {
+                    $this->uploadAvatarByName($avatar['name'], $avatar['tmp_name']);
+                }
+            }
             // Find if this user has fighter(s)          
             $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
 
@@ -153,26 +165,20 @@ class ArenasController extends AppController {
 
                     // Display the levels available for the fighter, rounded down
                     $this->set('levelsavailable', floor($entity->xp / 4));
-                    
-                    // Retrieve the rigth file name to display the avatar
-                    $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*')) ;
-     
-                    if($avatarFilenameTest != 0)
-                    {
-                        $avatarFilename = $idPlayer . '.jpg';  
-                    }
-                    else
-                    {
-                        $avatarFilename = 'kittenWarrior.jpg';
-                    }
-                    
-                    $this->set('imageFileName', $avatarFilename);
-                       
+
+
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
-                 
                 }
             }
+
+            // Retrieve the rigth file name to display the avatar
+            $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*'));
+
+            if ($avatarFilenameTest > 0) {
+                $avatarFilename = $idPlayer . '.jpg';
+            }
+            $this->set('imageFileName', $avatarFilename);
         }
     }
 
@@ -190,7 +196,7 @@ class ArenasController extends AppController {
         $fighter = $this->Fighters->getFighter($idPlayer);
 
         //Upgrade = 1 corresponds to sight
-        if ($upgrade == 1 && $fighter->xp >=4) {
+        if ($upgrade == 1 && $fighter->xp >= 4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -199,7 +205,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 2 corresponds to strength
-        if ($upgrade == 2 && $fighter->xp >=4) {
+        if ($upgrade == 2 && $fighter->xp >= 4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -208,7 +214,7 @@ class ArenasController extends AppController {
             $this->Fighters->save($fighter);
         }
         //Upgrade = 3 corresponds to health
-        if ($upgrade == 3 && $fighter->xp >=4) {
+        if ($upgrade == 3 && $fighter->xp >= 4) {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
@@ -281,11 +287,11 @@ class ArenasController extends AppController {
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
     }
 
-    public function getFighterByCoord($x, $y){
+    public function getFighterByCoord($x, $y) {
         $entity = $this->Fighters->find()->where(['coordinate_x =' => $x, 'coordinate_y =' => $y])->first();
         return $entity;
     }
-    
+
     /**
      * Handle attack between one fighter and another entity, the monster or a second fighter
      * @param type $attack : attack direction
@@ -305,7 +311,7 @@ class ArenasController extends AppController {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->addEventToDiary($fighter, ' Monster attacked and killed by');
-            } else if (!is_null($fighter2)  && $fighter2->player_id != $fighter->player_id) {
+            } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
                 $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
@@ -316,7 +322,7 @@ class ArenasController extends AppController {
         if ($attack == 'attackleft' && $fighter->coordinate_y > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y - 1);
             $fighter2 = $this->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y - 1);
-            
+
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
@@ -334,7 +340,7 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y + 1);
             $fighter2 = $this->getFighterByCoord($fighter->coordinate_x, $fighter->coordinate_y + 1);
 
-            
+
             // If we find a monster
             if (!is_null($content) && !is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
@@ -351,13 +357,13 @@ class ArenasController extends AppController {
         if ($attack == 'attackbottom' && $fighter->coordinate_x < self::LENGTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x + 1, $fighter->coordinate_y);
             $fighter2 = $this->getFighterByCoord($fighter->coordinate_x + 1, $fighter->coordinate_y);
-            
+
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Monster attacked and killed by');
-            } else if (!is_null($fighter2)  && $fighter2->player_id != $fighter->player_id) {
+            } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
                 $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
@@ -365,42 +371,59 @@ class ArenasController extends AppController {
             }
         }
     }
-    
-    
+
     /**
      * Propose to the user to upload an image as an avatar
      */
-    public function uploadAvatar()
-    {
-        if($this->isUserConnected())
-        {
+   /* public function uploadAvatar() {
+        if ($this->isUserConnected()) {
             // Retrieve the ID of the current player
             $idPlayer = $this->request->session()->read('playerId');
-    
-        // If the request is not null -> if an image has been selected
-        if (!empty($this->request->data)) {
-            if (!empty($this->request->data['upload']['name'])) {  
-                
-                // Put the image into a variable
-                $file = $this->request->data['upload']; 
-                
-                // Get the image extension
-                $ext = substr(strtolower(strrchr($file['name'], '.')), 1); 
-                
-                // Set allowed extensions
-                $arr_ext = array('jpg', 'jpeg', 'gif', 'png'); 
-                
-                // If the extension is valid
-                if (in_array($ext, $arr_ext)) {
-                    // Upload the file from local repertory to webroot/upload/avatar repertory
-                    move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
-                    return true;
+
+            // If the request is not null -> if an image has been selected
+            if (!empty($this->request->data)) {
+                if (!empty($this->request->data['upload']['name'])) {
+
+                    // Put the image into a variable
+                    $file = $this->request->data['upload'];
+
+                    // Get the image extension
+                    $ext = substr(strtolower(strrchr($file['name'], '.')), 1);
+
+                    // Set allowed extensions
+                    $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
+
+                    // If the extension is valid
+                    if (in_array($ext, $arr_ext)) {
+                        // Upload the file from local repertory to webroot/upload/avatar repertory
+                        move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
+                        return true;
+                    }
                 }
             }
         }
-    }   
-   
-}
+    }*/
+
+    public function uploadAvatarByName($file, $tmp_name) {
+        if ($this->isUserConnected()) {
+            // Retrieve the ID of the current player
+            $idPlayer = $this->request->session()->read('playerId');
+
+            if (!empty($file)) {
+                // Get the image extension
+                $ext = substr(strtolower(strrchr($file, '.')), 1);
+
+                // Set allowed extensions
+                $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
+
+                // If the extension is valid
+                if (in_array($ext, $arr_ext)) {
+                    // Upload the file from local repertory to webroot/upload/avatar repertory
+                    move_uploaded_file($tmp_name, WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
+                }
+            }
+        }
+    }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
 
@@ -412,13 +435,13 @@ class ArenasController extends AppController {
         $width = self::LENGTH;
         $this->set('length', $length);
         $this->set('width', $width);
-        
+
         if ($this->isUserConnected()) {
-            
+
             $mov = $this->request->getData('movement');
             $attack = $this->request->getData('attack');
-            
-            $regenerate=false;
+
+            $regenerate = false;
             $regenerate = $this->request->getData('regenerate');
             if ($regenerate == true) {
                 $this->regenerateMap();
@@ -433,11 +456,10 @@ class ArenasController extends AppController {
 
             $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
             $this->set('fighter', $fighter);
-            
+
             $mytable = $this->Surroundings->getSurroundings();
             $this->set('entities', $mytable);
             $this->set('controller', $this);
-            
         }
     }
 
@@ -665,11 +687,11 @@ class ArenasController extends AppController {
     public function diary() {
         if ($this->isUserConnected()) {
             // Put code here
-            $entities=$this->Events->getEvents();
-            
-            $date= Time::now();
+            $entities = $this->Events->getEvents();
+
+            $date = Time::now();
             $date->modify('-24 hours');
-        
+
             $this->set('entities', $entities);
             $this->set('date', $date);
         }
@@ -684,6 +706,5 @@ class ArenasController extends AppController {
             'coordinate_y' => $fighter->coordinate_y]);
         $this->Events->save($myNewEvent);
     }
-    
 
 }
