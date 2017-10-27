@@ -7,20 +7,40 @@ body
 
 #postuser {
     width: 90%;
-    height: 90%;
+    height: 100%;
     box-sizing: border-box;
     border: 2px solid #ccc;
     border-radius: 4px;
     background-color: white;
     background-position: 10px 10px; 
     background-repeat: no-repeat;
-    padding: 12px 20px 12px 40px;
+    padding: 12px 12px 12px 12px;
     margin-left: 5%;
+    margin-right: 5%;
 }
 
 #map {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    text-align: center;
+    background-color: transparent;
+}
+
+#but {
     width: 90%;
+    height: 50px;
     margin-left: 5%;
     margin-right: 5%;
     text-align: center;
+    background-color: transparent;
 }
+#BACKGRD{
+     box-sizing: border-box;
+    border: 2px solid #000000;
+    border-radius: 4px;
+    background: no-repeat;
+    background-image: url('../img/arena.jpg');
+    background-size: cover;
+}
+

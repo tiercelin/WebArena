@@ -48,6 +48,7 @@ class ArenasController extends AppController {
 
     public function logout() {
         $this->request->session()->destroy();
+        $this->Flash->success(__('You have been disconnected !'));
         return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
     }
 
@@ -88,7 +89,14 @@ class ArenasController extends AppController {
                 $newFighter->setPlayerId($idPlayer);
 
                 // Save the new fighter into the database and redirect user to fighter stats page
-                $fightersTable->save($newFighter);
+                if($fightersTable->save($newFighter))
+                {
+                    $this->Flash->success(__('New fighter "'.$newFighter->name.'" has been created !'));
+                }
+                else
+                {
+                    $this->Flash->error(__('Fighter creation process failed'));
+                }
                 //Add the event to the table
                 $this->addEventToDiary($newFighter, 'Create new fighter');
                 return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
@@ -107,9 +115,11 @@ class ArenasController extends AppController {
 
             // Retrieve the fighter entity to be deleted
             $fighterToDelete = $this->Fighters->getFighter($idPlayer);
+            $fighterToDeleteName = $fighterToDelete->name;
 
             // Delete this fighter          
             $this->Fighters->delete($fighterToDelete);
+            $this->Flash->success(__('Fighter "'.$fighterToDeleteName.'" has been correctly deleted !'));
             //Add this event to the table
             $this->addEventToDiary($fighterToDelete, ' Fighter Dead');
             // Redirect the user to the fighter creation page
@@ -272,6 +282,7 @@ class ArenasController extends AppController {
 
         // If the attack succeeds, decrement health of fighter injured
         if ($doAttackSucceed == true) {
+            $this->Flash->success(__('Your attack succeeded on "'.$fighter2->name.'"'));
             $fighter2->current_health -= $fighter1->skill_strength;
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
@@ -279,12 +290,14 @@ class ArenasController extends AppController {
 
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
+                $this->Flash->success(__('Your attack killed "'.$fighter2->name.'"'));
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
                 $this->deleteFighter($idPlayer2);
             }
         } else //Add the event to the table
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
+            $this->Flash->error(__('Your attack failed on "'.$fighter2->name.'"'));
     }
 
     public function getFighterByCoord($x, $y) {
@@ -310,6 +323,7 @@ class ArenasController extends AppController {
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
+                 $this->Flash->success(__('You killed the wumpus !'));
                 $this->addEventToDiary($fighter, ' Monster attacked and killed by');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
@@ -327,6 +341,7 @@ class ArenasController extends AppController {
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
+                $this->Flash->success(__('You killed the wumpus !'));
                 $this->addEventToDiary($fighter, 'Monster attacked and killed by');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
@@ -345,6 +360,7 @@ class ArenasController extends AppController {
             if (!is_null($content) && !is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
+                $this->Flash->success(__('You killed the wumpus !'));
                 $this->addEventToDiary($fighter, 'Monster attacked and killed by');
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
@@ -362,6 +378,7 @@ class ArenasController extends AppController {
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
+                $this->Flash->success(__('You killed the wumpus !'));
                 $this->addEventToDiary($fighter, 'Monster attacked and killed by');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
@@ -437,6 +454,7 @@ class ArenasController extends AppController {
         $this->set('width', $width);
 
         if ($this->isUserConnected()) {
+<<<<<<< HEAD
 
             $mov = $this->request->getData('movement');
             $attack = $this->request->getData('attack');
@@ -446,13 +464,38 @@ class ArenasController extends AppController {
             if ($regenerate == true) {
                 $this->regenerateMap();
             }
+=======
+            
+            if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
+            
+                $mov = $this->request->getData('movement');
+                $attack = $this->request->getData('attack');
 
-            if (!is_null($mov)) {
-                $this->move($mov);
+                $regenerate=false;
+                $regenerate = $this->request->getData('regenerate');
+                if ($regenerate == true) {
+                    $this->regenerateMap();
+                }
+
+                if (!is_null($mov)) {
+                    $this->move($mov);
+                }
+                if (!is_null($attack)) {
+                    $this->handleAttack($attack);
+                }
+
+                $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+                $this->set('fighter', $fighter);
+>>>>>>> 566b7e208d796b67968d1983177ebe7a7ddd7221
+
+                $mytable = $this->Surroundings->getSurroundings();
+                $this->set('entities', $mytable);
+                $this->set('controller', $this);
             }
-            if (!is_null($attack)) {
-                $this->handleAttack($attack);
+            else{
+                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
+<<<<<<< HEAD
 
             $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
             $this->set('fighter', $fighter);
@@ -460,6 +503,8 @@ class ArenasController extends AppController {
             $mytable = $this->Surroundings->getSurroundings();
             $this->set('entities', $mytable);
             $this->set('controller', $this);
+=======
+>>>>>>> 566b7e208d796b67968d1983177ebe7a7ddd7221
         }
     }
 
@@ -483,6 +528,14 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
+                if ($content->type == 'T')
+                {
+                    $this->Flash->error(__('You have been killed by a trap !'));
+                }
+                else
+                {
+                    $this->Flash->error(__('You have been killed by the wumpus !'));
+                }                
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -496,6 +549,14 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
+                if ($content->type == 'T')
+                {
+                    $this->Flash->error(__('You have been killed by a trap !'));
+                }
+                else
+                {
+                    $this->Flash->error(__('You have been killed by the wumpus !'));
+                }  
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -509,6 +570,14 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
+                if ($content->type == 'T')
+                {
+                    $this->Flash->error(__('You have been killed by a trap !'));
+                }
+                else
+                {
+                    $this->Flash->error(__('You have been killed by the wumpus !'));
+                }  
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -522,6 +591,14 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
+                if ($content->type == 'T')
+                {
+                    $this->Flash->error(__('You have been killed by a trap !'));
+                }
+                else
+                {
+                    $this->Flash->error(__('You have been killed by the wumpus !'));
+                }  
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -549,6 +626,7 @@ class ArenasController extends AppController {
         $this->generationTraps();
         $this->generationMonster();
         $this->generationPlayer();
+        $this->Flash->success(__('A new arena has been generated !'));        
     }
 
     /**
