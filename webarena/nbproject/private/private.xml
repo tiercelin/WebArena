@@ -3,22 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/PlayersController.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/Fighterstable.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Arenas/sight.ctp</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/webroot/js/interaction.js</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/View/AjaxView.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Model/Table/SurroundingsTable.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Controller/ArenasController.php</file>
-            <file>file:/C:/wamp64/www/webarena/webarena/src/Template/Layout/default.ctp</file>
-=======
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Layout/default.ctp</file>
             <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/webroot/css/Webarena.css</file>
             <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/fighter.ctp</file>
             <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/sight.ctp</file>
+            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Model/Table/Fighterstable.php</file>
             <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Controller/ArenasController.php</file>
->>>>>>> 335e781c1c04bd9576c10628a56976a871d6303a
+            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Controller/PlayersController.php</file>
         </group>
     </open-files>
 </project-private>

@@ -27,7 +27,7 @@ for ($i = 0; $i < $width; $i++) {
                             else {
                                 $message="Stink !";
                             }
-                            echo "<td style='bgcolor:#f2f2f2'></td>";
+                            echo "<td style='height: 35px'></td>";
                         }
                         else echo "<td style='height: 35px'></td>";
                 }
