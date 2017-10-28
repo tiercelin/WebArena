@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+use App\Model\Entity\Events;
+use Cake\I18n\Time;
+
 
 class PlayersController extends AppController {
 
@@ -13,6 +16,7 @@ class PlayersController extends AppController {
     // Initialization 
     public function initialize() {
         $this->loadComponent('Flash');
+        $this->loadModel('Events');
     }
 
     public function passwordHash($pwd){
@@ -126,6 +130,7 @@ class PlayersController extends AppController {
                     // Set session variable with the ID of the current player
                     $session = $this->request->session();
                     $session->write('playerId', $currentPlayer->id);
+                    $this->addConnexion($this->request->session()->read('playerId'), 'connexion');
 
                     // Redirect the user to the index page
                     return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
@@ -144,6 +149,14 @@ class PlayersController extends AppController {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
         $password = substr(str_shuffle($chars), 0, self::PASSLENGTH);
         return $password;
+    }
+    public function addConnexion($idPlayer){
+        $myNewEvent = new Events([
+            'name' => $idPlayer,
+            'date' => Time::now(),
+            'coordinate_x' => -1,
+            'coordinate_y' => -2]);
+        $this->Events->save($myNewEvent);
     }
 
 }

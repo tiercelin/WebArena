@@ -8,6 +8,7 @@ use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
 use Cake\I18n\Time;
 use Cake\I18n\Date;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -48,9 +49,13 @@ class ArenasController extends AppController {
     }
 
     public function logout() {
+        if($this->isUserConnected){
+            $event = $this->Events->getEvent($this->request->session()->read('playerId'));
+        $this->Events->delete($event->id);
         $this->request->session()->destroy();
         $this->Flash->success(__('You have been disconnected !'));
         return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+        }
     }
 
     ////////// ********** INDEX PART **********\\\\\\\\\\
@@ -311,6 +316,12 @@ class ArenasController extends AppController {
         return $entity;
     }
 
+    public function getFighter($playerid) {
+
+        $entity = $this->Fighters->find()->where(['player_id =' => $playerid])->first();
+        return $entity;
+    }
+
     /**
      * Handle attack between one fighter and another entity, the monster or a second fighter
      * @param type $attack : attack direction
@@ -439,7 +450,6 @@ class ArenasController extends AppController {
                 if ($regenerate == true) {
                     $this->regenerateMap();
                 }
-
                 if (!is_null($mov)) {
                     $this->move($mov);
                 }
@@ -450,7 +460,20 @@ class ArenasController extends AppController {
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
 
+                //get users connected
+                $newconnection = $this->Events->getConnexions();
+                foreach($newconnection as $nc){
+                    $conn[] = $nc->name;
+                }
+                
+                $fighters = array();
+                foreach ($conn as $stillconnected) {
+                    if($this->getFighter($stillconnected)!=$fighter){
+                        $fighters[] = $this->getFighter($stillconnected);
+                    }  
+                }
                 $mytable = $this->Surroundings->getSurroundings();
+                $this->set('fighters', $fighters);
                 $this->set('entities', $mytable);
                 $this->set('controller', $this);
             } else {
