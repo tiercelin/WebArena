@@ -10,7 +10,7 @@ use Cake\I18n\Time;
 class PlayersController extends AppController {
 
     //Constant to define the lenght of the reseted password
-    const PASSLENGTH = 15;
+    const PASSLENGTH = 7;
 
     // Initialization 
     public function initialize() {
@@ -64,56 +64,19 @@ class PlayersController extends AppController {
      */
     public function loginPlayer() {
 
-        $password = '';
-        $displayRetrieve = false;
-        $displayReset = false;
-        $email2 = '';
-        /* if (!is_null($this->request->getData('retrieve'))) {
-          $email2 = $this->request->getData('retrieveemail');
-          if ($email2 != "") {
-          $myretrievePwd = $this->Players->getPlayer($email2);
-          if (!is_null($myretrievePwd)) {
-          $password = $myretrievePwd->password;
-          $displayRetrieve = true;
-          }
-          else
-          {
-          $this->Flash->error(__('This email does not exist, please create an account'));
-          }
-          }
-          else
-          {
-          $this->Flash->error(__('Please enter a valid email'));
-          }
-
-          }
-          if (!is_null($this->request->getData('reset'))) {
-
-          $email2 = $this->request->getData('resetemail');
-          if ($email2 != "") {
-          $myresetPwd = $this->Players->getPlayer($email2);
-          if (!is_null($myresetPwd)) {
-          $password = $this->resetPassword();
-          $myresetPwd->password = $this->passwordHash($password);
-          $this->Players->save($myresetPwd);
-          $displayReset = true;
-          }
-          else
-          {
-          $this->Flash->error(__('This email does not exist, please create an account'));
-          }
-          }
-          else
-          {
-          $this->Flash->error(__('Please enter a valid email'));
-          }
-          } */
-        $this->set('email2', $email2);
-        $this->set('password', $password);
-        /* $this->set('displayRetrieve', $displayRetrieve);
-          $this->set('displayReset', $displayReset); */
-        if($this->request->is('post')){
+        if ($this->request->is('post')) {
             $this->changePassword($this->request->getData('emailchange'), $this->request->getData('oldpassword'), $this->request->getData('newpassword'), $this->request->getData('checkpassword'));
+        }
+        if ($this->request->is('post')) {
+            $resetemail = $this->request->getData('emailreset');
+            $player = $this->Players->find()->where(['email = ' => $resetemail])->first();
+            if (!is_null($player)) {
+                $resetpwd = $this->resetPassword($resetemail);
+                $hashedPwd = $this->passwordHash($resetpwd);
+                $player->password = $hashedPwd;
+                $this->Players->save($player);
+                $this->Flash->success(__('Your new password is: ' . $resetpwd ));
+            }else $this->Flash->error(__('Wrong email, please try again'));
         }
 
         if ($this->request->is('post')) {
@@ -161,9 +124,12 @@ class PlayersController extends AppController {
                     $players->password = $hashedPwd;
                     $this->Players->save($players);
                     $this->Flash->success(__('Password changed, please connect with your new password! '));
-                } else $this->Flash->error(__('Your two new password don\'t match. Please enter the same password!'));
-            }else $this->Flash->error(__('Wrong old password, please try again! '));
-        }else $this->Flash->error(__('Wrong email, please try again'));
+                } else
+                    $this->Flash->error(__('Your two new password don\'t match. Please enter the same password!'));
+            } else
+                $this->Flash->error(__('Wrong old password, please try again! '));
+        } else
+            $this->Flash->error(__('Wrong email, please try again'));
     }
 
     /**
