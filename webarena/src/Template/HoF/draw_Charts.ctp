@@ -15,7 +15,7 @@ echo $this->Html->script('plugins/jqplot.pointLabels.js') ;
 <div id="chart1" style="height:400px;width:500px; margin:auto; position:absolute; top:100px; left:100px;"></div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-<div id="pieChartsSection" style="height:200px;width:200px; margin:auto; "></div>
+<div id="pieChartsSection" style="height:200px;width:200px; margin:auto; position:absolute; top:100px; left:800px; "></div>
 
 
 <script>
@@ -63,7 +63,7 @@ $(document).ready(function(){
       for (var i in fighterSkills)
       {
           // Create a new sub-region for new pie charts
-          $('#pieChartsSection').append('<div id="' + fighterSkills[i][4] + '"> </div>');
+          $('#pieChartsSection').append('<br><div id="' + fighterSkills[i][4] + '"> </div>');
           $.jqplot(fighterSkills[i][4], [[['health',fighterSkills[i][1]],['sight',fighterSkills[i][2]],['strength',fighterSkills[i][3]]]], {
         title : 'Skills of '+fighterSkills[i][0],
         seriesDefaults:{
