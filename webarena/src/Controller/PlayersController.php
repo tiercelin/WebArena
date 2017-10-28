@@ -160,10 +160,10 @@ class PlayersController extends AppController {
                     $hashedPwd = $this->passwordHash($newPwd);
                     $players->password = $hashedPwd;
                     $this->Players->save($players);
-                    return true;
-                }// else display -> the new passwords do not match, re enter your passwords !
-            }//else display-> your old password is incorrect, please retype it
-        }// else display -> email incorrect => enter a new email !
+                    $this->Flash->success(__('Password changed, please connect with your new password! '));
+                } else $this->Flash->error(__('Your two new password don\'t match. Please enter the same password!'));
+            }else $this->Flash->error(__('Wrong old password, please try again! '));
+        }else $this->Flash->error(__('Wrong email, please try again'));
     }
 
     /**
