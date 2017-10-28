@@ -67,10 +67,8 @@ class EventsTable extends Table {
     }
     
     public function getEvent($name) {
-        $entity = $this->find()->where(['name ='=>$name]);
-        if ($entity->isEmpty()) {
-            return null;
-        }
+        $entity = $this->find()->where(['name ='=>$name])->first();
+        
         return $entity;
     }
 

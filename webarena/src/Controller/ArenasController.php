@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\Filesystem\File;
 use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
+use App\Model\Table\Players;
 use Cake\I18n\Time;
-use Cake\I18n\Date;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -49,13 +47,12 @@ class ArenasController extends AppController {
     }
 
     public function logout() {
-        if($this->isUserConnected){
-            $event = $this->Events->getEvent($this->request->session()->read('playerId'));
-        $this->Events->delete($event->id);
+        
+        $event = $this->Events->getEvent($this->request->session()->read('playerId'));
+        $this->Events->delete($event);
         $this->request->session()->destroy();
         $this->Flash->success(__('You have been disconnected !'));
         return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
-        }
     }
 
     ////////// ********** INDEX PART **********\\\\\\\\\\
@@ -115,8 +112,8 @@ class ArenasController extends AppController {
 
         // Verify that the user is connected
         if ($this->isUserConnected()) {
-
-            // Retrieve the fighter entity to be deleted
+            if($idPlayer==$this->request->session()->read('playerId')){
+                // Retrieve the fighter entity to be deleted
             $fighterToDelete = $this->Fighters->getFighter($idPlayer);
             $fighterToDeleteName = $fighterToDelete->name;
 
@@ -127,6 +124,8 @@ class ArenasController extends AppController {
             $this->addEventToDiary($fighterToDelete, ' Fighter Dead');
             // Redirect the user to the fighter creation page
             return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+            }
+            
         }
     }
 
@@ -261,10 +260,10 @@ class ArenasController extends AppController {
 
         if (is_int($fighter1Level) && is_int($fighter2Level)) {
             // Pick a random number between 1 and 20
-            $randomValue = rand(1, 20);
+            echo $randomValue = rand(1, 20);
 
             // Use the formula to find the computed value
-            $computedValue = 10 + $fighter2Level - $fighter1Level;
+            echo $computedValue = 10 + $fighter2Level - $fighter1Level;
 
             // If the random value is more than the computed value, the attack succeeds. Else, it fails.
             if ($randomValue > $computedValue) {
@@ -283,7 +282,7 @@ class ArenasController extends AppController {
      * @param type $idPlayer2 : the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
-        echo 'ATTACK';
+        //echo 'ATTACK';
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
@@ -298,17 +297,23 @@ class ArenasController extends AppController {
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
+            $this->addEventToDiary($fighter1, $fighter2->name . ' have been attacked by');
 
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
                 $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
+                
+                $this->addEventToDiary($fighter1, $fighter2->name . ' have been killed by');
+                
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
                 $this->deleteFighter($idPlayer2);
             }
-        } else //Add the event to the table
+        } else {
+            //Add the event to the table
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
         $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
+        }
     }
 
     public function getFighterByCoord($x, $y) {
@@ -345,7 +350,8 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -363,7 +369,8 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -382,7 +389,8 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -400,7 +408,7 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }

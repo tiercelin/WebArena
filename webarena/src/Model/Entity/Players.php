@@ -11,8 +11,11 @@ class Players extends Entity {
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        //'id' => true
     ];
+    public function getID(){
+        return $this->id;
+    }
      
     /**
      * Do not show hash passowrds to any one !!

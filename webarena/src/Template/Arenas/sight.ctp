@@ -11,10 +11,10 @@
     //pr($fighters);
     if (!empty($fighters)) {
         foreach ($fighters as $enemyFighter) {
+            if(!is_null($enemyFighter))// first if empty is working when it should not
             $indextable[$enemyFighter->coordinate_x][$enemyFighter->coordinate_y] = $enemyFighter;
         }
     }
-
     $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
     $message = "";
 
