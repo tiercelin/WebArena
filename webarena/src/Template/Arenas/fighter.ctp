@@ -19,9 +19,9 @@
     
     <th>   
     <div class="ChImg">
-    <?php 
-    echo $this->Form->create('particularRecord', ['enctype' => 'multipart/form-data', 'type' => 'file']);
-    echo $this->Form->file('upload');
+    <?php //'enctype' => 'multipart/form-data',
+    echo $this->Form->create('particularRecord', ['type' => 'file']);
+    echo $this->Form->file('upload', ['type' => 'file', 'allowed_ext' => array('.jpg', '.jpeg', '.png')]);
     echo $this->Form->submit('Save avatar', ['controller' => 'Arenas','action' => 'fighter']);
     echo $this->Form->end();
     ?>
