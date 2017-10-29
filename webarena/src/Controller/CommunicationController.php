@@ -49,29 +49,32 @@ class CommunicationController extends AppController {
         }
     }
     
-    public function joinGuild () //$nameGuild
+    public function joinGuild () 
     {
-        $nameGuild = 'mad max';
         $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
         
-        // Retrieve the current fighter
-        $fighter = $this->Fighters->getFighter($idPlayer);
-        
-        // Retrieve the ID of the guild thanks to its name
-        $guild = $this->Guilds->getGuild($nameGuild);
-        
-        // Set and save (new) guild ID
-        $fighter->guild_id = $guild->id;
-        
-        if ($this->Fighters->save($fighter))
+        if($this->request->is('post'))
         {
-            $this->Flash->success (__('You have joined the guild "'.$nameGuild.'"'));
+            // Retrieve the guild thanks to the selected value
+            $numGuild = $this->request->data['guildjoin'] + 1;
+            $guild = $this->Guilds->find()->where(['id = ' => $numGuild])->first();
+                       
+            // Retrieve the current fighter
+            $fighter = $this->Fighters->getFighter($idPlayer);
+
+            // Set and save (new) guild ID
+            $fighter->guild_id = $guild->id;
+        
+            if ($this->Fighters->save($fighter))
+            {
+                $this->Flash->success (__('You have joined the guild "'.$guild->name.'"'));
+            }
+        
+            else
+            {
+                $this->Flash->error(__('You fail to join the guild "'.$guild->name.'"'));
+            }
         }
-        
-        else
-        {
-            $this->Flash->error(__('You fail to join the guild "'.$nameGuild.'"'));
-        }     
     }
     
     
@@ -141,11 +144,11 @@ class CommunicationController extends AppController {
         }
         $this->set('guildsArray', $arrayNameGuild);
         
-        //$this->joinGuild();
+        $this->joinGuild();
         
         //$this->sendMessage();
         
-        $this->getMessage();
+        //$this->getMessage();
         
     
     }
