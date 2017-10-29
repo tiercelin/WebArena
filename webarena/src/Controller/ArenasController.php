@@ -449,7 +449,6 @@ class ArenasController extends AppController {
         $this->set('width', $width);
 
         if ($this->isUserConnected()) {
-<<<<<<< HEAD
 
 
             $regenerate = false;
@@ -462,9 +461,8 @@ class ArenasController extends AppController {
             if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
             
 
-=======
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
->>>>>>> c28fd0584853fcfa7645fbe10a9d58f3352cd257
+
                 $mov = $this->request->getData('movement');
                 $attack = $this->request->getData('attack');
 
@@ -482,10 +480,7 @@ class ArenasController extends AppController {
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
-<<<<<<< HEAD
 
-=======
->>>>>>> c28fd0584853fcfa7645fbe10a9d58f3352cd257
 
                 //get users connected
                 $newconnection = $this->Events->getConnexions();
@@ -506,7 +501,7 @@ class ArenasController extends AppController {
             } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
-<<<<<<< HEAD
+
 
 
 
@@ -519,11 +514,9 @@ class ArenasController extends AppController {
 
         }
     }
-    
-=======
-        }
     }
->>>>>>> c28fd0584853fcfa7645fbe10a9d58f3352cd257
+    
+
 
     /**
      * Updates fighter coordinates on the database
