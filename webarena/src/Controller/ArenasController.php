@@ -49,11 +49,14 @@ class ArenasController extends AppController {
 
     public function logout() {
         if ($this->isUserConnected()) {
-            $event = $this->Events->getEvent($this->request->session()->read('playerId'));
+            $events = $this->Events->getEvent($this->request->session()->read('playerId'));
             $players = $this->Players->find()->where(['id =' => $this->request->session()->read('playerId')])->first();
             if (!is_null($players)) {
                 $this->addDeconnection($this->request->session()->read('playerId'), $players->email);
-                $this->Events->delete($event);
+                foreach($events as $event){
+                    $this->Events->delete($event);
+                }
+                
                 $this->request->session()->destroy();
                 $this->Flash->success(__('You have been disconnected !'));
                 return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
