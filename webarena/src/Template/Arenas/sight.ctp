@@ -28,9 +28,21 @@
                     if ($controller->canISeeIt($indextable[$i][$j], $fighter)) { // frame squares than I can see
                         if ($indextable[$i][$j]->type == 'P') {
                             echo "<td style='height: 35px'> P </td>";
-                        } else {
+                        } else {/// to display the enemy's avatart
                             if (in_array($indextable[$i][$j], $fighters)) {
-                                echo "<td> E </td>"; // E for enemy for now
+                                $idPlayer = $indextable[$i][$j]->player_id;
+                                $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
+                                $avfilecount = count($totfile);
+                                if($avfilecount == 0){
+                                    $avatarFilename = 'kittenWarrior.jpg';
+                                }
+                                if ($avfilecount == 1) {
+                                    foreach ($totfile as $fileAlredyUploaded) {
+                                        $ext = substr(strtolower(strrchr($fileAlredyUploaded, '.')), 1);
+                                        $avatarFilename = $idPlayer . '.' . $ext;
+                                    }
+                                }
+                                echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '35', 'width' => '20']) . "</td>";
                             }
                             if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
                                 if ($indextable[$i][$j]->type == 'T') {
@@ -43,9 +55,26 @@
                                 echo "<td style='height: 35px; length: 20px'> </td>";
                         }
                     } else
+<<<<<<< HEAD
                         echo "<td style='height: 35px; length: 20px'>  <img style='display:block;' width='100%' height='100%' src='../img/fog.png'> </td>"; // frame squares than I can NOT see
                 } else
                     echo "<td style='height: 35px; length: 20px'> <img style='display:block;' width='100%' height='100%' src='../img/hero.png'> </td>";
+=======
+                        echo "<td style='height: 35px; length: 20px'>  L </td>"; // frame squares than I can NOT see
+                } else { // to display the player's avatar on the map !
+                    $idPlayer = $fighter->player_id;
+                    $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
+                    $avfilecount = count($totfile);
+
+                    if ($avfilecount == 1) {
+                        foreach ($totfile as $fileAlredyUploaded) {
+                            $ext = substr(strtolower(strrchr($fileAlredyUploaded, '.')), 1);
+                            $avatarFilename = $idPlayer . '.' . $ext;
+                        }
+                    }
+                    echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '35', 'width' => '20']) . "</td>";
+                }
+>>>>>>> c28fd0584853fcfa7645fbe10a9d58f3352cd257
             } else {
                 if ($controller->canISeeFreeSquares($i, $j, $fighter)) {
                     echo "<td style='height: 35px; length: 20px'>  </td>"; // free squares than I can see
