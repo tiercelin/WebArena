@@ -716,6 +716,13 @@ class ArenasController extends AppController {
             return false;
         }
     }
+    public function canISeeFreeSquares($x, $y, $fighter){
+        if (abs($x - $fighter->coordinate_x) + abs($y - $fighter->coordinate_y) <= $fighter->skill_sight) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 
