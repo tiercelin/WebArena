@@ -46,9 +46,9 @@
                             }
                             if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
                                 if ($indextable[$i][$j]->type == 'T') {
-                                    $message = "Suspicious Break !";
+                                    $message = $message. "Suspicious Break !";
                                 } else {
-                                    $message = "Stink !";
+                                    $message = $message. "Stink !";
                                 }
                                 echo "<td style='height: 35px; length: 20px'> </td>";
                             } else

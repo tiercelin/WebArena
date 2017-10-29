@@ -67,7 +67,41 @@ class ArenasController extends AppController {
     public function index() {
         if ($this->isUserConnected()) {
             // Put code here
+            $avatars = $this->loadImgForCaroussel();
+            $this->set('avatars', $avatars);
         }
+    }
+
+    public function loadImgForCaroussel() {
+        $avatars;
+        $allimg = glob(WWW_ROOT . '/img/avatar/*');
+        if (!is_null($allimg)) {
+            foreach ($allimg as $img) {
+                $path = Text::tokenize($img, '.');
+                $pathbeg = reset($path);
+                $idplayer = Text::tokenize($pathbeg, '/');
+                $temps = end($idplayer);
+                $allimgwithoutext[] = $temps;
+            }
+        }
+        //pr($allimgwithoutext);
+        $alluser = $this->Players->getPlayersID();
+        if (!is_null($alluser)) {
+            foreach ($allimgwithoutext as $imgwithoutext) {
+                if (in_array($imgwithoutext, $alluser)) {
+                    //echo $imgwithoutext."<br>";
+                    $alluserimg = glob(WWW_ROOT . '/img/avatar/' . $imgwithoutext . '.*');
+                    foreach ($alluserimg as $userimg) {
+                       
+                        $imgname = Text::tokenize($userimg, '/');
+                        $temps = end($imgname);
+                        //pr($temps);
+                        $avatars[] = $temps;
+                    }
+                }
+            }
+        }
+        return $avatars;
     }
 
     ////////// ********** FIGHTER PART **********\\\\\\\\\\
@@ -457,66 +491,67 @@ class ArenasController extends AppController {
                 $this->regenerateMap();
             }
 
-            
-            if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
-            
 
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
 
-                $mov = $this->request->getData('movement');
-                $attack = $this->request->getData('attack');
 
-                $regenerate = false;
-                $regenerate = $this->request->getData('regenerate');
-                if ($regenerate == true) {
-                    $this->regenerateMap();
+                if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
+
+                    $mov = $this->request->getData('movement');
+                    $attack = $this->request->getData('attack');
+
+                    $regenerate = false;
+                    $regenerate = $this->request->getData('regenerate');
+                    if ($regenerate == true) {
+                        $this->regenerateMap();
+                    }
+                    if (!is_null($mov)) {
+                        $this->move($mov);
+                    }
+                    if (!is_null($attack)) {
+                        $this->handleAttack($attack);
+                    }
+
+                    $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+                    $this->set('fighter', $fighter);
+
+                    $fighters = array();
+                    //get users connected
+                    $newconnection = $this->Events->getConnexions();
+                    if (!is_null($newconnection)) {
+                        foreach ($newconnection as $nc) {
+                            $conn[] = $nc->name;
+                        }
+
+                        foreach ($conn as $stillconnected) {
+                            if ($this->getFighter($stillconnected) != $fighter) {
+                                $fighters[] = $this->getFighter($stillconnected);
+                            }
+                        }
+                    }
+
+
+
+                    $mytable = $this->Surroundings->getSurroundings();
+                    $this->set('fighters', $fighters);
+                    $this->set('entities', $mytable);
+                    $this->set('controller', $this);
+                } else {
+                    return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
                 }
-                if (!is_null($mov)) {
-                    $this->move($mov);
-                }
-                if (!is_null($attack)) {
-                    $this->handleAttack($attack);
-                }
+
+
+
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
 
-
-                //get users connected
-                $newconnection = $this->Events->getConnexions();
-                foreach ($newconnection as $nc) {
-                    $conn[] = $nc->name;
-                }
-
-                $fighters = array();
-                foreach ($conn as $stillconnected) {
-                    if ($this->getFighter($stillconnected) != $fighter) {
-                        $fighters[] = $this->getFighter($stillconnected);
-                    }
-                }
                 $mytable = $this->Surroundings->getSurroundings();
-                $this->set('fighters', $fighters);
                 $this->set('entities', $mytable);
                 $this->set('controller', $this);
-            } else {
-                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
-
-
-
-
-            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-            $this->set('fighter', $fighter);
-
-            $mytable = $this->Surroundings->getSurroundings();
-            $this->set('entities', $mytable);
-            $this->set('controller', $this);
-
         }
     }
-    }
-    
-
 
     /**
      * Updates fighter coordinates on the database
@@ -794,6 +829,7 @@ class ArenasController extends AppController {
     public function addDeconnection($playerid, $playeremail) {
 //get its fighter's id ton add the event
         $playersfighter = $this->Fighters->getFighter($playerid);
+
 //take the part before the @ in its email address to find the players name
         $playersname = Text::tokenize($playeremail, '@');
         $myNewEvent = new Events([

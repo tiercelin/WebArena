@@ -6,58 +6,56 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 class PlayersTable extends Table {
-    
+
     /**
      * Initialization of the players table
      * @param array $config : contains configuration data for the players table
      */
-    public function initialize(array $config)
-    {
+    public function initialize(array $config) {
         $this->setTable('players');
         $this->setPrimaryKey('id');
         $this->setEntityClass('App\Model\Entity\Players');
-        
+
         // A player has one and only one fighter
         ///// ***** CARREFUL : change hasOne to hasMany if we implement the tool functionnality ***** \\\\\
         $this->hasOne('Fighters')
                 ->setForeignKey('player_id')
-                ->setJoinType('INNER');        
+                ->setJoinType('INNER');
     }
-    
-     /**
+
+    /**
      * Validate data (type, presence, max size) before an entity creation
      * @param Validator $validator
      * @return Validator
      */
-    public function validationDefault(Validator $validator)
-    {
-        $validator       
-            ->uuid('id')
-            ->requirePresence('id')  // true by default because id is primary key
-            ->allowEmpty('id');  // because id is the primary key (carreful : no auto increment here, id is char type)
-        
+    public function validationDefault(Validator $validator) {
         $validator
-            ->email('email')
-            ->maxLength ('email', 255)
-            ->requirePresence('email', 'create')
-            ->notEmpty('email');
+                ->uuid('id')
+                ->requirePresence('id')  // true by default because id is primary key
+                ->allowEmpty('id');  // because id is the primary key (carreful : no auto increment here, id is char type)
 
         $validator
-            ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
-            ->notEmpty('password');
-     
+                ->email('email')
+                ->maxLength('email', 255)
+                ->requirePresence('email', 'create')
+                ->notEmpty('email');
+
+        $validator
+                ->maxLength('password', 255)
+                ->requirePresence('password', 'create')
+                ->notEmpty('password');
+
         return $validator;
     }
-    
+
     // Do we have the verify that an entity of players clearly refers to at least one entity of fighter ? (no foreign key violations)
 
 
-    
+
     function test() {
 
         $query = $this->find()->where(['password =' => 'aaa'])->count();
-               
+
         return $query;
     }
 
@@ -66,38 +64,44 @@ class PlayersTable extends Table {
      * @return type
      */
     function gen_uuid() {
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            // 32 bits for "time_low"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-
-            // 16 bits for "time_mid"
-            mt_rand( 0, 0xffff ),
-
-            // 16 bits for "time_hi_and_version",
-            // four most significant bits holds version number 4
-            mt_rand( 0, 0x0fff ) | 0x4000,
-
-            // 16 bits, 8 bits for "clk_seq_hi_res",
-            // 8 bits for "clk_seq_low",
-            // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand( 0, 0x3fff ) | 0x8000,
-
-            // 48 bits for "node"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                // 32 bits for "time_low"
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                // 16 bits for "time_mid"
+                mt_rand(0, 0xffff),
+                // 16 bits for "time_hi_and_version",
+                // four most significant bits holds version number 4
+                mt_rand(0, 0x0fff) | 0x4000,
+                // 16 bits, 8 bits for "clk_seq_hi_res",
+                // 8 bits for "clk_seq_low",
+                // two most significant bits holds zero and one for variant DCE1.1
+                mt_rand(0, 0x3fff) | 0x8000,
+                // 48 bits for "node"
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
-    
+
     /**
-    * 
-    * @param type $email
-    * @return player entity or null if wrong parameter
-    */
-    public function getPlayer($email){
-        if(is_string($email)){
+     * 
+     * @param type $email
+     * @return player entity or null if wrong parameter
+     */
+    public function getPlayer($email) {
+        if (is_string($email)) {
             $entity = $this->find()->where(['email =' => $email])->first();
             return $entity;
         }
         return null;
+    }
+
+    public function getPlayersID() {
+        
+            $entity = $this->find();
+            if(!is_null($entity)){
+                foreach ($entity as $user)
+                $playersid[] = $user->id;
+            }
+            return $playersid;
     }
 
     /**
@@ -106,33 +110,33 @@ class PlayersTable extends Table {
      * @param type $pwd
      * @return boolean true = success, false = echec (email existe déjà)
      */
-    
     //// **** ATTENTION : pour moi, cette fonction doit être dans un contrôleur, et non un modèle **** \\\\
-    function newPlayer($email, $pwd){
-        if(is_string($email) && is_string($pwd)){
-            
+    function newPlayer($email, $pwd) {
+        if (is_string($email) && is_string($pwd)) {
+
             //on vérifie que le joueur n'existe pas dans la base
             $query = $this->find()->where(['email =' => $email])->count();
 
             //si le joueur n'existe pas en base
-            if($query == 0){
+            if ($query == 0) {
                 $id = $this->gen_uuid();
-            
-                $query = $this->query()
-                    ->insert(['id', 'email', 'password'])
-                    ->values([
-                        'id' => $id,
-                        'email' => $email,
-                        'password' => $pwd
-                    ])
 
-                    ->execute();
-                if($query == false){
-                    return false;}
-                else{
-                    return true;}
+                $query = $this->query()
+                        ->insert(['id', 'email', 'password'])
+                        ->values([
+                            'id' => $id,
+                            'email' => $email,
+                            'password' => $pwd
+                        ])
+                        ->execute();
+                if ($query == false) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
-        }    
+        }
         return false;
-    }    
+    }
+
 }
