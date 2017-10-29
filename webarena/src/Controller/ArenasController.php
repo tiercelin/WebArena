@@ -51,11 +51,13 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
             $event = $this->Events->getEvent($this->request->session()->read('playerId'));
             $players = $this->Players->find()->where(['id =' => $this->request->session()->read('playerId')])->first();
-            $this->addDeconnection($this->request->session()->read('playerId'), $players->email);
-            $this->Events->delete($event);
-            $this->request->session()->destroy();
-            $this->Flash->success(__('You have been disconnected !'));
-            return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+            if (!is_null($players)) {
+                $this->addDeconnection($this->request->session()->read('playerId'), $players->email);
+                $this->Events->delete($event);
+                $this->request->session()->destroy();
+                $this->Flash->success(__('You have been disconnected !'));
+                return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+            }
         }
     }
 
@@ -260,12 +262,12 @@ class ArenasController extends AppController {
             $fighter->level++;
             $fighter->xp-=4;
             //Then we upgrade his sight by 1, and send the whole to the database to save the changes.
-            $old=$fighter->skill_sight; //for addEvent
+            $old = $fighter->skill_sight; //for addEvent
             $fighter->skill_sight++;
-            $new=$fighter->skill_sight; //for addEvent
+            $new = $fighter->skill_sight; //for addEvent
             $this->Fighters->save($fighter);
             //Add the event to the table
-            $this->addEventToDiary($fighter, $this->getCurrentUsername().' updated '.$fighter->name.' sight from '.$old.' to '.$new);
+            $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' updated ' . $fighter->name . ' sight from ' . $old . ' to ' . $new);
         }
         //Upgrade = 2 corresponds to strength
         if ($upgrade == 2 && $fighter->xp >= 4) {
@@ -273,12 +275,12 @@ class ArenasController extends AppController {
             $fighter->level++;
             $fighter->xp-=4;
             //Then we upgrade his strength by 1, and send the whole to the database to save the changes.
-            $old =$fighter->skill_strength;
+            $old = $fighter->skill_strength;
             $fighter->skill_strength++;
-            $new=$fighter->skill_strength;
+            $new = $fighter->skill_strength;
             $this->Fighters->save($fighter);
             //Add the event to the diary
-            $this->addEventToDiary($fighter, $this->getCurrentUsername().' updated '.$fighter->name.' level from '.$old.' to '.$new);
+            $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' updated ' . $fighter->name . ' level from ' . $old . ' to ' . $new);
         }
         //Upgrade = 3 corresponds to health
         if ($upgrade == 3 && $fighter->xp >= 4) {
@@ -288,13 +290,13 @@ class ArenasController extends AppController {
             //Then we upgrade his health by 3
             $old = $fighter->skill_health;
             $fighter->skill_health+=3;
-            $new =$fighter->skill_health;
+            $new = $fighter->skill_health;
             //Then we heal the fighter up to his new maximum health
             $fighter->current_health = $fighter->skill_health;
             //Then we send the whole to the database to save the changes.
             $this->Fighters->save($fighter);
             //add event to diary
-            $this->addEventToDiary($fighter, $this->getCurrentUsername().' updated '.$fighter->name.' health from '.$old.' to '.$new);
+            $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' updated ' . $fighter->name . ' health from ' . $old . ' to ' . $new);
         }
     }
 
@@ -309,10 +311,10 @@ class ArenasController extends AppController {
 
         if (is_int($fighter1Level) && is_int($fighter2Level)) {
             // Pick a random number between 1 and 20
-            echo $randomValue = rand(1, 20);
+            $randomValue = rand(1, 20);
 
             // Use the formula to find the computed value
-            echo $computedValue = 10 + $fighter2Level - $fighter1Level;
+            $computedValue = 10 + $fighter2Level - $fighter1Level;
 
             // If the random value is more than the computed value, the attack succeeds. Else, it fails.
             if ($randomValue > $computedValue) {
@@ -346,13 +348,13 @@ class ArenasController extends AppController {
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername().' \'s '.$fighter1->name.' succesfully attacked '.$this->getUserName($idPlayer2).'\' s'.$fighter2->name);
+            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
 
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
                 $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
 
-                $this->addEventToDiary($fighter1, $this->getCurrentUsername().' \'s '.$fighter1->name.' succesfully killed '.$this->getUserName($idPlayer2).'\' s'.$fighter2->name);
+                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
 
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
@@ -360,7 +362,7 @@ class ArenasController extends AppController {
             }
         } else {
             //Add the event to the table
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername().' \'s '.$fighter1->name.' failed his attack on '.$this->getUserName($idPlayer2).'\' s'.$fighter2->name);
+            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' failed his attack on ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
             $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
         }
     }
@@ -395,7 +397,7 @@ class ArenasController extends AppController {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->Flash->success(__('You killed the wumpus !'));
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' killed the wumpus ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' killed the wumpus ! ');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
@@ -413,7 +415,7 @@ class ArenasController extends AppController {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->Flash->success(__('You killed the wumpus !'));
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' killed the wumpus ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' killed the wumpus ! ');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
@@ -432,7 +434,7 @@ class ArenasController extends AppController {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->Flash->success(__('You killed the wumpus !'));
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' killed the wumpus ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' killed the wumpus ! ');
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
@@ -450,7 +452,7 @@ class ArenasController extends AppController {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
                 $this->Flash->success(__('You killed the wumpus !'));
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' killed the wumpus ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' killed the wumpus ! ');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
@@ -562,13 +564,13 @@ class ArenasController extends AppController {
                 $fighter->coordinate_x--;
                 $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' moved to the top ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the top ! ');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
-                    $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' failed into a trap ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
                     $this->Flash->error(__('You have been killed by a trap !'));
                 } else {
-                    $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' has been killed by the wumpus ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' has been killed by the wumpus ! ');
                     $this->Flash->error(__('You have been killed by the wumpus !'));
                 }
                 $this->deleteFighter($idPlayer);
@@ -582,13 +584,13 @@ class ArenasController extends AppController {
                 $fighter->coordinate_y--;
                 $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' moved to the left ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the left ! ');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
-                   $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' failed into a trap ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
                     $this->Flash->error(__('You have been killed by a trap !'));
                 } else {
-                    $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' has been killed by the wumpus ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' has been killed by the wumpus ! ');
                     $this->Flash->error(__('You have been killed by the wumpus !'));
                 }
                 $this->deleteFighter($idPlayer);
@@ -602,13 +604,13 @@ class ArenasController extends AppController {
                 $fighter->coordinate_y++;
                 $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' moved to the right ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the right ! ');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
-                   $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' failed into a trap ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
                     $this->Flash->error(__('You have been killed by a trap !'));
                 } else {
-                    $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' has been killed by the wumpus ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' has been killed by the wumpus ! ');
                     $this->Flash->error(__('You have been killed by the wumpus !'));
                 }
                 $this->deleteFighter($idPlayer);
@@ -622,13 +624,13 @@ class ArenasController extends AppController {
                 $fighter->coordinate_x++;
                 $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' moved to the bottom ! ');
+                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the bottom ! ');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
-                   $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' failed into a trap ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
                     $this->Flash->error(__('You have been killed by a trap !'));
                 } else {
-                    $this->addEventToDiary($fighter, $this->getCurrentUsername().' \'s '.$fighter->name.' has been killed by the wumpus ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' has been killed by the wumpus ! ');
                     $this->Flash->error(__('You have been killed by the wumpus !'));
                 }
                 $this->deleteFighter($idPlayer);
@@ -845,10 +847,12 @@ class ArenasController extends AppController {
         }
         $this->Events->save($myNewEvent);
     }
+
     public function getUserName($playesid) {
         $player = $this->Players->find()->where(['id =' => $playesid])->first();
         return $this->getUserNameFromEmail($player->email);
     }
+
     public function getUserNameFromEmail($playeremail) {
         $playersname = Text::tokenize($playeremail, '@');
         return $playersname[0];
