@@ -65,9 +65,9 @@
     <td><h5>Sight :</h5></td> 
     <td><h5><?php echo $sight_f;?> </h5></td>
     <td>
-
+        
         <?=$this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas','action' => 'fighter'],['data' => ['upgrade' => 1],'class' => 'btn btn-info']) ?>
- 
+        
     </td>
   </tr>
   <tr>
