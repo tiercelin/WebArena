@@ -1,6 +1,6 @@
 <?php $this->assign('title', 'Sign in');?>
 
-<h2>Connect to your account: </h2><br>
+<h3>Connect to your account: </h3><br>
 
 <?php
 echo $this->Form->create();
@@ -16,8 +16,7 @@ echo $this->Form->submit('reset password', array('type' => 'submit', 'controller
 echo $this->Form->end();?>
 
 
-<h2>Change your password: </h2><br>
-
+<h6>Change your password: </h6><br>
 <?php
 echo $this->Form->create();
 echo $this->Form->input('emailchange',array('type' => 'email','label' => 'Your email :'));
@@ -29,6 +28,5 @@ echo $this->Form->end();?>
 <br><br>
 
 <a><?php echo $this->Html->link('Create an account', array('controller' => 'players', 'action' => 'newPlayer')); ?></a>
-
 
  <?= $this->Flash->render() ?>

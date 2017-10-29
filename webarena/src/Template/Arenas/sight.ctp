@@ -43,14 +43,14 @@
                                 echo "<td style='height: 35px; length: 20px'> </td>";
                         }
                     } else
-                        echo "<td style='height: 35px; length: 20px'>  L </td>"; // frame squares than I can NOT see
+                        echo "<td style='height: 35px; length: 20px'>  <img style='display:block;' width='100%' height='100%' src='../img/fog.png'> </td>"; // frame squares than I can NOT see
                 } else
-                    echo "<td style='height: 35px; length: 20px'> <img src='../img/hero.png' </td>";
+                    echo "<td style='height: 35px; length: 20px'> <img style='display:block;' width='100%' height='100%' src='../img/hero.png'> </td>";
             } else {
                 if ($controller->canISeeFreeSquares($i, $j, $fighter)) {
                     echo "<td style='height: 35px; length: 20px'>  </td>"; // free squares than I can see
                 } else
-                    echo "<td style='height: 35px; length: 20px'> L </td>"; // free squares than I can NOT see
+                    echo "<td style='height: 35px; length: 20px'> <img style='display:block;' width='100%' height='100%' src='../img/fog.png'> </td>"; // free squares than I can NOT see
             }
         }
         echo "</tr>";
