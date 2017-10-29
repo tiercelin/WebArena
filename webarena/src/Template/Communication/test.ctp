@@ -16,7 +16,7 @@
      
  // Display a drop-down list with the name of all guilds
     echo $this->Form->create();
-    echo $this->Form->select('guild', array('type' => 'select', 'options' => $guildsArray)); 
+    echo $this->Form->select('guildjoin', array('type' => 'select', 'options' => $guildsArray)); 
     echo $this->Form->submit('Join'); 
     echo $this->Form->end();
      
