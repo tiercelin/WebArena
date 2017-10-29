@@ -148,15 +148,24 @@ class PlayersController extends AppController {
         $this->Events->save($myNewEvent);
     }
     public function addConnection($playerid, $playeremail){
+        $playersname = Text::tokenize($playeremail, '@');
         //get its fighter's id ton add the event
         $playersfighter = $this->Fighters->getFighter($playerid);
-        //take the part before the @ in its email address to find the players name
-        $playersname = Text::tokenize($playeremail, '@');
-        $myNewEvent = new Events([
-            'name' => $playersname[0].' connected',
-            'date' => Time::now(),
-            'coordinate_x' => $playersfighter->coordinate_x,
-            'coordinate_y' => $playersfighter->coordinate_y]);
+        if (!is_null($playersfighter)) {
+            $myNewEvent = new Events([
+                'name' => $playersname[0] . ' connected',
+                'date' => Time::now(),
+                'coordinate_x' => $playersfighter->coordinate_x,
+                'coordinate_y' => $playersfighter->coordinate_y]);
+            
+        } else {
+            $myNewEvent = new Events([
+                'name' => $playersname[0] . ' connected',
+                'date' => Time::now(),
+                'coordinate_x' => 0,
+                'coordinate_y' => 0]);
+            
+        }
         $this->Events->save($myNewEvent);
     }
 

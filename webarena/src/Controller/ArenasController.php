@@ -92,7 +92,7 @@ class ArenasController extends AppController {
                     //echo $imgwithoutext."<br>";
                     $alluserimg = glob(WWW_ROOT . '/img/avatar/' . $imgwithoutext . '.*');
                     foreach ($alluserimg as $userimg) {
-                       
+
                         $imgname = Text::tokenize($userimg, '/');
                         $temps = end($imgname);
                         //pr($temps);
@@ -491,65 +491,60 @@ class ArenasController extends AppController {
                 $this->regenerateMap();
             }
 
-
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
 
+                $mov = $this->request->getData('movement');
+                $attack = $this->request->getData('attack');
 
-                if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
-
-                    $mov = $this->request->getData('movement');
-                    $attack = $this->request->getData('attack');
-
-                    $regenerate = false;
-                    $regenerate = $this->request->getData('regenerate');
-                    if ($regenerate == true) {
-                        $this->regenerateMap();
-                    }
-                    if (!is_null($mov)) {
-                        $this->move($mov);
-                    }
-                    if (!is_null($attack)) {
-                        $this->handleAttack($attack);
-                    }
-
-                    $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-                    $this->set('fighter', $fighter);
-
-                    $fighters = array();
-                    //get users connected
-                    $newconnection = $this->Events->getConnexions();
-                    if (!is_null($newconnection)) {
-                        foreach ($newconnection as $nc) {
-                            $conn[] = $nc->name;
-                        }
-
-                        foreach ($conn as $stillconnected) {
-                            if ($this->getFighter($stillconnected) != $fighter) {
-                                $fighters[] = $this->getFighter($stillconnected);
-                            }
-                        }
-                    }
-
-
-
-                    $mytable = $this->Surroundings->getSurroundings();
-                    $this->set('fighters', $fighters);
-                    $this->set('entities', $mytable);
-                    $this->set('controller', $this);
-                } else {
-                    return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+                $regenerate = false;
+                $regenerate = $this->request->getData('regenerate');
+                if ($regenerate == true) {
+                    $this->regenerateMap();
                 }
-
-
-
+                if (!is_null($mov)) {
+                    $this->move($mov);
+                }
+                if (!is_null($attack)) {
+                    $this->handleAttack($attack);
+                }
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
 
+                $fighters = array();
+                //get users connected
+                $newconnection = $this->Events->getConnexions();
+                if (!is_null($newconnection)) {
+                    foreach ($newconnection as $nc) {
+                        $conn[] = $nc->name;
+                    }
+
+                    foreach ($conn as $stillconnected) {
+                        if ($this->getFighter($stillconnected) != $fighter) {
+                            $fighters[] = $this->getFighter($stillconnected);
+                        }
+                    }
+                }
+
+
+
                 $mytable = $this->Surroundings->getSurroundings();
+                $this->set('fighters', $fighters);
                 $this->set('entities', $mytable);
                 $this->set('controller', $this);
+            } else {
+                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
+
+
+
+
+            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
+            $this->set('fighter', $fighter);
+
+            $mytable = $this->Surroundings->getSurroundings();
+            $this->set('entities', $mytable);
+            $this->set('controller', $this);
         }
     }
 
@@ -827,16 +822,23 @@ class ArenasController extends AppController {
     }
 
     public function addDeconnection($playerid, $playeremail) {
-//get its fighter's id ton add the event
-        $playersfighter = $this->Fighters->getFighter($playerid);
-
-//take the part before the @ in its email address to find the players name
+        //take the part before the @ in its email address to find the players name
         $playersname = Text::tokenize($playeremail, '@');
-        $myNewEvent = new Events([
-            'name' => $playersname[0] . ' disconnected',
-            'date' => Time::now(),
-            'coordinate_x' => $playersfighter->coordinate_x,
-            'coordinate_y' => $playersfighter->coordinate_y]);
+        //get its fighter's id ton add the event
+        $playersfighter = $this->Fighters->getFighter($playerid);
+        if (!is_null($playersfighter)) {
+            $myNewEvent = new Events([
+                'name' => $playersname[0] . ' disconnected',
+                'date' => Time::now(),
+                'coordinate_x' => $playersfighter->coordinate_x,
+                'coordinate_y' => $playersfighter->coordinate_y]);
+        } else {
+            $myNewEvent = new Events([
+                'name' => $playersname[0] . ' disconnected',
+                'date' => Time::now(),
+                'coordinate_x' => 0,
+                'coordinate_y' => 0]);
+        }
         $this->Events->save($myNewEvent);
     }
 
