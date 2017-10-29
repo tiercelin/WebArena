@@ -31,7 +31,7 @@ class HoFController extends AppController {
          $arraySkillsFighters = array();
          foreach($fighters as $fighter) {
              array_push ($arraySkillsFighters, array (['name' => $fighter->name, 'health' => $fighter->skill_health, 'sight' => $fighter->skill_sight, 'strength' => $fighter->skill_strength, 'playerId' => $fighter->player_id]));
-         };
+         }
          $this->set('FightersSkillsArray', $arraySkillsFighters);
          
          
@@ -58,6 +58,17 @@ class HoFController extends AppController {
              }
           }
          $this->set('eventsConnexionArray', $arrayConnexionUsers);
+         
+         
+         // Fourth chart : meter jauge charts showing victorious attacks
+         // So we need to store the level and XP of fighters (with their name for sub-charts calling)
+         $arrayXPFighters = array();
+         foreach($fighters as $fighter) {
+             array_push ($arrayXPFighters, array (['name' => $fighter->name, 'level' => $fighter->level, 'XP' => $fighter->xp, 'playerId' => $fighter->player_id]));
+         }
+         $this->set('FightersXPArray', $arrayXPFighters);
+         
+         
      
      }
      
