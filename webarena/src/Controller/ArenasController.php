@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\Surroundings;
 use App\Model\Entity\Events;
+use App\Model\Table\Players;
 use Cake\I18n\Time;
-use Cake\I18n\Date;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -47,6 +47,9 @@ class ArenasController extends AppController {
     }
 
     public function logout() {
+        
+        $event = $this->Events->getEvent($this->request->session()->read('playerId'));
+        $this->Events->delete($event);
         $this->request->session()->destroy();
         $this->Flash->success(__('You have been disconnected !'));
         return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
@@ -89,12 +92,9 @@ class ArenasController extends AppController {
                 $newFighter->setPlayerId($idPlayer);
 
                 // Save the new fighter into the database and redirect user to fighter stats page
-                if($fightersTable->save($newFighter))
-                {
-                    $this->Flash->success(__('New fighter "'.$newFighter->name.'" has been created !'));
-                }
-                else
-                {
+                if ($fightersTable->save($newFighter)) {
+                    $this->Flash->success(__('New fighter "' . $newFighter->name . '" has been created !'));
+                } else {
                     $this->Flash->error(__('Fighter creation process failed'));
                 }
                 //Add the event to the table
@@ -112,18 +112,20 @@ class ArenasController extends AppController {
 
         // Verify that the user is connected
         if ($this->isUserConnected()) {
-
-            // Retrieve the fighter entity to be deleted
+            if($idPlayer==$this->request->session()->read('playerId')){
+                // Retrieve the fighter entity to be deleted
             $fighterToDelete = $this->Fighters->getFighter($idPlayer);
             $fighterToDeleteName = $fighterToDelete->name;
 
             // Delete this fighter          
             $this->Fighters->delete($fighterToDelete);
-            $this->Flash->success(__('Fighter "'.$fighterToDeleteName.'" has been correctly deleted !'));
+            $this->Flash->success(__('Fighter "' . $fighterToDeleteName . '" has been correctly deleted !'));
             //Add this event to the table
             $this->addEventToDiary($fighterToDelete, ' Fighter Dead');
             // Redirect the user to the fighter creation page
             return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+            }
+            
         }
     }
 
@@ -131,20 +133,35 @@ class ArenasController extends AppController {
      * This function shows the fighter page : fighter ID card, actual stats, (potential) possibility to upgrade stats, ...
      */
     public function fighter() {
-
         $avatarFilename = 'kittenWarrior.jpg';
+
         if ($this->isUserConnected()) {
 
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
+            $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
+            $avfilecount = count($totfile);
+
+            if ($avfilecount == 1) {
+                foreach ($totfile as $fileAlredyUploaded) {
+                    $ext = substr(strtolower(strrchr($fileAlredyUploaded, '.')), 1);
+                    $avatarFilename = $idPlayer . '.' . $ext;
+                }
+            }
 
             if ($this->request->is('post')) {
-                $avatar = $this->request->getData('upload');
-            
-                if (!empty($avatar)) {
-                    $this->uploadAvatarByName($avatar['name'], $avatar['tmp_name']);
-                }
+                //request for the avatar upload ! 
+                $test = $this->request->getData('upload');
+                if ($test['name'] != "") {
+                    $ext = substr(strtolower(strrchr($test['name'], '.')), 1);
+                    $te = $this->uploadAvatarByName($test, $idPlayer);
+                    if ($te == true) {
+                        $avatarFilename = $idPlayer . '.' . $ext;
+                    } else
+                        $this->Flash->error(__('Your file has not been uploaded'));
+                } else
+                    $this->Flash->error(__('You did not enter a file'));
             }
             // Find if this user has fighter(s)          
             $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
@@ -180,13 +197,6 @@ class ArenasController extends AppController {
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
                 }
-            }
-
-            // Retrieve the rigth file name to display the avatar
-            $avatarFilenameTest = count(glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*'));
-
-            if ($avatarFilenameTest > 0) {
-                $avatarFilename = $idPlayer . '.jpg';
             }
             $this->set('imageFileName', $avatarFilename);
         }
@@ -250,10 +260,10 @@ class ArenasController extends AppController {
 
         if (is_int($fighter1Level) && is_int($fighter2Level)) {
             // Pick a random number between 1 and 20
-            $randomValue = rand(1, 20);
+            echo $randomValue = rand(1, 20);
 
             // Use the formula to find the computed value
-            $computedValue = 10 + $fighter2Level - $fighter1Level;
+            echo $computedValue = 10 + $fighter2Level - $fighter1Level;
 
             // If the random value is more than the computed value, the attack succeeds. Else, it fails.
             if ($randomValue > $computedValue) {
@@ -272,7 +282,7 @@ class ArenasController extends AppController {
      * @param type $idPlayer2 : the ID of the player which is attacked
      */
     public function attackFighter($idPlayer1, $idPlayer2) {
-        echo 'ATTACK';
+        //echo 'ATTACK';
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
@@ -282,26 +292,38 @@ class ArenasController extends AppController {
 
         // If the attack succeeds, decrement health of fighter injured
         if ($doAttackSucceed == true) {
-            $this->Flash->success(__('Your attack succeeded on "'.$fighter2->name.'"'));
+            $this->Flash->success(__('Your attack succeeded on "' . $fighter2->name . '"'));
             $fighter2->current_health -= $fighter1->skill_strength;
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
+            $this->addEventToDiary($fighter1, $fighter2->name . ' have been attacked by');
 
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
-                $this->Flash->success(__('Your attack killed "'.$fighter2->name.'"'));
+                $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
+                
+                $this->addEventToDiary($fighter1, $fighter2->name . ' have been killed by');
+                
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
                 $this->deleteFighter($idPlayer2);
             }
-        } else //Add the event to the table
+        } else {
+            //Add the event to the table
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
-            $this->Flash->error(__('Your attack failed on "'.$fighter2->name.'"'));
+        $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
+        }
     }
 
     public function getFighterByCoord($x, $y) {
         $entity = $this->Fighters->find()->where(['coordinate_x =' => $x, 'coordinate_y =' => $y])->first();
+        return $entity;
+    }
+
+    public function getFighter($playerid) {
+
+        $entity = $this->Fighters->find()->where(['player_id =' => $playerid])->first();
         return $entity;
     }
 
@@ -323,12 +345,13 @@ class ArenasController extends AppController {
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
                 //Add the event to the table
-                 $this->Flash->success(__('You killed the wumpus !'));
+                $this->Flash->success(__('You killed the wumpus !'));
                 $this->addEventToDiary($fighter, ' Monster attacked and killed by');
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -346,7 +369,8 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -365,7 +389,8 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2)) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
+                pr($player2);
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -383,7 +408,7 @@ class ArenasController extends AppController {
             } else if (!is_null($fighter2) && $fighter2->player_id != $fighter->player_id) {
                 // Fighter1 attacks Fighter2
                 // Find the player which is potentially attacked
-                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id]);
+                $player2 = $this->Players->find()->where(['id = ' => $fighter2->player_id])->first();
                 $this->attackFighter($idPlayer, $player2->id);
             }
         }
@@ -392,52 +417,19 @@ class ArenasController extends AppController {
     /**
      * Propose to the user to upload an image as an avatar
      */
-   /* public function uploadAvatar() {
-        if ($this->isUserConnected()) {
-            // Retrieve the ID of the current player
-            $idPlayer = $this->request->session()->read('playerId');
-
-            // If the request is not null -> if an image has been selected
-            if (!empty($this->request->data)) {
-                if (!empty($this->request->data['upload']['name'])) {
-
-                    // Put the image into a variable
-                    $file = $this->request->data['upload'];
-
-                    // Get the image extension
-                    $ext = substr(strtolower(strrchr($file['name'], '.')), 1);
-
-                    // Set allowed extensions
-                    $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
-
-                    // If the extension is valid
-                    if (in_array($ext, $arr_ext)) {
-                        // Upload the file from local repertory to webroot/upload/avatar repertory
-                        move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
-                        return true;
-                    }
+    public function uploadAvatarByName($file, $playersID) {
+        if (!is_null($file)) {
+            $file_extension = substr(strtolower(strrchr($file['name'], '.')), 1);
+            $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
+            if (count(glob(WWW_ROOT . '/img/avatar/' . $playersID . '.*')) > 0) {
+                $totfile = glob(WWW_ROOT . '/img/avatar/' . $playersID . '.*');
+                foreach ($totfile as $fileAlredyUploaded) {
+                    unlink($fileAlredyUploaded);
                 }
             }
-        }
-    }*/
-
-    public function uploadAvatarByName($file, $tmp_name) {
-        if ($this->isUserConnected()) {
-            // Retrieve the ID of the current player
-            $idPlayer = $this->request->session()->read('playerId');
-
-            if (!empty($file)) {
-                // Get the image extension
-                $ext = substr(strtolower(strrchr($file, '.')), 1);
-
-                // Set allowed extensions
-                $arr_ext = array('jpg', 'jpeg', 'gif', 'png');
-
-                // If the extension is valid
-                if (in_array($ext, $arr_ext)) {
-                    // Upload the file from local repertory to webroot/upload/avatar repertory
-                    move_uploaded_file($tmp_name, WWW_ROOT . '/img/avatar/' . $idPlayer . '.' . $ext);
-                }
+            if (in_array($file_extension, $arr_ext)) {
+                $return = move_uploaded_file($file['tmp_name'], WWW_ROOT . '/img/avatar/' . $playersID . '.' . $file_extension);
+                return $return;
             }
         }
     }
@@ -455,9 +447,8 @@ class ArenasController extends AppController {
 
         if ($this->isUserConnected()) {
 
-            $mov = $this->request->getData('movement');
-            $attack = $this->request->getData('attack');
 
+<<<<<<< HEAD
             $regenerate = false;
             $regenerate = $this->request->getData('regenerate');
             if ($regenerate == true) {
@@ -467,15 +458,18 @@ class ArenasController extends AppController {
             
             if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
             
+=======
+            if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
+
+>>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
                 $mov = $this->request->getData('movement');
                 $attack = $this->request->getData('attack');
 
-                $regenerate=false;
+                $regenerate = false;
                 $regenerate = $this->request->getData('regenerate');
                 if ($regenerate == true) {
                     $this->regenerateMap();
                 }
-
                 if (!is_null($mov)) {
                     $this->move($mov);
                 }
@@ -485,15 +479,31 @@ class ArenasController extends AppController {
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
 
+                //get users connected
+                $newconnection = $this->Events->getConnexions();
+                foreach($newconnection as $nc){
+                    $conn[] = $nc->name;
+                }
+                
+                $fighters = array();
+                foreach ($conn as $stillconnected) {
+                    if($this->getFighter($stillconnected)!=$fighter){
+                        $fighters[] = $this->getFighter($stillconnected);
+                    }  
+                }
                 $mytable = $this->Surroundings->getSurroundings();
+                $this->set('fighters', $fighters);
                 $this->set('entities', $mytable);
                 $this->set('controller', $this);
-            }
-            else{
+            } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
+<<<<<<< HEAD
 
             $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
             $this->set('fighter', $fighter);
@@ -502,6 +512,8 @@ class ArenasController extends AppController {
             $this->set('entities', $mytable);
             $this->set('controller', $this);
 
+=======
+>>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
         }
     }
 
@@ -525,14 +537,11 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
-                if ($content->type == 'T')
-                {
+                if ($content->type == 'T') {
                     $this->Flash->error(__('You have been killed by a trap !'));
-                }
-                else
-                {
+                } else {
                     $this->Flash->error(__('You have been killed by the wumpus !'));
-                }                
+                }
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -546,14 +555,11 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
-                if ($content->type == 'T')
-                {
+                if ($content->type == 'T') {
                     $this->Flash->error(__('You have been killed by a trap !'));
-                }
-                else
-                {
+                } else {
                     $this->Flash->error(__('You have been killed by the wumpus !'));
-                }  
+                }
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -567,14 +573,11 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
-                if ($content->type == 'T')
-                {
+                if ($content->type == 'T') {
                     $this->Flash->error(__('You have been killed by a trap !'));
-                }
-                else
-                {
+                } else {
                     $this->Flash->error(__('You have been killed by the wumpus !'));
-                }  
+                }
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -588,14 +591,11 @@ class ArenasController extends AppController {
                 //Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
-                if ($content->type == 'T')
-                {
+                if ($content->type == 'T') {
                     $this->Flash->error(__('You have been killed by a trap !'));
-                }
-                else
-                {
+                } else {
                     $this->Flash->error(__('You have been killed by the wumpus !'));
-                }  
+                }
                 $this->deleteFighter($idPlayer);
             }
         }
@@ -623,7 +623,7 @@ class ArenasController extends AppController {
         $this->generationTraps();
         $this->generationMonster();
         $this->generationPlayer();
-        $this->Flash->success(__('A new arena has been generated !'));        
+        $this->Flash->success(__('A new arena has been generated !'));
     }
 
     /**

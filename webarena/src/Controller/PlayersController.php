@@ -4,22 +4,26 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+use App\Model\Entity\Events;
+use Cake\I18n\Time;
 
 class PlayersController extends AppController {
 
     //Constant to define the lenght of the reseted password
-    const PASSLENGTH = 15;
+    const PASSLENGTH = 7;
 
     // Initialization 
     public function initialize() {
         $this->loadComponent('Flash');
+        $this->loadModel('Events');
+        $this->loadModel('Players');
     }
 
-    public function passwordHash($pwd){
+    public function passwordHash($pwd) {
         $pwdhash = password_hash($pwd, PASSWORD_DEFAULT);
         return $pwdhash;
     }
-    
+
     /**
      * Add a new player in database -> sign up function !
      */
@@ -38,8 +42,8 @@ class PlayersController extends AppController {
                 // Merge form data with the new (enmpty) entity
                 //$newPlayer = $this->Players->patchEntity($newPlayer, $this->request->getData());
                 $newPlayer->email = $this->request->getData('email');
-                 $pwdtemp = $this->request->getData('password');
-                 $newPlayer->password = $this->passwordHash($pwdtemp);
+                $pwdtemp = $this->request->getData('password');
+                $newPlayer->password = $this->passwordHash($pwdtemp);
 
                 // Then we save the new player in the database
                 // If it works, redirect the user to the login page. If not, display an error message.
@@ -60,77 +64,42 @@ class PlayersController extends AppController {
      */
     public function loginPlayer() {
 
-        $password = '';
-        $displayRetrieve = false;
-        $displayReset = false;
-        $email2 = '';
-        $this->loadModel('Players');
-        if (!is_null($this->request->getData('retrieve'))) {
-            $email2 = $this->request->getData('retrieveemail');
-            if ($email2 != "") {
-                $myretrievePwd = $this->Players->getPlayer($email2);
-                if (!is_null($myretrievePwd)) {
-                    $password = $myretrievePwd->password;
-                    $displayRetrieve = true;
-                }
-                else
-                {
-                    $this->Flash->error(__('This email does not exist, please create an account'));
-                }
-            }
-            else
-            {
-                $this->Flash->error(__('Please enter a valid email'));
-            }
-            
+        if ($this->request->is('post')) {
+            $this->changePassword($this->request->getData('emailchange'), $this->request->getData('oldpassword'), $this->request->getData('newpassword'), $this->request->getData('checkpassword'));
         }
-        if (!is_null($this->request->getData('reset'))) {
-
-            $email2 = $this->request->getData('resetemail');
-            if ($email2 != "") {
-                $myresetPwd = $this->Players->getPlayer($email2);
-                if (!is_null($myresetPwd)) {
-                    $password = $this->resetPassword();
-                    $myresetPwd->password = $this->passwordHash($password);
-                    $this->Players->save($myresetPwd);
-                    $displayReset = true;
-                }
-                else
-                {
-                    $this->Flash->error(__('This email does not exist, please create an account'));
-                }
-            }
-            else
-            {
-                $this->Flash->error(__('Please enter a valid email'));
-            }
+        if ($this->request->is('post')) {
+            $resetemail = $this->request->getData('emailreset');
+            $player = $this->Players->find()->where(['email = ' => $resetemail])->first();
+            if (!is_null($player)) {
+                $resetpwd = $this->resetPassword($resetemail);
+                $hashedPwd = $this->passwordHash($resetpwd);
+                $player->password = $hashedPwd;
+                $this->Players->save($player);
+                $this->Flash->success(__('Your new password is: ' . $resetpwd ));
+            }else $this->Flash->error(__('Wrong email, please try again'));
         }
-        $this->set('email2', $email2);
-        $this->set('password', $password);
-        $this->set('displayRetrieve', $displayRetrieve);
-        $this->set('displayReset', $displayReset);
 
         if ($this->request->is('post')) {
 
             // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
             $players = $this->Players->find()->where(['email = ' => $this->request->getData('email')]);
-            
+
             // If the player has been found in the database
-            if ($players->count() == 1){
-                      
+            if ($players->count() == 1) {
+
                 //We check the password
-                if(password_verify($this->request->getData('password'), $players->first()->password)){
+                if (password_verify($this->request->getData('password'), $players->first()->password)) {
                     // Secondary check
                     $currentPlayer = $players->first();
 
                     // Set session variable with the ID of the current player
                     $session = $this->request->session();
                     $session->write('playerId', $currentPlayer->id);
+                    $this->addConnexion($this->request->session()->read('playerId'));
 
                     // Redirect the user to the index page
                     return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
-                }
-                else{
+                } else {
                     $this->Flash->error(__('Wrong password, please try again'));
                 }
             } else {
@@ -144,6 +113,37 @@ class PlayersController extends AppController {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
         $password = substr(str_shuffle($chars), 0, self::PASSLENGTH);
         return $password;
+    }
+
+    public function changePassword($email, $oldPwd, $newPwd, $checkPWd) {
+        $players = $this->Players->find()->where(['email = ' => $email])->first();
+        if (!is_null($players)) {
+            if (password_verify($oldPwd, $players->password)) {
+                if ($newPwd == $checkPWd) {
+                    $hashedPwd = $this->passwordHash($newPwd);
+                    $players->password = $hashedPwd;
+                    $this->Players->save($players);
+                    $this->Flash->success(__('Password changed, please connect with your new password! '));
+                } else
+                    $this->Flash->error(__('Your two new password don\'t match. Please enter the same password!'));
+            } else
+                $this->Flash->error(__('Wrong old password, please try again! '));
+        } else
+            $this->Flash->error(__('Wrong email, please try again'));
+    }
+
+    /**
+     * Add an event to the Events table when someone is connected
+     * The Events will be used to know which user is connected to display it on the sight page !
+     * @param type $idPlayer
+     */
+    public function addConnexion($idPlayer) {
+        $myNewEvent = new Events([
+            'name' => $idPlayer,
+            'date' => Time::now(),
+            'coordinate_x' => -1,
+            'coordinate_y' => -2]);
+        $this->Events->save($myNewEvent);
     }
 
 }

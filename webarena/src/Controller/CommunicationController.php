@@ -126,7 +126,7 @@ class CommunicationController extends AppController {
     
     public function test()
     {
-        $this->createGuild();
+        //$this->createGuild();
         
         $guilds = $this->Guilds->find('all', array('fields' => array('Guilds.name')));
         // Create an array which will contains all the name of the available guilds, and send it to the view
