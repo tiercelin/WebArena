@@ -6,6 +6,7 @@ use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use App\Model\Entity\Events;
 use Cake\I18n\Time;
+use Cake\Utility\Text;
 
 class PlayersController extends AppController {
 
@@ -17,6 +18,7 @@ class PlayersController extends AppController {
         $this->loadComponent('Flash');
         $this->loadModel('Events');
         $this->loadModel('Players');
+        $this->loadModel('Fighters');
     }
 
     public function passwordHash($pwd) {
@@ -75,8 +77,9 @@ class PlayersController extends AppController {
                 $hashedPwd = $this->passwordHash($resetpwd);
                 $player->password = $hashedPwd;
                 $this->Players->save($player);
-                $this->Flash->success(__('Your new password is: ' . $resetpwd ));
-            }else $this->Flash->error(__('Wrong email, please try again'));
+                $this->Flash->success(__('Your new password is: ' . $resetpwd));
+            } else
+                $this->Flash->error(__('Wrong email, please try again'));
         }
 
         if ($this->request->is('post')) {
@@ -95,8 +98,8 @@ class PlayersController extends AppController {
                     // Set session variable with the ID of the current player
                     $session = $this->request->session();
                     $session->write('playerId', $currentPlayer->id);
-                    $this->addConnexion($this->request->session()->read('playerId'));
-
+                    $this->addConnexionMultiplayer($this->request->session()->read('playerId'));
+                    $this->addConnection($this->request->session()->read('playerId'),$currentPlayer->email );
                     // Redirect the user to the index page
                     return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
                 } else {
@@ -131,18 +134,29 @@ class PlayersController extends AppController {
         } else
             $this->Flash->error(__('Wrong email, please try again'));
     }
-
     /**
      * Add an event to the Events table when someone is connected
      * The Events will be used to know which user is connected to display it on the sight page !
      * @param type $idPlayer
      */
-    public function addConnexion($idPlayer) {
+    public function addConnexionMultiplayer($idPlayer) {
         $myNewEvent = new Events([
             'name' => $idPlayer,
             'date' => Time::now(),
             'coordinate_x' => -1,
             'coordinate_y' => -2]);
+        $this->Events->save($myNewEvent);
+    }
+    public function addConnection($playerid, $playeremail){
+        //get its fighter's id ton add the event
+        $playersfighter = $this->Fighters->getFighter($playerid);
+        //take the part before the @ in its email address to find the players name
+        $playersname = Text::tokenize($playeremail, '@');
+        $myNewEvent = new Events([
+            'name' => $playersname[0].' connected',
+            'date' => Time::now(),
+            'coordinate_x' => $playersfighter->coordinate_x,
+            'coordinate_y' => $playersfighter->coordinate_y]);
         $this->Events->save($myNewEvent);
     }
 

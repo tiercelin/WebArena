@@ -15,6 +15,7 @@ echo $this->Form->input('emailreset',array('type' => 'email','label' => 'Your em
 echo $this->Form->submit('reset password', array('type' => 'submit', 'controller'=> 'Players', 'action'=>'loginPlayer', 'name'=>'Sign in'));
 echo $this->Form->end();?>
 
+
 <h2>Change your password: </h2><br>
 
 <?php
