@@ -36,7 +36,6 @@
 
 <br><br>
 
-<?php echo json_encode($test4); ?>
 
 
     <?= $this->Flash->render() ?>

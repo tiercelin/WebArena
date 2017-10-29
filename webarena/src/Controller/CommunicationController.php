@@ -56,25 +56,59 @@ class CommunicationController extends AppController {
         if($this->request->is('post'))
         {
             // Retrieve the guild thanks to the selected value
-            $numGuild = $this->request->data['guildjoin'] + 1;
-            $guild = $this->Guilds->find()->where(['id = ' => $numGuild])->first();
+            if (is_int($this->request->data['guildjoin'])+1)
+            {
+                $numGuild = $this->request->data['guildjoin'] + 1;
+                $guild = $this->Guilds->find()->where(['id = ' => $numGuild])->first();
                        
-            // Retrieve the current fighter
-            $fighter = $this->Fighters->getFighter($idPlayer);
+                 // Retrieve the current fighter
+                 $fighter = $this->Fighters->getFighter($idPlayer);
 
-            // Set and save (new) guild ID
-            $fighter->guild_id = $guild->id;
+                // Set and save (new) guild ID
+                $fighter->guild_id = $guild->id;
         
-            if ($this->Fighters->save($fighter))
-            {
-                $this->Flash->success (__('You have joined the guild "'.$guild->name.'"'));
+                if ($this->Fighters->save($fighter))
+                {
+                    $this->Flash->success (__('You have joined the guild "'.$guild->name.'"'));
+                }
+        
+                else
+                {
+                    $this->Flash->error(__('You fail to join the guild "'.$guild->name.'"'));
+                } 
             }
-        
+            
             else
-            {
-                $this->Flash->error(__('You fail to join the guild "'.$guild->name.'"'));
-            }
+                {
+                    $this->Flash->error(__('Please select a guild to join'));
+                }
         }
+    }
+    
+    
+    public function addStrengthViaGuild()
+    {
+        $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
+        
+        // Retrieve the current fighter
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        // If this fighter belongs to a guild, retrieve this guild
+        if (!is_null($fighter->guild_id))
+        {
+            $guild = $this->Guilds->find()->where(['id = ' => $fighter->guild_id])->first();
+            
+            // Now count the number of fighters which also belongs to this guild
+            $fighters = $this->Fighters->find()->where(['guild_id = ' => $guild->id]);
+            $nbFighters = $fighters->count()-1;
+            
+            // Add some strength points to the current fighter according to $nbFighters
+            $fighter->skill_strength += $nbFighters;
+            
+            // Save this fighter
+            $this->Fighters->save($fighter);    
+        }
+        
     }
     
     
@@ -144,7 +178,9 @@ class CommunicationController extends AppController {
         }
         $this->set('guildsArray', $arrayNameGuild);
         
-        $this->joinGuild();
+        //$this->joinGuild();
+        
+        $this->addStrengthViaGuild();
         
         //$this->sendMessage();
         
