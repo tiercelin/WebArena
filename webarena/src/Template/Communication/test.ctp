@@ -36,6 +36,16 @@
 
 <br><br>
 
+<h3>Create an event : </h3><br>
+
+<?php
+    echo $this->Form->create();
+    echo $this->Form->textarea('description', ['rows' => '5', 'cols' => '5']);
+    echo $this->Form->submit('Scream !');
+    echo $this->Form->end();
+
+?>
+
 
 
     <?= $this->Flash->render() ?>

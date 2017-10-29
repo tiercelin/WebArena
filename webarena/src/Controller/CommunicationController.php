@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
+use App\Model\Entity\Events;
 
 class CommunicationController extends AppController {
     
@@ -13,6 +14,7 @@ class CommunicationController extends AppController {
         $this->loadModel('Guilds');
         $this->loadModel('Fighters');
         $this->loadModel('Messages');
+        $this->loadModel('Events');
         
         $this->loadComponent('Flash');
     }
@@ -112,6 +114,35 @@ class CommunicationController extends AppController {
     }
     
     
+    public function scream()
+    {
+        $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
+        // Retrieve the current fighter
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        if ($this->request->is('post')) {
+            // If the description of the event is less than 255 characters (database constraints)
+            if(strlen($this->request->getData('description'))>255)
+            {
+                $this->Flash->error(__('Your event description must be less than 255 characters'));
+            }
+            
+            else
+            {
+                 // Create manually the new event
+            $myNewEvent = new Events([
+                'name' => $this->request->getData('description'),
+                'date' => Time::now(),
+                'coordinate_x' => $fighter->coordinate_x,
+                'coordinate_y' => $fighter->coordinate_y]);
+            $this->Events->save($myNewEvent);
+            
+            $this->Flash->success(__('Your event description has been added to the diary !'));   
+            } 
+         }
+    }
+    
+    
     public function sendMessage()
     {
         // Create an empty entity of message
@@ -180,11 +211,13 @@ class CommunicationController extends AppController {
         
         //$this->joinGuild();
         
-        $this->addStrengthViaGuild();
+        //$this->addStrengthViaGuild();
         
         //$this->sendMessage();
         
         //$this->getMessage();
+        
+        $this->scream();
         
     
     }
