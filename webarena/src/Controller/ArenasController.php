@@ -10,7 +10,6 @@ use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 
-
 /**
  * Personal Controller
  * User personal interface
@@ -52,7 +51,7 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
             $event = $this->Events->getEvent($this->request->session()->read('playerId'));
             $players = $this->Players->find()->where(['id = ' => $this->request->session()->read('playerId')])->first();
-            $this->addDeconnection($this->request->session()->read('playerId'),$players->email );
+            $this->addDeconnection($this->request->session()->read('playerId'), $players->email);
             $this->Events->delete($event);
             $this->request->session()->destroy();
             $this->Flash->success(__('You have been disconnected !'));
@@ -450,25 +449,7 @@ class ArenasController extends AppController {
         $this->set('width', $width);
 
         if ($this->isUserConnected()) {
-
-
-<<<<<<< HEAD
-            $regenerate = false;
-            $regenerate = $this->request->getData('regenerate');
-            if ($regenerate == true) {
-                $this->regenerateMap();
-            }
-
-            
-            if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
-            
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
-
-
-=======
-            if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
-
->>>>>>> abb09653fb0c01b912daf2171814e81926c55d07
                 $mov = $this->request->getData('movement');
                 $attack = $this->request->getData('attack');
 
@@ -486,10 +467,6 @@ class ArenasController extends AppController {
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
-<<<<<<< HEAD
-
-=======
->>>>>>> abb09653fb0c01b912daf2171814e81926c55d07
 
                 //get users connected
                 $newconnection = $this->Events->getConnexions();
@@ -510,20 +487,7 @@ class ArenasController extends AppController {
             } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
-<<<<<<< HEAD
-
-
-            $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
-            $this->set('fighter', $fighter);
-
-            $mytable = $this->Surroundings->getSurroundings();
-            $this->set('entities', $mytable);
-            $this->set('controller', $this);
-
-=======
->>>>>>> abb09653fb0c01b912daf2171814e81926c55d07
         }
-    }
     }
 
     /**
@@ -536,14 +500,14 @@ class ArenasController extends AppController {
 
         $fighter = $this->Fighters->getFighter($idPlayer);
 
-        //si le joueur monte
+//si le joueur monte
         if ($mov == 'top' && $fighter->coordinate_x > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x - 1, $fighter->coordinate_y);
 
             if (is_null($content)) {
                 $fighter->coordinate_x--;
                 $this->Fighters->save($fighter);
-                //Add the event to the table
+//Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
@@ -554,14 +518,14 @@ class ArenasController extends AppController {
                 $this->deleteFighter($idPlayer);
             }
         }
-        //si le joueur descend
+//si le joueur descend
         else if ($mov == 'left' && $fighter->coordinate_y > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y - 1);
 
             if (is_null($content)) {
                 $fighter->coordinate_y--;
                 $this->Fighters->save($fighter);
-                //Add the event to the table
+//Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
@@ -572,14 +536,14 @@ class ArenasController extends AppController {
                 $this->deleteFighter($idPlayer);
             }
         }
-        //si le joueur va à droite
+//si le joueur va à droite
         else if ($mov == 'right' && $fighter->coordinate_y < self::WIDTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y + 1);
 
             if (is_null($content)) {
                 $fighter->coordinate_y++;
                 $this->Fighters->save($fighter);
-                //Add the event to the table
+//Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
@@ -590,14 +554,14 @@ class ArenasController extends AppController {
                 $this->deleteFighter($idPlayer);
             }
         }
-        //si le joueur va a gauche
+//si le joueur va a gauche
         else if ($mov == 'bottom' && $fighter->coordinate_x < self::LENGTH - 1) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x + 1, $fighter->coordinate_y);
 
             if (is_null($content)) {
                 $fighter->coordinate_x++;
                 $this->Fighters->save($fighter);
-                //Add the event to the table
+//Add the event to the table
                 $this->addEventToDiary($fighter, 'Move by');
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
@@ -617,7 +581,7 @@ class ArenasController extends AppController {
 
         $content = $this->Surroundings->getSurrounding($x, $y);
 
-        // If the square is free, the condition becomes true
+// If the square is free, the condition becomes true
         if (is_null($content)) {
             $isFree = true;
             return $isFree;
@@ -643,11 +607,11 @@ class ArenasController extends AppController {
     public function generationPillars() {
         $nb_cases = self::WIDTH * self::LENGTH;
         $nb = $nb_cases % 10;
-        // Pillars generation
+// Pillars generation
         for ($i = 0; $i < ($nb_cases - $nb) / 10; $i++) {
             $isFree = false;
 
-            // While we don't find a free square
+// While we don't find a free square
             while ($isFree == false) {
                 $x = rand(0, self::LENGTH - 1);
                 $y = rand(0, self::WIDTH - 1);
@@ -670,11 +634,11 @@ class ArenasController extends AppController {
     public function generationTraps() {
         $nb_cases = self::WIDTH * self::LENGTH;
         $nb = $nb_cases % 10;
-        // Traps generation
+// Traps generation
         for ($i = 0; $i < ($nb_cases - $nb) / 10; $i++) {
             $isFree = false;
 
-            // While we don't find a free square
+// While we don't find a free square
             while ($isFree == false) {
                 $x = rand(0, self::LENGTH - 1);
                 $y = rand(0, self::WIDTH - 1);
@@ -697,7 +661,7 @@ class ArenasController extends AppController {
     public function generationMonster() {
         $isFree = false;
 
-        // While we don't find a free square
+// While we don't find a free square
         while ($isFree == false) {
             $x = rand(0, self::LENGTH - 1);
             $y = rand(0, self::WIDTH - 1);
@@ -720,7 +684,7 @@ class ArenasController extends AppController {
             $idPlayer = $session->read('playerId');
             $isFree = false;
 
-            // While we don't find a free square
+// While we don't find a free square
             while ($isFree == false) {
                 $x = rand(0, self::LENGTH - 1);
                 $y = rand(0, self::WIDTH - 1);
@@ -748,7 +712,8 @@ class ArenasController extends AppController {
             return false;
         }
     }
-    public function canISeeFreeSquares($x, $y, $fighter){
+
+    public function canISeeFreeSquares($x, $y, $fighter) {
         if (abs($x - $fighter->coordinate_x) + abs($y - $fighter->coordinate_y) <= $fighter->skill_sight) {
             return true;
         } else {
@@ -770,14 +735,14 @@ class ArenasController extends AppController {
         }
     }
 
-    ////////// ********** DIARY PART **********\\\\\\\\\\
+////////// ********** DIARY PART **********\\\\\\\\\\
 
     /**
      * This function display the event messages (diary)
      */
     public function diary() {
         if ($this->isUserConnected()) {
-            // Put code here
+// Put code here
             $entities = $this->Events->getEvents();
 
             $date = Time::now();
@@ -799,9 +764,9 @@ class ArenasController extends AppController {
     }
 
     public function addDeconnection($playerid, $playeremail) {
-        //get its fighter's id ton add the event
+//get its fighter's id ton add the event
         $playersfighter = $this->Fighters->getFighter($playerid);
-        //take the part before the @ in its email address to find the players name
+//take the part before the @ in its email address to find the players name
         $playersname = Text::tokenize($playeremail, '@');
         $myNewEvent = new Events([
             'name' => $playersname[0] . ' disconnected',
