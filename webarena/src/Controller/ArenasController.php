@@ -448,7 +448,6 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
 
 
-<<<<<<< HEAD
             $regenerate = false;
             $regenerate = $this->request->getData('regenerate');
             if ($regenerate == true) {
@@ -458,10 +457,9 @@ class ArenasController extends AppController {
             
             if(!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))){
             
-=======
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
 
->>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
+
                 $mov = $this->request->getData('movement');
                 $attack = $this->request->getData('attack');
 
@@ -479,10 +477,7 @@ class ArenasController extends AppController {
 
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
                 $this->set('fighter', $fighter);
-<<<<<<< HEAD
 
-=======
->>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
 
                 //get users connected
                 $newconnection = $this->Events->getConnexions();
@@ -503,7 +498,7 @@ class ArenasController extends AppController {
             } else {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
-<<<<<<< HEAD
+
 
             $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
             $this->set('fighter', $fighter);
@@ -512,9 +507,8 @@ class ArenasController extends AppController {
             $this->set('entities', $mytable);
             $this->set('controller', $this);
 
-=======
->>>>>>> 2ec81cd921f088ab693e66e10bfa8de8abf89825
         }
+    }
     }
 
     /**
