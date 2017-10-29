@@ -53,10 +53,10 @@ class ArenasController extends AppController {
             $players = $this->Players->find()->where(['id =' => $this->request->session()->read('playerId')])->first();
             if (!is_null($players)) {
                 $this->addDeconnection($this->request->session()->read('playerId'), $players->email);
-                foreach($events as $event){
+                foreach ($events as $event) {
                     $this->Events->delete($event);
                 }
-                
+
                 $this->request->session()->destroy();
                 $this->Flash->success(__('You have been disconnected !'));
                 return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
@@ -520,7 +520,7 @@ class ArenasController extends AppController {
                 }
                 $fighter = $this->Fighters->getFighter($this->request->session()->read('playerId'));
 
-                $fighters = $this->getUserConnected($fighter);
+                $fighters = $this->getFightersConnected($fighter);
                 $this->set('fighter', $fighter);
                 $this->set('fighters', $fighters);
                 $this->set('entities', $mytable);
@@ -531,7 +531,7 @@ class ArenasController extends AppController {
         }
     }
 
-    public function getUserConnected($fighter) {
+    public function getFightersConnected($fighter) {
         $fighters = array();
         //get users connected
         $newconnection = $this->Events->getConnexions();
@@ -564,10 +564,12 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x - 1, $fighter->coordinate_y);
 
             if (is_null($content)) {
-                $fighter->coordinate_x--;
-                $this->Fighters->save($fighter);
+                if ($this->isNotASquareOfAConnectedFighter($fighter, $fighter->coordinate_x - 1, $fighter->coordinate_y)) {
+                    $fighter->coordinate_x--;
+                    $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the top ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the top ! ');
+                }
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
                     $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
@@ -584,10 +586,12 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y - 1);
 
             if (is_null($content)) {
-                $fighter->coordinate_y--;
-                $this->Fighters->save($fighter);
+                if ($this->isNotASquareOfAConnectedFighter($fighter, $fighter->coordinate_x, $fighter->coordinate_y - 1)) {
+                    $fighter->coordinate_y--;
+                    $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the left ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the left ! ');
+                }
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
                     $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
@@ -604,10 +608,12 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x, $fighter->coordinate_y + 1);
 
             if (is_null($content)) {
-                $fighter->coordinate_y++;
-                $this->Fighters->save($fighter);
+                if ($this->isNotASquareOfAConnectedFighter($fighter, $fighter->coordinate_x, $fighter->coordinate_y + 1)) {
+                    $fighter->coordinate_y++;
+                    $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the right ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the right ! ');
+                }
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
                     $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
@@ -624,10 +630,12 @@ class ArenasController extends AppController {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x + 1, $fighter->coordinate_y);
 
             if (is_null($content)) {
-                $fighter->coordinate_x++;
-                $this->Fighters->save($fighter);
+                if ($this->isNotASquareOfAConnectedFighter($fighter, $fighter->coordinate_x + 1, $fighter->coordinate_y)) {
+                    $fighter->coordinate_x++;
+                    $this->Fighters->save($fighter);
 //Add the event to the table
-                $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the bottom ! ');
+                    $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' moved to the bottom ! ');
+                }
             } else if (($content->type == 'T') || ($content->type == 'W')) {
                 if ($content->type == 'T') {
                     $this->addEventToDiary($fighter, $this->getCurrentUsername() . ' \'s ' . $fighter->name . ' failed into a trap ! ');
@@ -654,6 +662,16 @@ class ArenasController extends AppController {
             return $isFree;
         }
         return false;
+    }
+
+    public function isNotASquareOfAConnectedFighter($fighter, $newx, $newy) {
+        $connectedFighters = $this->getFightersConnected($fighter);
+        foreach ($connectedFighters as $connectedFighter) {
+            if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function regenerateMap() {
