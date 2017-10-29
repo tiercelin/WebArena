@@ -8,6 +8,8 @@ use App\Model\Entity\Events;
 use App\Model\Table\Players;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Text;
+
 
 /**
  * Personal Controller
@@ -47,12 +49,15 @@ class ArenasController extends AppController {
     }
 
     public function logout() {
-        
-        $event = $this->Events->getEvent($this->request->session()->read('playerId'));
-        $this->Events->delete($event);
-        $this->request->session()->destroy();
-        $this->Flash->success(__('You have been disconnected !'));
-        return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+        if ($this->isUserConnected()) {
+            $event = $this->Events->getEvent($this->request->session()->read('playerId'));
+            $players = $this->Players->find()->where(['id = ' => $this->request->session()->read('playerId')])->first();
+            $this->addDeconnection($this->request->session()->read('playerId'),$players->email );
+            $this->Events->delete($event);
+            $this->request->session()->destroy();
+            $this->Flash->success(__('You have been disconnected !'));
+            return $this->redirect(['controller' => 'players', 'action' => 'loginPlayer']);
+        }
     }
 
     ////////// ********** INDEX PART **********\\\\\\\\\\
@@ -112,20 +117,19 @@ class ArenasController extends AppController {
 
         // Verify that the user is connected
         if ($this->isUserConnected()) {
-            if($idPlayer==$this->request->session()->read('playerId')){
+            if ($idPlayer == $this->request->session()->read('playerId')) {
                 // Retrieve the fighter entity to be deleted
-            $fighterToDelete = $this->Fighters->getFighter($idPlayer);
-            $fighterToDeleteName = $fighterToDelete->name;
+                $fighterToDelete = $this->Fighters->getFighter($idPlayer);
+                $fighterToDeleteName = $fighterToDelete->name;
 
-            // Delete this fighter          
-            $this->Fighters->delete($fighterToDelete);
-            $this->Flash->success(__('Fighter "' . $fighterToDeleteName . '" has been correctly deleted !'));
-            //Add this event to the table
-            $this->addEventToDiary($fighterToDelete, ' Fighter Dead');
-            // Redirect the user to the fighter creation page
-            return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
+                // Delete this fighter          
+                $this->Fighters->delete($fighterToDelete);
+                $this->Flash->success(__('Fighter "' . $fighterToDeleteName . '" has been correctly deleted !'));
+                //Add this event to the table
+                $this->addEventToDiary($fighterToDelete, ' Fighter Dead');
+                // Redirect the user to the fighter creation page
+                return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
-            
         }
     }
 
@@ -302,9 +306,9 @@ class ArenasController extends AppController {
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($fighter2->current_health == 0) {
                 $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
-                
+
                 $this->addEventToDiary($fighter1, $fighter2->name . ' have been killed by');
-                
+
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
                 $this->deleteFighter($idPlayer2);
@@ -312,7 +316,7 @@ class ArenasController extends AppController {
         } else {
             //Add the event to the table
             $this->addEventToDiary($fighter1, $fighter2->name . ' escaped attack by');
-        $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
+            $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
         }
     }
 
@@ -470,15 +474,15 @@ class ArenasController extends AppController {
 
                 //get users connected
                 $newconnection = $this->Events->getConnexions();
-                foreach($newconnection as $nc){
+                foreach ($newconnection as $nc) {
                     $conn[] = $nc->name;
                 }
-                
+
                 $fighters = array();
                 foreach ($conn as $stillconnected) {
-                    if($this->getFighter($stillconnected)!=$fighter){
+                    if ($this->getFighter($stillconnected) != $fighter) {
                         $fighters[] = $this->getFighter($stillconnected);
-                    }  
+                    }
                 }
                 $mytable = $this->Surroundings->getSurroundings();
                 $this->set('fighters', $fighters);
@@ -752,6 +756,19 @@ class ArenasController extends AppController {
             'date' => Time::now(),
             'coordinate_x' => $fighter->coordinate_x,
             'coordinate_y' => $fighter->coordinate_y]);
+        $this->Events->save($myNewEvent);
+    }
+
+    public function addDeconnection($playerid, $playeremail) {
+        //get its fighter's id ton add the event
+        $playersfighter = $this->Fighters->getFighter($playerid);
+        //take the part before the @ in its email address to find the players name
+        $playersname = Text::tokenize($playeremail, '@');
+        $myNewEvent = new Events([
+            'name' => $playersname[0] . ' disconnected',
+            'date' => Time::now(),
+            'coordinate_x' => $playersfighter->coordinate_x,
+            'coordinate_y' => $playersfighter->coordinate_y]);
         $this->Events->save($myNewEvent);
     }
 
