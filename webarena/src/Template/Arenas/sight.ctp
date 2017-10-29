@@ -11,8 +11,8 @@
     //pr($fighters);
     if (!empty($fighters)) {
         foreach ($fighters as $enemyFighter) {
-            if(!is_null($enemyFighter))// first if empty is working when it should not
-            $indextable[$enemyFighter->coordinate_x][$enemyFighter->coordinate_y] = $enemyFighter;
+            if (!is_null($enemyFighter))// first if empty is working when it should not
+                $indextable[$enemyFighter->coordinate_x][$enemyFighter->coordinate_y] = $enemyFighter;
         }
     }
     $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
@@ -25,7 +25,7 @@
             $check = false;
             if (isset($indextable[$i][$j])) {
                 if ($indextable[$i][$j] != $fighter) {
-                    if ($controller->canISeeIt($indextable[$i][$j], $fighter)) {
+                    if ($controller->canISeeIt($indextable[$i][$j], $fighter)) { // frame squares than I can see
                         if ($indextable[$i][$j]->type == 'P') {
                             echo "<td style='height: 35px'> P </td>";
                         } else {
@@ -43,11 +43,15 @@
                                 echo "<td style='height: 35px; length: 20px'> </td>";
                         }
                     } else
-                        echo "<td style='height: 35px; length: 20px'>  </td>";
+                        echo "<td style='height: 35px; length: 20px'>  L </td>"; // frame squares than I can NOT see
                 } else
                     echo "<td style='height: 35px; length: 20px'> <img src='../img/hero.png' </td>";
-            } else
-                echo "<td style='height: 35px; length: 20px'>  </td>";
+            } else {
+                if ($controller->canISeeFreeSquares($i, $j, $fighter)) {
+                    echo "<td style='height: 35px; length: 20px'>  </td>"; // free squares than I can see
+                } else
+                    echo "<td style='height: 35px; length: 20px'> L </td>"; // free squares than I can NOT see
+            }
         }
         echo "</tr>";
     }
