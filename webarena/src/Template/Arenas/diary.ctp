@@ -4,7 +4,7 @@
 $this->assign('title', 'Diary');
 
 if (!is_null($entities)) {
-    echo "<table id=\"example\" class=\"cell-border\" width=\"100%\" cellspacing=\"0\">";
+    echo "<table id=\"example\" class=\"cell-border hover row-border order-columnstripe table table-striped table-bordered\" width=\"100%\" cellspacing=\"0\">";
     echo "<thead>
             <tr>
                 <th>ID</th>

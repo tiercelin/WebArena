@@ -46,9 +46,9 @@
                             }
                             if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
                                 if ($indextable[$i][$j]->type == 'T') {
-                                    $message = $message. "Suspicious Break !";
+                                    $controller->Flash->default(__('Suspicious Break !'));
                                 } else {
-                                    $message = $message. "Stink !";
+                                    $controller->Flash->default(__('Stink!'));
                                 }
                                 echo "<td style='height: 35px; length: 20px'> </td>";
                             } else
@@ -86,8 +86,7 @@
 
     <br>
 </div>
-
-<?= $message; ?>
+<?= $this->Flash->render() ?>
 
 <table id="but" >
 

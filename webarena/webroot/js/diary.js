@@ -5,9 +5,18 @@
  */
 
 $(document).ready(function() {
-    $('#example').DataTable( {
-        "scrollY":        "500px",
+    var table = $('#example').DataTable( {
+        "scrollY":        "700px",
         "scrollCollapse": true,
-        "paging":         false
+        "paging":         false,
+        "order": [[ 2, "desc" ]]
     } );
+     
+    $('#example tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = table.cell(this).index().column;
+ 
+            $( table.cells().nodes() ).removeClass( 'highlight' );
+            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
 } );
