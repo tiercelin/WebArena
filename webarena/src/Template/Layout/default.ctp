@@ -31,11 +31,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     
     <!-- for option E -->
     <?php echo $this->Html->css('datatables.min.css');?>
+    <?php echo $this->Html->css('jquery.dataTables.min.css');?>
     
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <!-- ?php echo $this->Html->script('https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');?> -->
     <?php echo $this->Html->script('jquery.min.js'); ?>
+    <?php echo $this->Html->script('jquery.dataTables.min.js'); ?>
     <?php echo $this->Html->script('bootstrap.min.js');?>
     <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default'));?>
     <?php echo $this->Html->script('interaction.js');?>

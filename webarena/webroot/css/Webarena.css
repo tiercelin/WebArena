@@ -43,5 +43,7 @@ body
     background-image: url('../img/arena.jpg');
     background-size: cover;
 }
-
+td.highlight {
+    background-color: whitesmoke;
+}
 
