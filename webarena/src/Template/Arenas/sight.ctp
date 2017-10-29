@@ -28,12 +28,12 @@
                     if ($controller->canISeeIt($indextable[$i][$j], $fighter)) { // frame squares than I can see
                         if ($indextable[$i][$j]->type == 'P') {
                             echo "<td style='height: 35px; length: 20px' background='../img/pillar2.png' >  </td>";
-                        } else {/// to display the enemy's avatart
+                        } else {/// to display the enemy's avatar
                             if (in_array($indextable[$i][$j], $fighters)) {
                                 $idPlayer = $indextable[$i][$j]->player_id;
                                 $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
                                 $avfilecount = count($totfile);
-                                if($avfilecount == 0){
+                                if ($avfilecount == 0) {
                                     $avatarFilename = 'kittenWarrior.jpg';
                                 }
                                 if ($avfilecount == 1) {
@@ -43,20 +43,19 @@
                                     }
                                 }
                                 echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '35', 'width' => '20']) . "</td>";
-                            }
-                            if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
-                                if ($indextable[$i][$j]->type == 'T') {
-                                    $controller->Flash->default(__('Suspicious Break !'));
-                                } else {
-                                    $controller->Flash->default(__('Stink!'));
+                            } else {
+                                echo "<td style='height: 35px; length: 20px'> </td>";
+                                if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
+                                    if ($indextable[$i][$j]->type == 'T') {
+                                        $message = 'Suspicious Break !';
+                                    } else {
+                                        $message = 'Stink!';
+                                    }
                                 }
-                                echo "<td style='height: 35px; length: 20px'> </td>";
-                            } else
-                                echo "<td style='height: 35px; length: 20px'> </td>";
+                            }
                         }
                     } else
-
-                echo "<td style='height: 35px; length: 20px' background='../img/fog.png'> </td>"; // frame squares than I can NOT see
+                        echo "<td style='height: 35px; length: 20px' background='../img/fog.png'> </td>"; // frame squares than I can NOT see
                 } else { // to display the player's avatar on the map !
                     $idPlayer = $fighter->player_id;
                     $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
@@ -70,7 +69,6 @@
                     }
                     echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '35', 'width' => '20']) . " </td>";
                 }
-
             } else {
                 if ($controller->canISeeFreeSquares($i, $j, $fighter)) {
                     echo "<td style='height: 35px; length: 20px'>  </td>"; // free squares than I can see
@@ -86,7 +84,7 @@
 
     <br>
 </div>
-<?= $this->Flash->render() ?>
+<?= $message; ?>
 
 <table id="but" >
 
