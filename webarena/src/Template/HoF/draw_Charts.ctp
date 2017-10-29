@@ -8,6 +8,7 @@ echo $this->Html->css('jquery.jqplot.css');
 echo $this->Html->script('plugins/jqplot.barRenderer.js') ;
 echo $this->Html->script('plugins/jqplot.pieRenderer.js') ;
 echo $this->Html->script('plugins/jqplot.categoryAxisRenderer.js') ;
+echo $this->Html->script('plugins/jqplot.dateAxisRenderer.js') ;
 echo $this->Html->script('plugins/jqplot.pointLabels.js') ;
 
 ?>
@@ -16,6 +17,7 @@ echo $this->Html->script('plugins/jqplot.pointLabels.js') ;
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 <div id="pieChartsSection" style="height:200px;width:200px; margin:auto; position:absolute; top:100px; left:800px; "></div>
+<div id="chart3" style="height:400px;width:500px; margin:auto; position:absolute; top:600px; left:100px;"></div>
 
 
 <script>
@@ -82,6 +84,46 @@ $(document).ready(function(){
             }       
         });
     };
+    
+    // Third charts : default charts with dates axis showing when users last connexion
+    var arrayDate = <?php echo json_encode($eventsConnexionArray); ?>;
+    
+    var dateConnexion = [];
+      arrayDate.forEach(function(element)
+      {
+          dateConnexion.push([element[0]['nameUser'], (element[0]['dateLastDisconnexion'] - element[0]['dateLastConnexion'])/60]);          
+      });
+             
+      console.log(dateConnexion);
+      
+     
+     $('#chart3').jqplot([dateConnexion], {
+        title:'Time spent by each user since their last connexion',
+        seriesDefaults:{
+            renderer:$.jqplot.BarRenderer,
+            rendererOptions: {
+                // Set the varyBarColor option to true to use different colors for each bar.
+                // The default series colors are used.
+                varyBarColor: true
+            }
+        },
+        axes:{
+            xaxis:{
+                renderer: $.jqplot.CategoryAxisRenderer
+            }
+        }
+    });
+  
+  
+  
+
+      
+   
+    
+    
+    
+   
+   
       
     
     
