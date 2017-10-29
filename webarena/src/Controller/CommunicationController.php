@@ -109,13 +109,18 @@ class CommunicationController extends AppController {
             }
     }
     
-    /*
+    
     public function getMessage()
     {
         $test = $this->Messages->getMessagesSent(1);
-        $this->set('test4', $test);
+        $test2 = array();
+        foreach($test as $message)
+        {
+            array_push($test2, $message->title);
+        }
+        $this->set('test4', $test2);
     }
-     */
+     
         
         
         
@@ -139,6 +144,8 @@ class CommunicationController extends AppController {
         //$this->joinGuild();
         
         //$this->sendMessage();
+        
+        $this->getMessage();
         
     
     }
