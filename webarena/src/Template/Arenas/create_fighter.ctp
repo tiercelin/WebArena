@@ -5,9 +5,10 @@
 <?php
   echo $this->Form->create();
   echo $this->Form->input('name',array('type' => 'text','label' => 'Name :'));
-  echo $this->Form->input('guild_name',array('type' => 'text','label' => 'Guild name :'));
-  echo $this->Form->input('avatar',array('type' => 'text','label' => 'Avatar :'));
 ?>
+
+<h5>If you want to join a guild, please go to the "Guild" page when you fighter will be created</h5>
+<h5>You will be able to select an avatar on the next page</h5>
 
 <h5>Your fighter will begin with these characteristics : </h5>
 <ul>

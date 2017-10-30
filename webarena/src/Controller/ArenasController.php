@@ -28,6 +28,7 @@ class ArenasController extends AppController {
         $this->loadModel('Fighters');
         $this->loadModel('Surroundings');
         $this->loadModel('Events');
+        $this->loadModel('Guilds');
 
         $this->loadComponent('Flash');
 
@@ -486,6 +487,34 @@ class ArenasController extends AppController {
     }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
+    
+      /**
+     * Add strength points to the current fighter : strength = number of co-fighters into this guild
+     */
+    public function addStrengthViaGuild()
+    {
+        $idPlayer = $this->request->session()->read('playerId');
+        
+        // Retrieve the current fighter
+        $fighter = $this->Fighters->getFighter($idPlayer);
+        
+        // If this fighter belongs to a guild, retrieve this guild
+        if (!is_null($fighter->guild_id))
+        {
+            $guild = $this->Guilds->find()->where(['id = ' => $fighter->guild_id])->first();
+            
+            // Now count the number of fighters which also belongs to this guild
+            $fighters = $this->Fighters->find()->where(['guild_id = ' => $guild->id]);
+            $nbFighters = $fighters->count()-1;
+            
+            // Add some strength points to the current fighter according to $nbFighters
+            $fighter->skill_strength += $nbFighters;
+            
+            // Save this fighter
+            $this->Fighters->save($fighter);    
+        }
+        
+    }
 
     /**
      * Display the matrix game with all elements
@@ -499,6 +528,9 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
 
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
+                
+                // Add strength points to this fighter if he belongs to a guild
+                $this->addStrengthViaGuild();
 
                 $mov = $this->request->getData('movement');
                 $attack = $this->request->getData('attack');
