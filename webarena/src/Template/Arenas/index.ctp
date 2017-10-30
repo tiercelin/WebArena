@@ -3,30 +3,32 @@
 <?php echo $this->Html->script('bootstrap.min.js'); ?>
 
 <div id="postuser">
-<h1>Welcome to WebArena ! </h1><br>
+    <h1>Welcome to WebArena ! </h1><br>
 
-<h3>Here are the rules of the game : </h3>
+    <h3>Here are the rules of the game : </h3>
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
-    
-    <div class="carousel-inner">
-        <div class="item active">
-            <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '1000', 'width'=>'1000', "align" =>"center" ]) ?>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+        <div class="carousel-inner">
+            <div class="item active">
+                <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '1000', 'width' => '1000', "align" => "center"]) ?>
+            </div>
+            <?php
+            if (!is_null($avatars) && !empty($avatars)) {
+                foreach ($avatars as $avatar) {
+                    echo "<div class=\"item\">";
+                    echo $this->Html->image("avatar/" . $avatar, ['height' => '1000', 'width' => '1000', "align" => "center"]) . "</div>";
+                }
+            }
+            ?>
         </div>
-        <?php
-        foreach ($avatars as $avatar) {
-            echo "<div class=\"item\">";
-            echo $this->Html->image("avatar/" . $avatar, ['height' => '1000', 'width'=>'1000', "align" =>"center" ]) . "</div>";
-        }
-        ?>
+        <!-- Carousel controls -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
     </div>
-    <!-- Carousel controls -->
-    <a class="carousel-control left" href="#myCarousel" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-    </a>
-    <a class="carousel-control right" href="#myCarousel" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right"></span>
-    </a>
-</div>
 
 </div>
