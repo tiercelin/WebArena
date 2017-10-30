@@ -130,15 +130,15 @@ class CommunicationController extends AppController {
     
     
     
-    
     ////// ***** MESSAGES PART ***** \\\\\\\\\\\\\\\\\\\\
+        
     
-    
-    
-    
+    /**
+     * Allow the user to create manually an event 
+     */
     public function scream()
     {
-        $idPlayer = 'df92817e-59c4-4098-8123-487fac1d8299';
+        $idPlayer = $this->request->session()->read('playerId');
         // Retrieve the current fighter
         $fighter = $this->Fighters->getFighter($idPlayer);
         
@@ -165,6 +165,9 @@ class CommunicationController extends AppController {
     }
     
     
+    /**
+     * Allow the user to choose a destinary and send him a message
+     */
     public function sendMessage()
     {
         // Create an empty entity of message
@@ -172,17 +175,28 @@ class CommunicationController extends AppController {
         $newMessage = $messagesTable->newEntity();
         
         // Define ID of the (fighter) sender = current fighter
-        $idPlayer = '545f827c-576c-4dc5-ab6d-27c33186dc3e';
+        $idPlayer = $this->request->session()->read('playerId');
         $fighter = $this->Fighters->getFighter($idPlayer);
         $idFighter1 = $fighter->id;
                    
         if ($this->request->is('post')) {
-             // Retrieve ID of the receiver fighter according to the choice in the dropdown list
+             // Retrieve ID of the receiver fighter according to the choice in the textbox
+            // Retrieve the name of all fighters available
+            $nameFighters = $this->Fighters->find('all', array('fields' => array('Fighters.name')));
+            $arrayNameFighters = array(); 
+            foreach($nameFighters as $nameFighter) {
+            array_push($arrayNameFighters, $nameFighter->name); 
+            }
+            
+            // Retrieve the name of the chosen addressee
             $nameFighter2 = $this->request->data['receiver'];
-            echo $nameFighter2;
-            $fighter2 = $this->Fighters->find()->where(['name = ' => $nameFighter2])->first();
-            echo $fighter2;
-            $idFighter2 = $fighter2->id;
+            
+            // Verify that the name of the addressee exists, and is different from the name of the sender.
+            // If yes, send the message. If no, display an error message
+            if(in_array($nameFighter2,$arrayNameFighters) && $nameFighter2 != $fighter->name)
+            {
+                $fighter2 = $this->Fighters->find()->where(['name = ' => $nameFighter2])->first();
+                $idFighter2 = $fighter2->id;
             
                 // Merge form data with the new (empty) entity
                 $newMessage->date = Time::now();
@@ -201,24 +215,48 @@ class CommunicationController extends AppController {
                 {
                     $this->Flash->error(__('Message creation failure !'));
                 }
-   
             }
+            
+            else
+            {
+                $this->Flash->error(__('You must choose a valid addressee fighter'));
+            }
+            
+        }
     }
     
     
+    /**
+     * Collect all messages (sent and received by the current fighter) in order to display them in proper format
+     */
     public function getMessage()
     {
-        $idPlayer = '545f827c-576c-4dc5-ab6d-27c33186dc3e';
+        // Retrieve the ID of the current fighter
+        $idPlayer = $this->request->session()->read('playerId');
         $fighter = $this->Fighters->getFighter($idPlayer);
         $idFighter = $fighter->id;
         
-        $messagesReceived = $this->Messages->getMessagesSent($idFighter);
-        $messages = array();
-        foreach($messagesReceived as $message)
+        // Get the messages sent
+        $messagesS = $this->Messages->getMessagesSent($idFighter);
+        $messagesSent = array();
+        foreach($messagesS as $message)
         {
-            array_push($messages, array(['title' => $message->title, 'text' => $message->message]));
+            $fighterTo = $this->Fighters->find()->where(['id = ' => $message->fighter_id])->first(); 
+            $nameAddresse = $fighterTo->name;
+            array_push($messagesSent, array(['title' => $message->title, 'text' => $message->message, 'date' => $message->date, 'addressee' => $nameAddresse]));
         }
-        $this->set('test4', $messages);
+        $this->set('messagesSent', $messagesSent);
+        
+        // Get the messages received
+        $messagesR = $this->Messages->getMessagesReceived($idFighter);
+        $messagesReceived = array();
+        foreach($messagesR as $message)
+        {
+            $fighterFrom = $this->Fighters->find()->where(['id = ' => $message->fighter_id_from])->first(); 
+            $nameSender = $fighterFrom->name;
+            array_push($messagesReceived, array(['title' => $message->title, 'text' => $message->message, 'date' => $message->date, 'sender' => $nameSender]));
+        }
+        $this->set('messagesReceived', $messagesReceived);
     }
      
         
@@ -232,26 +270,26 @@ class CommunicationController extends AppController {
     
     public function messages()
     {
-        $idFighter1 = 1;
-        // DYNAMIC !!
-        
-         $potentialReceivers = $this->Fighters->find('all', array('fields' => array('Fighters.name')));
-        // Create an array which will contains all the name of the fighters, send it to the view and retrieve the choice
-        $arrayNameFighter = array(); 
-        foreach($potentialReceivers as $pr) {
-            // Be aware to not put in the dropdown list the name of the current fighter : you cannot send a message to yourself ! 
-            if($pr->id != $idFighter1)
+        if($this->request->is('post'))
+        {
+            // Determine if the user wants to send a message or create an event
+            if(isset($this->request->data['sendmessage']))
             {
-                 array_push($arrayNameFighter, $pr->name); 
-            } 
+                $this->sendMessage();
+            }
+            
+            if(isset($this->request->data['scream']))
+            {
+                $this->scream();
+            }  
         }
-        $this->set('fightersNameArray', $arrayNameFighter);
+       
         
-          // $this->sendMessage();
+          
         
-        //$this->getMessage();
+        $this->getMessage();
         
-        //$this->scream();
+     
         
     }
   
