@@ -65,50 +65,52 @@ class PlayersController extends AppController {
      * If so, set up session variable. If not, display an error message.
      */
     public function loginPlayer() {
-//change owd
         if ($this->request->is('post')) {
-            $this->changePassword($this->request->getData('emailchange'), $this->request->getData('oldpassword'), $this->request->getData('newpassword'), $this->request->getData('checkpassword'));
-        }
-        //reset pwd
-        if ($this->request->is('post')) {
-            $resetemail = $this->request->getData('emailreset');
-            $player = $this->Players->find()->where(['email = ' => $resetemail])->first();
-            if (!is_null($player)) {
-                $resetpwd = $this->resetPassword($resetemail);
-                $hashedPwd = $this->passwordHash($resetpwd);
-                $player->password = $hashedPwd;
-                $this->Players->save($player);
-                $this->Flash->success(__('Your new password is: ' . $resetpwd));
-            } else
-                $this->Flash->error(__('Wrong email, please try again'));
-        }
+
+//change pwd
+            if ($this->request->getData('type') == "changePwd") {
+                $this->changePassword($this->request->getData('emailchange'), $this->request->getData('oldpassword'), $this->request->getData('newpassword'), $this->request->getData('checkpassword'));
+            }
+            //reset pwd
+            if ($this->request->getData('type') == "resetPwd") {
+                $resetemail = $this->request->getData('emailreset');
+                $player = $this->Players->find()->where(['email = ' => $resetemail])->first();
+                if (!is_null($player)) {
+                    $resetpwd = $this->resetPassword($resetemail);
+                    $hashedPwd = $this->passwordHash($resetpwd);
+                    $player->password = $hashedPwd;
+                    $this->Players->save($player);
+                    $this->Flash->success(__('Your new password is: ' . $resetpwd));
+                } else
+                    $this->Flash->error(__('Wrong email, please try again'));
+            }
 //sign in
-        if ($this->request->is('post')) {
+            if ($this->request->getData('type') == "signIn") {
+                // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
+                $players = $this->Players->find()->where(['email = ' => $this->request->getData('email')]);
 
-            // Retrieve all the players with the combinaison email + password entered (theoretically, only one result)
-            $players = $this->Players->find()->where(['email = ' => $this->request->getData('email')]);
+                // If the player has been found in the database
+                if ($players->count() == 1) {
 
-            // If the player has been found in the database
-            if ($players->count() == 1) {
-
-                //We check the password
-                if (password_verify($this->request->getData('password'), $players->first()->password)) {
-                    // Secondary check
-                    $currentPlayer = $players->first();
-                    if (!$this->isAlreadyConnected($currentPlayer)) {
-                        // Set session variable with the ID of the current player
-                        $session = $this->request->session();
-                        $session->write('playerId', $currentPlayer->id);
-                        $this->addConnexionMultiplayer($this->request->session()->read('playerId'));
-                        $this->addConnection($this->request->session()->read('playerId'), $currentPlayer->email);
-                        // Redirect the user to the index page
-                        return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
-                    } $this->Flash->error(__('This user is already connected, try with another account!'));
+                    //We check the password
+                    if (password_verify($this->request->getData('password'), $players->first()->password)) {
+                        // Secondary check
+                        $currentPlayer = $players->first();
+                        if (!$this->isAlreadyConnected($currentPlayer)) {
+                            // Set session variable with the ID of the current player
+                            $session = $this->request->session();
+                            $session->write('playerId', $currentPlayer->id);
+                            $this->addConnexionMultiplayer($this->request->session()->read('playerId'));
+                            $this->addConnection($this->request->session()->read('playerId'), $currentPlayer->email);
+                            // Redirect the user to the index page
+                            return $this->redirect(['controller' => 'arenas', 'action' => 'index']);
+                        } $this->Flash->error(__('This user is already connected, try with another account!'));
+                    } else {
+                        $this->Flash->error(__('Wrong password, please try again'));
+                    }
                 } else {
-                    $this->Flash->error(__('Wrong password, please try again'));
+                    $this->Flash->error(__('Authentification failed, please try again'));
                 }
-            } else {
-                $this->Flash->error(__('Authentification failed, please try again'));
             }
         }
     }
@@ -172,7 +174,7 @@ class PlayersController extends AppController {
     }
 
     public function getUserConnected() {
-        $conn= array();
+        $conn = array();
         //get users connected
         $newconnection = $this->Events->getConnexions();
         if (!is_null($newconnection)) {

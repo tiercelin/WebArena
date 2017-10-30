@@ -73,7 +73,9 @@ class ArenasController extends AppController {
     public function index() {
         if ($this->isUserConnected()) {
             // Put code here
+            $currentplayerName = $this->getCurrentUsername();
             $avatars = $this->loadImgForCaroussel();
+            $this->set('playername', $currentplayerName);
             $this->set('avatars', $avatars);
         }
     }

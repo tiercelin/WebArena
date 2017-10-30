@@ -46,4 +46,6 @@ body
 td.highlight {
     background-color: whitesmoke;
 }
-
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}

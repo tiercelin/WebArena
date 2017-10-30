@@ -3,21 +3,21 @@
 <?php echo $this->Html->script('bootstrap.min.js'); ?>
 
 <div id="postuser">
-    <h1>Welcome to WebArena ! </h1><br>
+    <h1>Welcome <?php echo $playername ?> to WebArena ! </h1><br>
 
     <h3>Here are the rules of the game : </h3>
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" height="50%" width="50%">
 
         <div class="carousel-inner">
-            <div class="item active">
-                <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '1000', 'width' => '1000', "align" => "center"]) ?>
+            <div class="item active carrousel-inner">
+                <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '50%', 'width' => '50%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) ?>
             </div>
             <?php
             if (!is_null($avatars) && !empty($avatars)) {
                 foreach ($avatars as $avatar) {
-                    echo "<div class=\"item\">";
-                    echo $this->Html->image("avatar/" . $avatar, ['height' => '1000', 'width' => '1000', "align" => "center"]) . "</div>";
+                    echo "<div class=\"item carrousel-inner\">";
+                    echo $this->Html->image("avatar/" . $avatar, ['height' => '50%', 'width' => '50%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) . "</div>";
                 }
             }
             ?>

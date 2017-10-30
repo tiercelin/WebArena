@@ -41,6 +41,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?php echo $this->Html->script('bootstrap.min.js');?>
     <?php echo $this->Html->script(array('bootstrap','bootstrap.min','default'));?>
     <?php echo $this->Html->script('interaction.js');?>
+     <?php echo $this->Html->script('index.js');?>
     
 </head>
 
