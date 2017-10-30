@@ -157,20 +157,20 @@ class ArenasController extends AppController {
      * @param type $idPlayer : ID of the player whose fighter has to be deleted
      */
     public function deleteFighter($idPlayer) {
-
+        echo $idPlayer;
         // Verify that the user is connected
         if ($this->isUserConnected()) {
-            if ($idPlayer == $this->request->session()->read('playerId')) {
-                // Retrieve the fighter entity to be deleted
-                $fighterToDelete = $this->Fighters->getFighter($idPlayer);
-                $fighterToDeleteName = $fighterToDelete->name;
+            // Retrieve the fighter entity to be deleted
+            $fighterToDelete = $this->Fighters->getFighter($idPlayer);
+            $fighterToDeleteName = $fighterToDelete->name;
 
-                // Delete this fighter          
-                $this->Fighters->delete($fighterToDelete);
-                $this->Flash->success(__('Fighter "' . $fighterToDeleteName . '" has been correctly deleted !'));
-                //Add this event to the table
-                $this->addEventToDiary($fighterToDelete, $this->getCurrentUsername() . ' \'s fighter ' . $fighterToDeleteName . ' has been killed');
-                // Redirect the user to the fighter creation page
+            // Delete this fighter          
+            $this->Fighters->delete($fighterToDelete);
+            $this->Flash->success(__('Fighter "' . $fighterToDeleteName . '" has been correctly deleted !'));
+            //Add this event to the table
+            $this->addEventToDiary($fighterToDelete, $this->getUserName($idPlayer) . ' \'s fighter ' . $fighterToDeleteName . ' has been killed');
+            // Redirect the user to the fighter creation page
+            if ($idPlayer == $this->request->session()->read('playerId')) {
                 return $this->redirect(['controller' => 'arenas', 'action' => 'createFighter']);
             }
         }
@@ -243,6 +243,8 @@ class ArenasController extends AppController {
 
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
+
+                    $this->set('xpbeforeUpdate', $this->request->session()->read('playerXP'));
                 }
             }
             $this->set('imageFileName', $avatarFilename);
@@ -267,6 +269,7 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
+            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
             //Then we upgrade his sight by 1, and send the whole to the database to save the changes.
             $old = $fighter->skill_sight; //for addEvent
             $fighter->skill_sight++;
@@ -280,6 +283,7 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
+            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
             //Then we upgrade his strength by 1, and send the whole to the database to save the changes.
             $old = $fighter->skill_strength;
             $fighter->skill_strength++;
@@ -293,6 +297,7 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
+            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
             //Then we upgrade his health by 3
             $old = $fighter->skill_health;
             $fighter->skill_health+=3;
@@ -343,7 +348,6 @@ class ArenasController extends AppController {
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
-
         // Determine if the attack succeed, according to the given formula
         $doAttackSucceed = $this->doAttackSucceed($fighter1->level, $fighter2->level);
 
@@ -351,24 +355,26 @@ class ArenasController extends AppController {
         if ($doAttackSucceed == true) {
             $this->Flash->success(__('Your attack succeeded on "' . $fighter2->name . '"'));
             $fighter2->current_health -= $fighter1->skill_strength;
+            echo $current_health = $fighter2->current_health;
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
-
+            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
-            if ($fighter2->current_health == 0) {
+            if ($current_health < 1) {
+                echo $current_health;
                 $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
 
-                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
+                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
 
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
+                echo $idPlayer2;
                 $this->deleteFighter($idPlayer2);
             }
         } else {
             //Add the event to the table
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' failed his attack on ' . $this->getUserName($idPlayer2) . '\' s' . $fighter2->name);
+            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' failed his attack on ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
             $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
         }
     }
@@ -397,7 +403,6 @@ class ArenasController extends AppController {
         if ($attack == 'attacktop' && $fighter->coordinate_x > 0) {
             $content = $this->Surroundings->getSurrounding($fighter->coordinate_x - 1, $fighter->coordinate_y);
             $fighter2 = $this->getFighterByCoord($fighter->coordinate_x - 1, $fighter->coordinate_y);
-
             // If we find a monster
             if (!is_null($content) && $content->type == 'W') {
                 $this->Surroundings->delete($content);
@@ -489,33 +494,30 @@ class ArenasController extends AppController {
     }
 
     ////////// ********** SIGHT PART **********\\\\\\\\\\
-    
-      /**
+
+    /**
      * Add strength points to the current fighter : strength = number of co-fighters into this guild
      */
-    public function addStrengthViaGuild()
-    {
+    public function addStrengthViaGuild() {
         $idPlayer = $this->request->session()->read('playerId');
-        
+
         // Retrieve the current fighter
         $fighter = $this->Fighters->getFighter($idPlayer);
-        
+
         // If this fighter belongs to a guild, retrieve this guild
-        if (!is_null($fighter->guild_id))
-        {
+        if (!is_null($fighter->guild_id)) {
             $guild = $this->Guilds->find()->where(['id = ' => $fighter->guild_id])->first();
-            
+
             // Now count the number of fighters which also belongs to this guild
             $fighters = $this->Fighters->find()->where(['guild_id = ' => $guild->id]);
-            $nbFighters = $fighters->count()-1;
-            
+            $nbFighters = $fighters->count() - 1;
+
             // Add some strength points to the current fighter according to $nbFighters
             $fighter->skill_strength += $nbFighters;
-            
+
             // Save this fighter
-            $this->Fighters->save($fighter);    
+            $this->Fighters->save($fighter);
         }
-        
     }
 
     /**
@@ -530,7 +532,7 @@ class ArenasController extends AppController {
         if ($this->isUserConnected()) {
 
             if (!is_null($this->Fighters->getFighter($this->request->session()->read('playerId')))) {
-                
+
                 // Add strength points to this fighter if he belongs to a guild
                 $this->addStrengthViaGuild();
 
@@ -699,13 +701,19 @@ class ArenasController extends AppController {
     }
 
     public function isNotASquareOfAConnectedFighter($fighter, $newx, $newy) {
-        $connectedFighters = $this->getFightersConnected($fighter);
-        foreach ($connectedFighters as $connectedFighter) {
-            if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
-                return false;
+        if (!is_null($fighter)) {
+            $connectedFighters = $this->getFightersConnected($fighter);
+            if (!is_null($connectedFighters) && !empty($connectedFighters)) {
+                foreach ($connectedFighters as $connectedFighter) {
+                    if (!is_null($connectedFighter)) {
+                        if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
         }
-        return true;
     }
 
     public function regenerateMap() {
@@ -915,7 +923,10 @@ class ArenasController extends AppController {
 
     public function getCurrentUsername() {
         $currentplayer = $this->Players->find()->where(['id =' => $this->request->session()->read('playerId')])->first();
-        return $this->getUserNameFromEmail($currentplayer->email);
+        if (!is_null($currentplayer))
+            return $this->getUserNameFromEmail($currentplayer->email);
+        else
+            return "";
     }
 
 }
