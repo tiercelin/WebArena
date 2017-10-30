@@ -1,5 +1,5 @@
 <?php $this->assign('title', 'Sign in');?>
-
+<div id="postuser"> 
 <h3>Connect to your account: </h3><br>
 
 <?php
@@ -9,14 +9,15 @@ echo $this->Form->input('password', array('type' => 'password', 'label' => 'Your
 echo $this->Form->submit('Sign in', array('type' => 'submit', 'controller'=> 'Players', 'action'=>'loginPlayer', 'name'=>'Sign in'));
 echo $this->Form->end();?>
 
-<h6>Forgotten password? </h6><br>
+<br><br>
+<b>Forgotten password? </b><br>
 <?= $this->Form->create();
 echo $this->Form->input('emailreset',array('type' => 'email','label' => 'Your email :'));
 echo $this->Form->submit('reset password', array('type' => 'submit', 'controller'=> 'Players', 'action'=>'loginPlayer', 'name'=>'Sign in'));
 echo $this->Form->end();?>
 
-
-<h6>Change your password: </h6><br>
+<br><br>
+<b>Change your password: </b><br>
 <?php
 echo $this->Form->create();
 echo $this->Form->input('emailchange',array('type' => 'email','label' => 'Your email :'));
@@ -30,3 +31,5 @@ echo $this->Form->end();?>
 <a><?php echo $this->Html->link('Create an account', array('controller' => 'players', 'action' => 'newPlayer')); ?></a>
 
  <?= $this->Flash->render() ?>
+
+</div>

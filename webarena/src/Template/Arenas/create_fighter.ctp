@@ -1,5 +1,5 @@
 <?php $this->assign('title', 'Create fighter');?>
-
+<div id="postuser">
 <h2>Create your fighter : </h2><br>
 
 <?php
@@ -22,3 +22,5 @@
   echo $this->Form->submit(__('Create this fighter'));
   echo $this->Form->end();
 ?>
+
+</div>

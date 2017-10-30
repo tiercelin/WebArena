@@ -1,5 +1,5 @@
 <?php $this->assign('title', 'Sign up');?>
-
+<div id="postuser">
 <h2>Create an account : </h2><br>
 
 <?php
@@ -17,4 +17,4 @@
  <?= $this->Flash->render() ?>
 
 
-
+</div>

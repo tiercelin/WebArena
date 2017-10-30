@@ -1,6 +1,6 @@
 <?php //echo $this->Html->script('fighter.js');?>
 <?php $this->assign('title', 'Fighter');$controller?>
-
+<div id="postuser">
 
   <table style="width:90%">
   <tr>
@@ -90,5 +90,7 @@
   </tr>
 
  </table>
+  
+</div>
 
   

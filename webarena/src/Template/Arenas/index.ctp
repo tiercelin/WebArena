@@ -1,6 +1,8 @@
 <?php $this->assign('title', 'Index'); ?>
 <?php echo $this->Html->script('jquery.min.js'); ?>
 <?php echo $this->Html->script('bootstrap.min.js'); ?>
+
+<div id="postuser">
 <h1>Welcome to WebArena ! </h1><br>
 
 <h3>Here are the rules of the game : </h3>
@@ -25,4 +27,6 @@
     <a class="carousel-control right" href="#myCarousel" data-slide="next">
         <span class="glyphicon glyphicon-chevron-right"></span>
     </a>
+</div>
+
 </div>

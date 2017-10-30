@@ -1,4 +1,5 @@
-
+<div id="postuser">
+    
 <div id="BACKGRD">
     <br><br><br>
     <?php
@@ -118,3 +119,4 @@
     </tr>
 </table>
 
+</div>

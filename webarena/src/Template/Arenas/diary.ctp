@@ -1,5 +1,7 @@
 <?php echo $this->Html->script('diary.js');?>
 <?php echo $this->Html->script('datatables.min.js');?>
+<div id="postuser">
+    
 <?php
 $this->assign('title', 'Diary');
 
@@ -29,3 +31,4 @@ if (!is_null($entities)) {
 }
 echo "</table>";
 ?>
+</div>
