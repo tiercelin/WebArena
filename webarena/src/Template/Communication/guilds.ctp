@@ -1,5 +1,5 @@
 <?php $this->assign('title', 'Guilds');?>
-
+<div id="postuser">
 <h2>Create a new guild : </h2><br>
 
 <?php
@@ -25,4 +25,4 @@
     <?= $this->Flash->render() ?>
 
 
-  
+  </div>

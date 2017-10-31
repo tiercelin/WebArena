@@ -1,4 +1,4 @@
-
+<div id="postuser">
 <?php
 echo $this->Html->script('jquery.min.js');
 echo $this->Html->script('jquery.jqplot.min.js');
@@ -148,3 +148,6 @@ $(document).ready(function(){
     };
 });
 </script>
+
+
+</div>

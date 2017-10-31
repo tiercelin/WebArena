@@ -20,7 +20,7 @@
 </ul>
 
 <?php
-  echo $this->Form->submit(__('Create this fighter'));
+  echo $this->Form->submit(__('Create'));
   echo $this->Form->end();
 ?>
 

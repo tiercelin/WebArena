@@ -8,7 +8,7 @@ $xpbeforeUpdate;
 
     <table style="width:90%">
         <tr>
-            <th> <h3>Fighter ID card</h3></th>
+            <th> <h2>Fighter ID card</h2></th>
 
             <th> 
                 <div class="ChImg">
@@ -24,7 +24,7 @@ $xpbeforeUpdate;
                     //'enctype' => 'multipart/form-data',
                     echo $this->Form->create('particularRecord', ['type' => 'file']);
                     echo $this->Form->file('upload', ['type' => 'file', 'allowed_ext' => array('.jpg', '.jpeg', '.png')]);
-                    echo $this->Form->submit('Save avatar', ['controller' => 'Arenas', 'action' => 'fighter']);
+                    echo $this->Form->submit('OK', ['controller' => 'Arenas', 'action' => 'fighter']);
                     echo $this->Form->end();
                     ?>
                 </div>

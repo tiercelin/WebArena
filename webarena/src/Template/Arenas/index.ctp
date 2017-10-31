@@ -14,17 +14,17 @@
         - Watch you statistics evolve, in our Hall of Fame !<br><br>
     </h5>
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel" height="50%" width="50%">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" height="30%" width="30%">
 
         <div class="carousel-inner">
             <div class="item active carrousel-inner">
-                <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '30%', 'width' => '50%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) ?>
+                <?= $this->Html->image("avatar/kittenWarrior.jpg", ['height' => '30%', 'width' => '30%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) ?>
             </div>
             <?php
             if (!is_null($avatars) && !empty($avatars)) {
                 foreach ($avatars as $avatar) {
                     echo "<div class=\"item carrousel-inner\">";
-                    echo $this->Html->image("avatar/" . $avatar, ['height' => '20%', 'width' => '20%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) . "</div>";
+                    echo $this->Html->image("avatar/" . $avatar, ['height' => '30%', 'width' => '30%', "text-align" => "center center", "margin-left"=>'auto', "margin-right"=>'auto']) . "</div>";
                 }
             }
             ?>
@@ -38,4 +38,5 @@
         </a>
     </div>
 
+   
 </div>

@@ -1,6 +1,7 @@
 <?php echo $this->Html->script('jquery.min.js');?>
 <?php $this->assign('title', 'Messages');?>
 
+<div id="postuser">
 <h2>Send a new message : </h2><br>
 
 <?php
@@ -71,3 +72,4 @@ $(document).ready(function(){
 
 
 <?= $this->Flash->render() ?>
+</div>
