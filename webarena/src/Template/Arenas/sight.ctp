@@ -18,7 +18,8 @@
             }
         }
         $indextable[$fighter->coordinate_x][$fighter->coordinate_y] = $fighter;
-        $message = "";
+        $messageSuspicious = "";
+        $messageStink = "";
 
         echo "<table id=\"map\" class = \"table table-bordered\">";
         for ($i = 0; $i < $width; $i++) {
@@ -49,9 +50,9 @@
                                     echo "<td style='height: 35px; length: 20px'> </td>";
                                     if ($controller->doIdisplayMessage($indextable[$i][$j], $fighter)) {
                                         if ($indextable[$i][$j]->type == 'T') {
-                                            $message = 'Suspicious Break !';
+                                            $messageSuspicious = 'Suspicious Break !';
                                         } else {
-                                            $message = 'Stink!';
+                                            $messageStink = 'Stink!';
                                         }
                                     }
                                 }
@@ -88,10 +89,8 @@
 
         <br>
     </div>
-    <?= $message; ?>
-
-
-    <table id="but" >
+   
+    <table id="but">
 
         <tr>
             <td><h5> </h5></td> 
@@ -112,13 +111,9 @@
             <td><h5><?= $this->Form->postButton('Attack Right', ['controller' => 'Arenas', 'action' => 'sight'], ['data' => ['attack' => 'attackright'], 'class' => 'btn btn-primary']) ?> </h5></td> 
         </tr>
         <tr>
-            <td><h5> </h5></td> 
-            <td><h5> </h5></td>
-            <td><h5> </h5></td> 
+            <td colspan="3" style="text-align:center"><h5> <?= $messageSuspicious; ?> </h5></td> 
             <td><h5><?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas', 'action' => 'sight'], ['data' => ['regenerate' => 'true'], 'class' => 'btn btn-primary']) ?> </h5></td> 
-            <td><h5> </h5></td>
-            <td><h5> </h5></td>
-            <td><h5> </h5></td> 
+            <td colspan="3" style="text-align:center"><h5> <?= $messageStink; ?> </h5></td> 
         </tr>
     </table>
     <table>
