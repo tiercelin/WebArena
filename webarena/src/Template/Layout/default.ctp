@@ -78,6 +78,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 <li><?php echo $this->Html->link('Diary', array('controller' => 'Arenas', 'action' => 'diary')); ?></li>
                 <li><?php echo $this->Html->link('Guild', array('controller' => 'Communication', 'action' => 'guilds')); ?></li>
                 <li><?php echo $this->Html->link('Messages', array('controller' => 'Communication', 'action' => 'messages')); ?></li>
+                <li><?php echo $this->Html->link('Hall of Fame', array('controller' => 'HoF', 'action' => 'drawCharts')); ?></li>
                 <li><?php echo $this->Html->link('Logout', array('controller' => 'Arenas', 'action' => 'logout')); ?></li>
                 
       </ul>
@@ -97,7 +98,17 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     
     <?php echo $this->Html->link('Hall of Fame', array('controller' => 'HoF', 'action' => 'drawCharts')); ?>
   
-    
+    <footer id="map">
+        Project develloped by:<br>
+        OLIVE Thomas<br>
+        CHAMPALIER Mariane<br>
+        TIERCELIN Julie<br>
+        IMBERT Pierre-Louis<br>
+        OPTIONS:<br>
+        B-D-E-F<br>
+        Log:<br>
+    </footer>
+            
 </body>
 </html>
 

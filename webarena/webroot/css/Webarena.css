@@ -1,51 +1,8 @@
-body 
-{ 
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(to left top,  #087ACD, #087ACD,white, white, white) fixed;
-}
-
-#postuser {
-    width: 90%;
-    height: 100%;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-    background-position: 10px 10px; 
-    background-repeat: no-repeat;
-    padding: 12px 12px 12px 12px;
-    margin-left: 5%;
-    margin-right: 5%;
-}
-
-#map {
-    width: 50%;
-    margin-left: 25%;
-    margin-right: 25%;
-    text-align: center;
-    background-color: transparent;
-}
-
-#but {
-    width: 90%;
-    height: 50px;
-    margin-left: 5%;
-    margin-right: 5%;
-    text-align: center;
-    background-color: transparent;
-}
-#BACKGRD{
-     box-sizing: border-box;
-    border: 2px solid #000000;
-    border-radius: 4px;
-    background: no-repeat;
-    background-image: url('../img/arena.jpg');
-    background-size: cover;
-}
-td.highlight {
-    background-color: whitesmoke;
-}
-.carousel-inner > .item > img {
-    margin: 0 auto;
-}
+body { background: linear-gradient(to left top,  #087ACD, #087ACD,white, white, white) fixed;}
+#postuser {width: 90%;height: 100%; box-sizing: border-box;border: 2px solid #ccc;border-radius: 4px;background-color: white;background-position: 10px 10px; background-repeat: no-repeat;padding: 12px 12px 12px 12px;margin-left: 5%;margin-right: 5%;}
+#map {width: 50%;margin-left: 25%;margin-right: 25%;text-align: center;background-color: transparent;}
+#but {width: 90%;height: 50px;margin-left: 5%;margin-right: 5%;text-align: center;background-color: transparent;}
+#BACKGRD{box-sizing: border-box;border: 2px solid #000000; border-radius: 4px; background: no-repeat; background-image: url('../img/arena.jpg');background-size: cover;}
+td.highlight { background-color: whitesmoke;}
+.carousel-inner > .item > img {margin: 0 auto;}
+input[type=submit] {box-sizing: border-box;border: 2px solid #ccc;border-radius: 2px;font-size: 8px;background-color: white;background-position: 10px 10px; background-repeat: no-repeat; padding: 1px 2px 1px 4px;}
