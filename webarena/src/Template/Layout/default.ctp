@@ -98,13 +98,17 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
       
     <footer id="map">
         Project developed by:<br>
-        OLIVE Thomas<br>
+
         CHAMPALIER Mariane<br>
-        TIERCELIN Julie<br>
         IMBERT Pierre-Louis<br>
+        OLIVE Thomas<br>
+        TIERCELIN Julie<br>
+        
         OPTIONS:<br>
         B-D-E-F<br>
         Log:<br>
+        <a href="../webroot/patch.html" > Logs</a><br>
+
     </footer>
             
 </body>
