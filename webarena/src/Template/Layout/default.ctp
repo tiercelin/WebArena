@@ -99,7 +99,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </div>
     
     <footer id="map">
-        Project develloped by:<br>
+        Project developed by:<br>
         OLIVE Thomas<br>
         CHAMPALIER Mariane<br>
         TIERCELIN Julie<br>
