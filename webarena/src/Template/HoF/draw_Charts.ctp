@@ -54,7 +54,7 @@ $(document).ready(function(){
         }
     });
     
-    /*
+    
     // Second chart : pie charts showing health, sight and strength skills of every fighter
     var arraySkillsFighter = <?php echo json_encode($FightersSkillsArray); ?>;
     
@@ -87,7 +87,7 @@ $(document).ready(function(){
             }       
         });
     };
-    */
+    
     // Third charts : default charts with dates axis showing when users last connexion
     var arrayDate = <?php echo json_encode($eventsConnexionArray); ?>;
     
@@ -146,48 +146,5 @@ $(document).ready(function(){
             }
          });         
     };
-    
-    
-    
-    
-    
-     
-  
-  
-  
-
-      
-   
-    
-    
-    
-   
-   
-      
-    
-    
-    
-    
-    
-    
-    
-
-
-
-        
-
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
 });
 </script>
