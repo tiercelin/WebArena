@@ -128,23 +128,25 @@ class CommunicationController extends AppController {
             $idPlayer = $this->request->session()->read('playerId');
             // Retrieve the current fighter
             $fighter = $this->Fighters->getFighter($idPlayer);
+            if (!is_null($fighter)) {
+                if ($this->request->is('post')) {
+                    // If the description of the event is less than 255 characters (database constraints)
+                    if (strlen($this->request->getData('description')) > 255) {
+                        $this->Flash->error(__('Your event description must be less than 255 characters'));
+                    } else {
+                        // Create manually the new event
+                        $myNewEvent = new Events([
+                            'name' => $this->request->getData('description'),
+                            'date' => Time::now(),
+                            'coordinate_x' => $fighter->coordinate_x,
+                            'coordinate_y' => $fighter->coordinate_y]);
+                        $this->Events->save($myNewEvent);
 
-            if ($this->request->is('post')) {
-                // If the description of the event is less than 255 characters (database constraints)
-                if (strlen($this->request->getData('description')) > 255) {
-                    $this->Flash->error(__('Your event description must be less than 255 characters'));
-                } else {
-                    // Create manually the new event
-                    $myNewEvent = new Events([
-                        'name' => $this->request->getData('description'),
-                        'date' => Time::now(),
-                        'coordinate_x' => $fighter->coordinate_x,
-                        'coordinate_y' => $fighter->coordinate_y]);
-                    $this->Events->save($myNewEvent);
-
-                    $this->Flash->success(__('Your event description has been added to the diary !'));
+                        $this->Flash->success(__('Your event description has been added to the diary !'));
+                    }
                 }
-            }
+            } else
+                $this->Flash->error(__('You do not have a fighter! Please create a fighter first!'));
         }
     }
 
@@ -160,45 +162,47 @@ class CommunicationController extends AppController {
             // Define ID of the (fighter) sender = current fighter
             $idPlayer = $this->request->session()->read('playerId');
             $fighter = $this->Fighters->getFighter($idPlayer);
-            $idFighter1 = $fighter->id;
+            if (!is_null($fighter)) {
+                $idFighter1 = $fighter->id;
 
-            if ($this->request->is('post')) {
-                // Retrieve ID of the receiver fighter according to the choice in the textbox
-                // Retrieve the name of all fighters available
-                $nameFighters = $this->Fighters->find('all', array('fields' => array('Fighters.name')));
-                $arrayNameFighters = array();
-                foreach ($nameFighters as $nameFighter) {
-                    array_push($arrayNameFighters, $nameFighter->name);
-                }
-
-                // Retrieve the name of the chosen addressee
-                $nameFighter2 = $this->request->data['receiver'];
-
-                // Verify that the name of the addressee exists, and is different from the name of the sender.
-                // If yes, send the message. If no, display an error message
-                if (in_array($nameFighter2, $arrayNameFighters) && $nameFighter2 != $fighter->name) {
-                    $fighter2 = $this->Fighters->find()->where(['name = ' => $nameFighter2])->first();
-                    $idFighter2 = $fighter2->id;
-
-                    // Merge form data with the new (empty) entity
-                    $newMessage->date = Time::now();
-                    $newMessage->title = $this->request->getData('title');
-                    $newMessage->message = $this->request->getData('message');
-                    $newMessage->fighter_id_from = $idFighter1;
-                    $newMessage->fighter_id = $idFighter2;
-
-                    // Then we save the new message in the database
-                    // If it works, empty fields and display a success message. If not, display an error message.
-                    if ($messagesTable->save($newMessage)) {
-                        $this->Flash->success(__('Message ' . $newMessage->title . ' has been sent !'));
-                        // empty fields;
-                    } else {
-                        $this->Flash->error(__('Message creation failure !'));
+                if ($this->request->is('post')) {
+                    // Retrieve ID of the receiver fighter according to the choice in the textbox
+                    // Retrieve the name of all fighters available
+                    $nameFighters = $this->Fighters->find('all', array('fields' => array('Fighters.name')));
+                    $arrayNameFighters = array();
+                    foreach ($nameFighters as $nameFighter) {
+                        array_push($arrayNameFighters, $nameFighter->name);
                     }
-                } else {
-                    $this->Flash->error(__('You must choose a valid addressee fighter'));
+
+                    // Retrieve the name of the chosen addressee
+                    $nameFighter2 = $this->request->data['receiver'];
+
+                    // Verify that the name of the addressee exists, and is different from the name of the sender.
+                    // If yes, send the message. If no, display an error message
+                    if (in_array($nameFighter2, $arrayNameFighters) && $nameFighter2 != $fighter->name) {
+                        $fighter2 = $this->Fighters->find()->where(['name = ' => $nameFighter2])->first();
+                        $idFighter2 = $fighter2->id;
+
+                        // Merge form data with the new (empty) entity
+                        $newMessage->date = Time::now();
+                        $newMessage->title = $this->request->getData('title');
+                        $newMessage->message = $this->request->getData('message');
+                        $newMessage->fighter_id_from = $idFighter1;
+                        $newMessage->fighter_id = $idFighter2;
+
+                        // Then we save the new message in the database
+                        // If it works, empty fields and display a success message. If not, display an error message.
+                        if ($messagesTable->save($newMessage)) {
+                            $this->Flash->success(__('Message ' . $newMessage->title . ' has been sent !'));
+                            // empty fields;
+                        } else {
+                            $this->Flash->error(__('Message creation failure !'));
+                        }
+                    } else {
+                        $this->Flash->error(__('You must choose a name of a fighter that exists!'));
+                    }
                 }
-            }
+            } else $this->Flash->error(__('You must create a fighter first!'));
         }
     }
 
@@ -226,7 +230,7 @@ class CommunicationController extends AppController {
 
                 // Get the messages received
                 $messagesR = $this->Messages->getMessagesReceived($idFighter);
-                
+
                 foreach ($messagesR as $message) {
                     $fighterFrom = $this->Fighters->find()->where(['id = ' => $message->fighter_id_from])->first();
                     $nameSender = $fighterFrom->name;

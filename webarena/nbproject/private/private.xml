@@ -3,20 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Arenas/index.ctp</file>
-            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/ArenasController.php</file>
+            <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Controller/CommunicationController.php</file>
             <file>file:/C:/wamp/www/WebArena%20ProjetBitbucket/webarena/src/Template/Layout/default.ctp</file>
-=======
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/index.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Communication/guilds.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Layout/default.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/HoF/draw_Charts.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/webroot/css/Webarena.css</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/fighter.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Template/Arenas/sight.ctp</file>
-            <file>file:/C:/Users/PC%20de%20Elya/Desktop/Uwamp/UwAmp/www/webarena2.0/webarena/src/Controller/ArenasController.php</file>
->>>>>>> c351b3a2a2f7d1bdab750bb2aaaa87f44d9de866
         </group>
     </open-files>
 </project-private>

@@ -138,7 +138,6 @@ class ArenasController extends AppController {
                     // Initialize other parameters with the form data
                     $newFighter->setName($this->request->getData('name'));
                     $newFighter->setPlayerId($idPlayer);
-
                     // Save the new fighter into the database and redirect user to fighter stats page
                     if ($fightersTable->save($newFighter)) {
                         $this->Flash->success(__('New fighter "' . $newFighter->name . '" has been created !'));
@@ -150,8 +149,8 @@ class ArenasController extends AppController {
                     //Add the event to the table
                     $this->addEventToDiary($newFighter, $this->getCurrentUsername() . ' created a new fighter ' . $newFighter->name);
                     return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
-                }
-                else $this->Flash->error(__('A fighter with this name already exists. Please choose another name!'));
+                } else
+                    $this->Flash->error(__('A fighter with this name already exists. Please choose another name!'));
             }
         }
     }
@@ -185,13 +184,14 @@ class ArenasController extends AppController {
      */
     public function fighter() {
         $avatarFilename = 'kittenWarrior.jpg';
-        $guildName="You have not joined a guild! ";
+        $guildName = "You have not joined a guild! ";
 
         if ($this->isUserConnected()) {
 
             // Get ID of current player
             $session = $this->request->session();
             $idPlayer = $session->read('playerId');
+
             $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
             $avfilecount = count($totfile);
 
@@ -232,11 +232,11 @@ class ArenasController extends AppController {
                 // Get his fighter
                 $entity = $this->Fighters->getFighter($idPlayer);
                 if (!is_null($entity)) {
-                    $guild =$this->Guilds->getGuildByID($entity->guild_id);
-                    if(!is_null($guild)){
+                    $guild = $this->Guilds->getGuildByID($entity->guild_id);
+                    if (!is_null($guild)) {
                         $guildName = $guild->name;
                     }
-                    
+
                     // Display fighter data
                     $this->set('id_f', $entity->id);
                     $this->set('name_f', $entity->name);
@@ -259,6 +259,7 @@ class ArenasController extends AppController {
                     $this->set('xpbeforeUpdate', $this->request->session()->read('playerXP'));
                 }
             }
+
             $this->set('imageFileName', $avatarFilename);
         }
     }
@@ -398,19 +399,19 @@ class ArenasController extends AppController {
     public function getFighter($playerid) {
 
         $entity = $this->Fighters->find()->where(['player_id =' => $playerid])->first();
-        if(is_null($entity))
+        if (is_null($entity))
             return null;
         else
-        return $entity;
+            return $entity;
     }
 
     public function getFighterByName($fightername) {
 
         $entity = $this->Fighters->find()->where(['name =' => $fightername])->first();
-        if(is_null($entity))
+        if (is_null($entity))
             return null;
         else
-        return $entity;
+            return $entity;
     }
 
     /**
@@ -724,19 +725,19 @@ class ArenasController extends AppController {
     }
 
     public function isNotASquareOfAConnectedFighter($fighter, $newx, $newy) {
-            $connectedFighters = $this->getFightersConnected($fighter);
-            if (!is_null($connectedFighters)) {
-                foreach ($connectedFighters as $connectedFighter) {
-                    
-                        if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
-                            return false;
-                        }
-                    
+        $connectedFighters = $this->getFightersConnected($fighter);
+        if (!is_null($connectedFighters)) {
+            foreach ($connectedFighters as $connectedFighter) {
+                if (!is_null($connectedFighter)) {
+
+
+                    if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
+                        return false;
+                    }
                 }
-                return true;
-            }return true;
-            
-       
+            }
+            return true;
+        }return true;
     }
 
     public function regenerateMap() {
