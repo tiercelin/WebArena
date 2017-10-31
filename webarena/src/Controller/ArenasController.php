@@ -355,21 +355,20 @@ class ArenasController extends AppController {
         if ($doAttackSucceed == true) {
             $this->Flash->success(__('Your attack succeeded on "' . $fighter2->name . '"'));
             $fighter2->current_health -= $fighter1->skill_strength;
-            echo $current_health = $fighter2->current_health;
+            $current_health = $fighter2->current_health;
             $fighter1->xp ++;
             $this->Fighters->save($fighter1);
             $this->Fighters->save($fighter2);
             $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
             // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
             if ($current_health < 1) {
-                echo $current_health;
+                $current_health;
                 $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
 
                 $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
 
                 $fighter1->xp += $fighter2->level;
                 $this->Fighters->save($fighter1);
-                echo $idPlayer2;
                 $this->deleteFighter($idPlayer2);
             }
         } else {
