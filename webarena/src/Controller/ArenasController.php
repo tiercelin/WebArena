@@ -236,6 +236,7 @@ class ArenasController extends AppController {
                     $this->set('name_f', $entity->name);
                     $this->set('lvl_f', $entity->level);
                     $this->set('exp_f', $entity->xp);
+                    $this->set('curr_health', $entity->current_health);
 
                     $this->set('sight_f', $entity->skill_sight);
                     $this->set('str_f', $entity->skill_strength);
