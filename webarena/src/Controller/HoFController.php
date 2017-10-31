@@ -41,7 +41,14 @@ class HoFController extends AppController {
         }
 
         $this->set('FightersSkillsArray', $arraySkillsFighters);
-
+        
+    }
+    
+    public function drawCharts2()
+    {
+        $fighters = $this->Fighters->find('all');
+        $events = $this->Events->find('all');
+        
         // Third charts : default charts with dates axis showing when users last connexion
         // We need to store the name of the users and their last connexion date, thanks to the events table
         $arrayConnexionUsers = array();
@@ -79,6 +86,7 @@ class HoFController extends AppController {
             }
         }
         $this->set('FightersXPArray', $arrayXPFighters);
+        
     }
 
 }

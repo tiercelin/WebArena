@@ -95,9 +95,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('content') ?> 
     
     </div>
-    
-    <?php echo $this->Html->link('Hall of Fame', array('controller' => 'HoF', 'action' => 'drawCharts')); ?>
-  
+      
     <footer id="map">
         Project develloped by:<br>
         OLIVE Thomas<br>
