@@ -101,3 +101,4 @@ $xpbeforeUpdate;
 
 </div>
 
+<?= $this->Flash->render() ?>

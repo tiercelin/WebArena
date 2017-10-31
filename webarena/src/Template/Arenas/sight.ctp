@@ -209,3 +209,5 @@
     </table>
 
 </div>
+
+<?= $this->Flash->render() ?>

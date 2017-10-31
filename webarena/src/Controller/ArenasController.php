@@ -126,28 +126,32 @@ class ArenasController extends AppController {
             $idPlayer = $session->read('playerId');
 
             if ($this->request->is('post')) {
-                // Create a new fighter
-                $fightersTable = TableRegistry::get('Fighters');
-                $newFighter = $fightersTable->newEntity();
+                $fighters = $this->getFighterByName($this->request->getData('name'));
+                if (is_null($fighters)) {
+                    // Create a new fighter
+                    $fightersTable = TableRegistry::get('Fighters');
+                    $newFighter = $fightersTable->newEntity();
 
-                // Initialize its default parameters
-                $newFighter->initFighterParameters();
+                    // Initialize its default parameters
+                    $newFighter->initFighterParameters();
 
-                // Initialize other parameters with the form data
-                $newFighter->setName($this->request->getData('name'));
-                $newFighter->setPlayerId($idPlayer);
+                    // Initialize other parameters with the form data
+                    $newFighter->setName($this->request->getData('name'));
+                    $newFighter->setPlayerId($idPlayer);
 
-                // Save the new fighter into the database and redirect user to fighter stats page
-                if ($fightersTable->save($newFighter)) {
-                    $this->Flash->success(__('New fighter "' . $newFighter->name . '" has been created !'));
-                } else {
-                    $this->Flash->error(__('Fighter creation process failed'));
+                    // Save the new fighter into the database and redirect user to fighter stats page
+                    if ($fightersTable->save($newFighter)) {
+                        $this->Flash->success(__('New fighter "' . $newFighter->name . '" has been created !'));
+                    } else {
+                        $this->Flash->error(__('Fighter creation process failed'));
+                    }
+
+
+                    //Add the event to the table
+                    $this->addEventToDiary($newFighter, $this->getCurrentUsername() . ' created a new fighter ' . $newFighter->name);
+                    return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
                 }
-
-
-                //Add the event to the table
-                $this->addEventToDiary($newFighter, $this->getCurrentUsername() . ' created a new fighter ' . $newFighter->name);
-                return $this->redirect(['controller' => 'arenas', 'action' => 'fighter']);
+                else $this->Flash->error(__('A fighter with this name already exists. Please choose another name!'));
             }
         }
     }
@@ -386,6 +390,18 @@ class ArenasController extends AppController {
     public function getFighter($playerid) {
 
         $entity = $this->Fighters->find()->where(['player_id =' => $playerid])->first();
+        if(is_null($entity))
+            return null;
+        else
+        return $entity;
+    }
+
+    public function getFighterByName($fightername) {
+
+        $entity = $this->Fighters->find()->where(['name =' => $fightername])->first();
+        if(is_null($entity))
+            return null;
+        else
         return $entity;
     }
 
@@ -700,19 +716,19 @@ class ArenasController extends AppController {
     }
 
     public function isNotASquareOfAConnectedFighter($fighter, $newx, $newy) {
-        if (!is_null($fighter)) {
             $connectedFighters = $this->getFightersConnected($fighter);
-            if (!is_null($connectedFighters) && !empty($connectedFighters)) {
+            if (!is_null($connectedFighters)) {
                 foreach ($connectedFighters as $connectedFighter) {
                     if (!is_null($connectedFighter)) {
                         if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
                             return false;
                         }
-                    }
+                    }return false;
                 }
                 return true;
-            }
-        }
+            }return true;
+            
+       
     }
 
     public function regenerateMap() {
