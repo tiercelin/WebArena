@@ -4,8 +4,8 @@
         <br><br><br>
         <?php
         $this->assign('title', 'Sight');
-        $avatarFilename="";
-        $avatarFilenameEnnemi="";
+        $avatarFilename = "";
+        $avatarFilenameEnnemi = "";
         $indextable = array();
         foreach ($entities as $myrow) {
             $indextable[$myrow->coordinate_x][$myrow->coordinate_y] = $myrow;
@@ -120,6 +120,92 @@
             <td><h5> </h5></td>
             <td><h5> </h5></td> 
         </tr>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <td> Fighter's Avatar</td>
+                <td> Fighter's Name</td>
+                <td> Fighter's life bar</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <?php
+                $idPlayer = $fighter->player_id;
+                $percentageoflife = $fighter->current_health / $fighter->skill_health * 100;
+                if ($percentageoflife < 25) {
+                    $progressStyle = "progress-bar-danger";
+                }
+                if (($percentageoflife >= 25) && ($percentageoflife < 50)) {
+                    $progressStyle = "progress-bar-warning";
+                }
+                if (($percentageoflife >= 50) && ($percentageoflife < 75)) {
+                    $progressStyle = "progress-bar-info";
+                }
+                if ($percentageoflife >= 75) {
+                    $progressStyle = "progress-bar-success";
+                }
+                $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
+                $avfilecount = count($totfile);
+                if ($avfilecount == 0) {
+                    $avatarFilename = 'kittenWarrior.jpg';
+                }
+                if ($avfilecount == 1) {
+                    foreach ($totfile as $fileAlredyUploaded) {
+                        $ext = substr(strtolower(strrchr($fileAlredyUploaded, '.')), 1);
+                        $avatarFilename = $idPlayer . '.' . $ext;
+                    }
+                }
+                echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '30%', 'width' => '30%']) . " </td>";
+                echo "<td>" . $fighter->name . "</td>";
+                echo "<td> <div class=\"progress\">
+                        <div class=\"progress-bar " . $progressStyle . "\" style=\"width:" . $percentageoflife . "%\" role=\"progressbar\" aria-valuenow=\"70\"
+                             aria-valuemin=\"0\" aria-valuemax=\"100\">" . $fighter->current_health . " </div></div></td>";
+                ?>
+            </tr>
+            <?php
+            if (!empty($fighters)) {
+                foreach ($fighters as $enemyFighter) {
+                    echo "<tr>";
+                    if (!is_null($enemyFighter)) {
+                        $idPlayer = $enemyFighter->player_id;
+
+                        $percentageoflife = $enemyFighter->current_health / $enemyFighter->skill_health * 100;
+                        if ($percentageoflife < 25) {
+                            $progressStyle = "progress-bar-danger";
+                        }
+                        if (($percentageoflife >= 25) && ($percentageoflife < 50)) {
+                            $progressStyle = "progress-bar-warning";
+                        }
+                        if (($percentageoflife >= 50) && ($percentageoflife < 75)) {
+                            $progressStyle = "progress-bar-info";
+                        }
+                        if ($percentageoflife >= 75) {
+                            $progressStyle = "progress-bar-success";
+                        }
+                        $totfile = glob(WWW_ROOT . '/img/avatar/' . $idPlayer . '.*');
+                        $avfilecount = count($totfile);
+                        if ($avfilecount == 0) {
+                            $avatarFilename = 'kittenWarrior.jpg';
+                        }
+                        if ($avfilecount == 1) {
+                            foreach ($totfile as $fileAlredyUploaded) {
+                                $ext = substr(strtolower(strrchr($fileAlredyUploaded, '.')), 1);
+                                $avatarFilename = $idPlayer . '.' . $ext;
+                            }
+                        }
+                        echo "<td>" . $this->Html->image("avatar/" . $avatarFilename, ['height' => '30%', 'width' => '30%']) . " </td>";
+                        echo "<td>" . $enemyFighter->name . "</td>";
+                        echo "<td> <div class=\"progress\">
+                        <div class=\"progress-bar " . $progressStyle . "\" style=\"width:" . $percentageoflife . "%\" role=\"progressbar\" aria-valuenow=\"70\"
+                             aria-valuemin=\"0\" aria-valuemax=\"100\">" . $enemyFighter->current_health . " </div></div></td>";
+                    }
+                    echo "</tr>";
+                }
+            }
+            ?>
+        </tbody>
     </table>
 
 </div>
