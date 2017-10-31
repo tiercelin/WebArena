@@ -920,13 +920,13 @@ class ArenasController extends AppController {
         $playersfighter = $this->Fighters->getFighter($playerid);
         if (!is_null($playersfighter)) {
             $myNewEvent = new Events([
-                'name' => $playersname[0] . ' disconnected',
+                'name' => $playersname[0] . ' log out',
                 'date' => Time::now(),
                 'coordinate_x' => $playersfighter->coordinate_x,
                 'coordinate_y' => $playersfighter->coordinate_y]);
         } else {
             $myNewEvent = new Events([
-                'name' => $playersname[0] . ' disconnected',
+                'name' => $playersname[0] . ' log out',
                 'date' => Time::now(),
                 'coordinate_x' => 0,
                 'coordinate_y' => 0]);
