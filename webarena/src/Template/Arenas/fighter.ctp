@@ -51,6 +51,11 @@ $xpbeforeUpdate;
             <td><h5><?php echo $curr_health; ?> </h5></td>
             <td> </td> 
         </tr>
+        <tr>
+            <td><h5>Guild Name:</h5></td> 
+            <td><h5><?php echo $guild; ?> </h5></td>
+            <td> </td> 
+        </tr>
     </table>
 
     <br> <br>

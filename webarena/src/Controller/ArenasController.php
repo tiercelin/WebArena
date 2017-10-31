@@ -185,6 +185,7 @@ class ArenasController extends AppController {
      */
     public function fighter() {
         $avatarFilename = 'kittenWarrior.jpg';
+        $guildName="You have not joined a guild! ";
 
         if ($this->isUserConnected()) {
 
@@ -231,12 +232,18 @@ class ArenasController extends AppController {
                 // Get his fighter
                 $entity = $this->Fighters->getFighter($idPlayer);
                 if (!is_null($entity)) {
+                    $guild =$this->Guilds->getGuildByID($entity->guild_id);
+                    if(!is_null($guild)){
+                        $guildName = $guild->name;
+                    }
+                    
                     // Display fighter data
                     $this->set('id_f', $entity->id);
                     $this->set('name_f', $entity->name);
                     $this->set('lvl_f', $entity->level);
                     $this->set('exp_f', $entity->xp);
                     $this->set('curr_health', $entity->current_health);
+                    $this->set('guild', $guildName);
 
                     $this->set('sight_f', $entity->skill_sight);
                     $this->set('str_f', $entity->skill_strength);

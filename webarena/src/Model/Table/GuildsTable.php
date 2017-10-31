@@ -50,4 +50,10 @@ class GuildsTable extends Table{
         }
         return null;
     }
+    public function getGuildByID($guildId){
+        
+            $entity = $this->find()->where(['id =' => $guildId])->first();
+            return $entity;
+        
+    }
 }
