@@ -727,11 +727,11 @@ class ArenasController extends AppController {
             $connectedFighters = $this->getFightersConnected($fighter);
             if (!is_null($connectedFighters)) {
                 foreach ($connectedFighters as $connectedFighter) {
-                    if (!is_null($connectedFighter)) {
+                    
                         if (($connectedFighter->coordinate_x == $newx) && ($connectedFighter->coordinate_y == $newy)) {
                             return false;
                         }
-                    }return false;
+                    
                 }
                 return true;
             }return true;
