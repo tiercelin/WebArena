@@ -23,6 +23,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <title>
         <?= $cakeDescription ?>:
         <?= $this->fetch('title') ?>
+       
     </title>
     <?= $this->Html->meta('icon') ?>
 
@@ -43,11 +44,12 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?php echo $this->Html->script('interaction.js');?>
      <?php echo $this->Html->script('index.js');?>
     
+    
 </head>
 
 <body>
 
-<nav class="navbar navbar-default">
+<nav class="nav bar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -96,8 +98,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     
     </div>
     
-    <?php echo $this->Html->link('Hall of Fame', array('controller' => 'HoF', 'action' => 'drawCharts')); ?>
-  
     <footer id="map">
         Project develloped by:<br>
         OLIVE Thomas<br>
@@ -106,10 +106,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         IMBERT Pierre-Louis<br>
         OPTIONS:<br>
         B-D-E-F<br>
-        Log:<br>
+        <a href=<?php echo"\"".WWW_ROOT."patch.html\" "; ?> > Logs</a><br>
     </footer>
             
 </body>
 </html>
-
-
