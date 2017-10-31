@@ -7,11 +7,12 @@
 
     <h3>Here are the rules of the game : </h3>
     <h5>
-        - Fight for your life in the Arena ! <br><br>
-        - Watch out for traps, invisible monsters, and, of course, other fighters !<br><br>
-        - Remember: When you die, you die. So be careful !<br><br>
-        - Join forces with other players, using the Guil system !<br><br>
-        - Watch you statistics evolve, in our Hall of Fame !<br><br>
+        - Fight for your life in the Arena! <br><br>
+        - Watch out for traps, invisible monsters, and, of course, other fighters!<br><br>
+        - Remember: When you die, you die. So be careful!<br><br>
+        - Join forces with other players, using the Guild system!<br><br>
+        - Watch your statistics evolve, in our Hall of Fame!<br><br>
+        - Please do not forget to logout before closing the website, otherwise you will not be able to connect again with the same account!!<br><br>
     </h5>
 
     <div id="myCarousel" class="carousel slide" data-ride="carousel" height="30%" width="30%">
