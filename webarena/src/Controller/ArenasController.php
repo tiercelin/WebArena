@@ -256,7 +256,6 @@ class ArenasController extends AppController {
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
 
-                    $this->set('xpbeforeUpdate', $this->request->session()->read('playerXP'));
                 }
             }
 
@@ -282,7 +281,6 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
-            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
             //Then we upgrade his sight by 1, and send the whole to the database to save the changes.
             $old = $fighter->skill_sight; //for addEvent
             $fighter->skill_sight++;
@@ -296,7 +294,6 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
-            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
             //Then we upgrade his strength by 1, and send the whole to the database to save the changes.
             $old = $fighter->skill_strength;
             $fighter->skill_strength++;
@@ -310,8 +307,7 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
-            $this->request->session()->write('playerXP', $fighter->xp); // to display buttons when needed
-            //Then we upgrade his health by 3
+           //Then we upgrade his health by 3
             $old = $fighter->skill_health;
             $fighter->skill_health+=3;
             $new = $fighter->skill_health;

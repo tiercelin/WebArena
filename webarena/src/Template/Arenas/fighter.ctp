@@ -2,7 +2,6 @@
 <?php
 $this->assign('title', 'Fighter');
 $controller;
-$xpbeforeUpdate;
 ?>
 <div id="postuser">
 
@@ -78,7 +77,7 @@ $xpbeforeUpdate;
             <td><h5><?php echo $sight_f; ?> </h5></td>
             <td>
                 <?php
-                if ($exp_f - $xpbeforeUpdate >= 4) {
+                if ($levelsavailable > 0) {
                     echo $this->Form->postButton('Upgrade Sight', ['controller' => 'Arenas', 'action' => 'fighter'], ['data' => ['upgrade' => 1], 'class' => 'btn btn-info']);
                 }
                 ?>
@@ -90,7 +89,7 @@ $xpbeforeUpdate;
             <td><h5><?php echo $str_f; ?> </h5></td>
             <td>
                 <?php
-                if ($exp_f - $xpbeforeUpdate >= 4) {
+                if ($levelsavailable > 0) {
                     echo $this->Form->postButton('Upgrade Strength', ['controller' => 'Arenas', 'action' => 'fighter'], ['data' => ['upgrade' => 2], 'class' => 'btn btn-info']);
                 }
                 ?> 
@@ -101,7 +100,7 @@ $xpbeforeUpdate;
             <td><h5>Health:</h5></td> 
             <td><h5><?php echo $health_f; ?> </h5></td>
             <td><?php
-                if ($exp_f - $xpbeforeUpdate >= 4) {
+                if ($levelsavailable > 0) {
                echo $this->Form->postButton('Upgrade Health', ['controller' => 'Arenas', 'action' => 'fighter'], ['data' => ['upgrade' => 3], 'class' => 'btn btn-info']); } ?> 
 
             </td>
