@@ -111,9 +111,9 @@
             <td><h5><?= $this->Form->postButton('Attack Right', ['controller' => 'Arenas', 'action' => 'sight'], ['data' => ['attack' => 'attackright'], 'class' => 'btn btn-primary']) ?> </h5></td> 
         </tr>
         <tr>
-            <td colspan="3" style="text-align:center"><h5> <?= $messageSuspicious; ?> </h5></td> 
+            <td colspan="3" style="text-align:center; background: linear-gradient(to right top,  red, red,red, white, white"><h5> <?= $messageSuspicious; ?> </h5></td> 
             <td><h5><?= $this->Form->postButton('Reset Map', ['controller' => 'Arenas', 'action' => 'sight'], ['data' => ['regenerate' => 'true'], 'class' => 'btn btn-primary']) ?> </h5></td> 
-            <td colspan="3" style="text-align:center"><h5> <?= $messageStink; ?> </h5></td> 
+            <td colspan="3" style="text-align:center; background: linear-gradient(to left top,  orangered, orangered,orangered, white, white"><h5> <?= $messageStink; ?> </h5></td> 
         </tr>
     </table>
     <table>
