@@ -107,7 +107,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         OPTIONS:<br>
         B-D-E-F<br>
         Log:<br>
-        <a href="../webroot/patch.html" > Logs</a><br>
+        <a href="../webroot/versions.html" > Logs</a><br>
+        <a href="https://jtiercelin@bitbucket.org/Elyaneth/projet-web-ing4.git" > Link to deposit bitbucket</a>
 
     </footer>
             
