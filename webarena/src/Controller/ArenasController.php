@@ -357,33 +357,37 @@ class ArenasController extends AppController {
         // Retrieve the two fighters entities thanks to the players IDs
         $fighter1 = $this->Fighters->getFighter($idPlayer1);
         $fighter2 = $this->Fighters->getFighter($idPlayer2);
-        // Determine if the attack succeed, according to the given formula
-        $doAttackSucceed = $this->doAttackSucceed($fighter1->level, $fighter2->level);
+        $connectedfighters = $this->getFightersConnected($fighter1);
+        
+        if (in_array($fighter2, $connectedfighters)) {
+            // Determine if the attack succeed, according to the given formula
+            $doAttackSucceed = $this->doAttackSucceed($fighter1->level, $fighter2->level);
 
-        // If the attack succeeds, decrement health of fighter injured
-        if ($doAttackSucceed == true) {
-            $this->Flash->success(__('Your attack succeeded on "' . $fighter2->name . '"'));
-            $fighter2->current_health -= $fighter1->skill_strength;
-            $current_health = $fighter2->current_health;
-            $fighter1->xp ++;
-            $this->Fighters->save($fighter1);
-            $this->Fighters->save($fighter2);
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
-            // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
-            if ($current_health < 1) {
-                $current_health;
-                $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
-
-                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
-
-                $fighter1->xp += $fighter2->level;
+            // If the attack succeeds, decrement health of fighter injured
+            if ($doAttackSucceed == true) {
+                $this->Flash->success(__('Your attack succeeded on "' . $fighter2->name . '"'));
+                $fighter2->current_health -= $fighter1->skill_strength;
+                $current_health = $fighter2->current_health;
+                $fighter1->xp ++;
                 $this->Fighters->save($fighter1);
-                $this->deleteFighter($idPlayer2);
+                $this->Fighters->save($fighter2);
+                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully attacked ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
+                // If the attacked fighter current health is at 0, delete it and create new fighter. Fighter 1 wins XP equals to fighter 2 level.
+                if ($current_health < 1) {
+                    $current_health;
+                    $this->Flash->success(__('Your attack killed "' . $fighter2->name . '"'));
+
+                    $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' succesfully killed ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
+
+                    $fighter1->xp += $fighter2->level;
+                    $this->Fighters->save($fighter1);
+                    $this->deleteFighter($idPlayer2);
+                }
+            } else {
+                //Add the event to the table
+                $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' failed his attack on ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
+                $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
             }
-        } else {
-            //Add the event to the table
-            $this->addEventToDiary($fighter1, $this->getCurrentUsername() . ' \'s ' . $fighter1->name . ' failed his attack on ' . $this->getUserName($idPlayer2) . '\' s ' . $fighter2->name);
-            $this->Flash->error(__('Your attack failed on "' . $fighter2->name . '"'));
         }
     }
 
