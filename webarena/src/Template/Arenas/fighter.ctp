@@ -23,7 +23,7 @@ $controller;
                     //'enctype' => 'multipart/form-data',
                     echo $this->Form->create('particularRecord', ['type' => 'file']);
                     echo $this->Form->file('upload', ['type' => 'file', 'allowed_ext' => array('.jpg', '.jpeg', '.png')]);
-                    echo $this->Form->submit('OK', ['controller' => 'Arenas', 'action' => 'fighter']);
+                    echo $this->Form->submit('OK', ['controller' => 'Arenas', 'action' => 'fighter'], ['data'=>['type'=>'uploadAvatar']]);
                     echo $this->Form->end();
                     ?>
                 </div>

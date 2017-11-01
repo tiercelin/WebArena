@@ -203,17 +203,19 @@ class ArenasController extends AppController {
             }
 
             if ($this->request->is('post')) {
-                //request for the avatar upload ! 
-                $test = $this->request->getData('upload');
-                if ($test['name'] != "") {
-                    $ext = substr(strtolower(strrchr($test['name'], '.')), 1);
-                    $te = $this->uploadAvatarByName($test, $idPlayer);
-                    if ($te == true) {
-                        $avatarFilename = $idPlayer . '.' . $ext;
+                if ($this->request->getData('type') == "uploadAvatar") {
+                    //request for the avatar upload ! 
+                    $test = $this->request->getData('upload');
+                    if ($test['name'] != "") {
+                        $ext = substr(strtolower(strrchr($test['name'], '.')), 1);
+                        $te = $this->uploadAvatarByName($test, $idPlayer);
+                        if ($te == true) {
+                            $avatarFilename = $idPlayer . '.' . $ext;
+                        } else
+                            $this->Flash->error(__('Your file has not been uploaded'));
                     } else
-                        $this->Flash->error(__('Your file has not been uploaded'));
-                } else
-                    $this->Flash->error(__('You did not enter a file'));
+                        $this->Flash->error(__('You did not enter a file'));
+                }
             }
             // Find if this user has fighter(s)          
             $fighters = $this->Fighters->find()->where(['player_id = ' => $idPlayer]);
@@ -255,7 +257,6 @@ class ArenasController extends AppController {
 
                     // Send the controller (for avatar display matter)
                     $this->set('controller', $this);
-
                 }
             }
 
@@ -307,7 +308,7 @@ class ArenasController extends AppController {
             //The fighter gains a level, his exp is decreased by 4 (exp needed for a level)
             $fighter->level++;
             $fighter->xp-=4;
-           //Then we upgrade his health by 3
+            //Then we upgrade his health by 3
             $old = $fighter->skill_health;
             $fighter->skill_health+=3;
             $new = $fighter->skill_health;
