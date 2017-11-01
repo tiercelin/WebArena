@@ -160,7 +160,6 @@ class ArenasController extends AppController {
      * @param type $idPlayer : ID of the player whose fighter has to be deleted
      */
     public function deleteFighter($idPlayer) {
-        echo $idPlayer;
         // Verify that the user is connected
         if ($this->isUserConnected()) {
             // Retrieve the fighter entity to be deleted
